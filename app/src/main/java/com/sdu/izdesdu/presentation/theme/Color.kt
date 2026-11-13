@@ -1,4 +1,4 @@
-package com.sdu.izdesdu.ui.theme
+package com.sdu.izdesdu.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

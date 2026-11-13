@@ -1,4 +1,4 @@
-package com.sdu.izdesdu.ui.theme
+package com.sdu.izdesdu.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
