@@ -25,7 +25,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -38,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,21 +49,20 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.CheckPoint
+import com.sdu.izdesdu.presentation.theme.IzdeBlue
+import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
+import com.sdu.izdesdu.presentation.theme.IzdeBorderMuted
+import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
+import com.sdu.izdesdu.presentation.theme.IzdeGreen
+import com.sdu.izdesdu.presentation.theme.IzdeMapBg
+import com.sdu.izdesdu.presentation.theme.IzdeMintBg
+import com.sdu.izdesdu.presentation.theme.IzdeOrange
+import com.sdu.izdesdu.presentation.theme.IzdeOutline
+import com.sdu.izdesdu.presentation.theme.IzdeStartRed
+import com.sdu.izdesdu.presentation.theme.IzdeTextMuted
+import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
+import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 import kotlin.math.roundToInt
-
-private val PrimaryBlue = Color(0xFF2F66D8)
-private val SuccessGreen = Color(0xFF2E9E6B)
-private val SuccessMintBg = Color(0xFFE7F5EE)
-private val AccentOrange = Color(0xFFE0791B)
-private val TextPrimary = Color(0xFF1E2A3A)
-private val TextSecondary = Color(0xFF55606E)
-private val TextMuted = Color(0xFF8A94A0)
-private val MapBackground = Color(0xFFE4EDE3)
-private val CurrentRowBg = Color(0xFFEEF4FF)
-private val RowBg = Color(0xFFF8FAFC)
-private val UpcomingBadgeBg = Color(0xFFE9EEF4)
-private val OutlineColor = Color(0xFFE3E8EE)
-private val DragHandleColor = Color(0xFFDDE3EA)
 
 @Composable
 fun RouteScreen(
@@ -83,7 +82,7 @@ fun RouteScreen(
     if (route == null) {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.route_not_found), color = TextPrimary)
+                Text(text = stringResource(R.string.route_not_found), color = IzdeTextPrimary)
                 Spacer(modifier = Modifier.height(12.dp))
                 OutlinedButton(onClick = onBack) {
                     Text(text = stringResource(R.string.route_back))
@@ -93,18 +92,23 @@ fun RouteScreen(
         return
     }
 
+    val routeParts = route.title.split("→").map { it.trim() }
+    val startLabel = routeParts.firstOrNull().orEmpty()
+
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(MapBackground)
+            .background(IzdeMapBg)
     ) {
+        // Слот под CampusMap с линией от старта и пунктиром по точкам (карту Участника 2 подставим фоном)
         RouteMapPreview(
             checkpoints = route.checkpoints,
             currentStep = uiState.currentStep,
             isCompleted = uiState.isCompleted,
+            startLabel = startLabel,
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.32f)
+                .fillMaxHeight(0.46f)
                 .align(Alignment.TopCenter)
         )
 
@@ -120,7 +124,7 @@ fun RouteScreen(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.68f)
+                .fillMaxHeight(0.56f)
                 .align(Alignment.BottomCenter),
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
             color = Color.White,
@@ -137,7 +141,7 @@ fun RouteScreen(
                         .align(Alignment.CenterHorizontally)
                         .size(width = 36.dp, height = 4.dp)
                         .clip(CircleShape)
-                        .background(DragHandleColor)
+                        .background(IzdeDragHandle)
                 )
 
                 Spacer(modifier = Modifier.height(14.dp))
@@ -151,17 +155,19 @@ fun RouteScreen(
                         text = route.title,
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary,
-                        modifier = Modifier.weight(1f)
+                        color = IzdeTextPrimary,
+                        modifier = Modifier.weight(1f),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Surface(
-                        color = SuccessMintBg,
+                        color = IzdeMintBg,
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
                             text = stringResource(R.string.route_points_per_step),
-                            color = SuccessGreen,
+                            color = IzdeGreen,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
@@ -178,24 +184,30 @@ fun RouteScreen(
                     },
                     fontSize = 13.sp,
                     lineHeight = 18.sp,
-                    color = if (uiState.isCompleted) SuccessGreen else TextSecondary
+                    color = if (uiState.isCompleted) IzdeGreen else IzdeTextSecondary
                 )
 
-                Spacer(modifier = Modifier.height(14.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    modifier = Modifier.weight(1f)
                 ) {
                     itemsIndexed(route.checkpoints, key = { _, cp -> cp.id }) { index, checkpoint ->
                         val step = index + 1
                         val isDone = uiState.isCompleted || step < uiState.currentStep
                         val isCurrent = !uiState.isCompleted && step == uiState.currentStep
-                        CheckpointItem(
+                        val isFirst = index == 0
+                        val isLast = index == route.checkpoints.lastIndex
+                        val prevDone = uiState.isCompleted || (step - 1) < uiState.currentStep
+
+                        CheckpointTimelineRow(
                             step = step,
                             checkpoint = checkpoint,
                             isDone = isDone,
                             isCurrent = isCurrent,
+                            isFirst = isFirst,
+                            isLast = isLast,
+                            topLineDone = prevDone,
                             onClick = { onStartStep(step) }
                         )
                     }
@@ -210,14 +222,14 @@ fun RouteScreen(
                     OutlinedButton(
                         onClick = onBack,
                         modifier = Modifier
-                            .weight(0.36f)
+                            .weight(0.35f)
                             .height(48.dp),
                         shape = RoundedCornerShape(14.dp),
-                        border = BorderStroke(1.dp, OutlineColor)
+                        border = BorderStroke(1.dp, IzdeOutline)
                     ) {
                         Text(
                             text = stringResource(R.string.route_cancel),
-                            color = TextPrimary,
+                            color = IzdeTextPrimary,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Medium
                         )
@@ -225,10 +237,10 @@ fun RouteScreen(
                     Button(
                         onClick = { onStartStep(uiState.currentStep) },
                         modifier = Modifier
-                            .weight(0.64f)
+                            .weight(0.65f)
                             .height(48.dp),
                         shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryBlue)
+                        colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
                     ) {
                         Text(
                             text = stringResource(R.string.route_start_step, uiState.currentStep),
@@ -247,6 +259,7 @@ private fun RouteMapPreview(
     checkpoints: List<CheckPoint>,
     currentStep: Int,
     isCompleted: Boolean,
+    startLabel: String,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(modifier = modifier) {
@@ -265,20 +278,47 @@ private fun RouteMapPreview(
         val spanY = (maxY - minY).takeIf { it > 0f } ?: 1f
 
         val points = checkpoints.map { cp ->
-            val nx = 0.22f + 0.56f * ((cp.mapX - minX) / spanX)
-            val ny = 0.36f + 0.52f * ((cp.mapY - minY) / spanY)
+            val nx = 0.28f + 0.36f * ((cp.mapX - minX) / spanX)
+            val ny = 0.24f + 0.44f * ((cp.mapY - minY) / spanY)
             Offset(widthPx * nx, heightPx * ny)
         }
+        val gateStart = Offset(widthPx * 0.28f, heightPx * 0.88f)
 
         Canvas(modifier = Modifier.fillMaxSize()) {
+            drawLine(
+                color = IzdeGreen,
+                start = gateStart,
+                end = points.first(),
+                strokeWidth = 8f,
+                cap = StrokeCap.Round
+            )
             val dash = PathEffect.dashPathEffect(floatArrayOf(12f, 10f), 0f)
             for (i in 0 until points.lastIndex) {
                 drawLine(
-                    color = AccentOrange,
+                    color = IzdeOrange,
                     start = points[i],
                     end = points[i + 1],
-                    strokeWidth = 5f,
-                    pathEffect = dash
+                    strokeWidth = 6f,
+                    pathEffect = dash,
+                    cap = StrokeCap.Round
+                )
+            }
+        }
+
+        if (startLabel.isNotBlank()) {
+            Surface(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 68.dp, bottom = 18.dp),
+                shape = RoundedCornerShape(10.dp),
+                color = IzdeStartRed
+            ) {
+                Text(
+                    text = startLabel,
+                    color = Color.White,
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                 )
             }
         }
@@ -289,8 +329,8 @@ private fun RouteMapPreview(
             val isCurrent = !isCompleted && step == currentStep
             val center = points[index]
             val pinBg = when {
-                isDone -> SuccessGreen
-                isCurrent -> PrimaryBlue
+                isDone -> IzdeGreen
+                isCurrent -> IzdeBlue
                 else -> Color.White
             }
 
@@ -304,20 +344,28 @@ private fun RouteMapPreview(
                     }
                     .size(28.dp)
                     .clip(CircleShape)
-                    .background(pinBg)
-                    .border(
-                        width = 2.dp,
-                        color = if (isDone || isCurrent) Color.White else AccentOrange,
-                        shape = CircleShape
-                    ),
+                    .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = if (isDone) "✓" else step.toString(),
-                    color = if (isDone || isCurrent) Color.White else TextPrimary,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(CircleShape)
+                        .background(pinBg)
+                        .border(
+                            width = 2.dp,
+                            color = if (isDone || isCurrent) Color.White else IzdeOrange,
+                            shape = CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (isDone) "✓" else step.toString(),
+                        color = if (isDone || isCurrent) Color.White else IzdeTextPrimary,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
         }
     }
@@ -347,7 +395,7 @@ private fun FloatingRouteTopBar(
             Box(contentAlignment = Alignment.Center) {
                 Text(
                     text = "←",
-                    color = TextPrimary,
+                    color = IzdeTextPrimary,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -372,12 +420,12 @@ private fun FloatingRouteTopBar(
                         modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(PrimaryBlue)
+                            .background(IzdeBlue)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = parts[0],
-                        color = TextPrimary,
+                        color = IzdeTextPrimary,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1,
@@ -385,19 +433,19 @@ private fun FloatingRouteTopBar(
                     )
                     Text(
                         text = " → ",
-                        color = TextMuted,
+                        color = IzdeTextMuted,
                         fontSize = 13.sp
                     )
                     Box(
                         modifier = Modifier
                             .size(8.dp)
                             .clip(CircleShape)
-                            .background(AccentOrange)
+                            .background(IzdeOrange)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
                     Text(
                         text = parts[1],
-                        color = TextPrimary,
+                        color = IzdeTextPrimary,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
@@ -406,7 +454,7 @@ private fun FloatingRouteTopBar(
                 } else {
                     Text(
                         text = routeTitle,
-                        color = TextPrimary,
+                        color = IzdeTextPrimary,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
@@ -419,72 +467,121 @@ private fun FloatingRouteTopBar(
 }
 
 @Composable
-private fun CheckpointItem(
+private fun CheckpointTimelineRow(
     step: Int,
     checkpoint: CheckPoint,
     isDone: Boolean,
     isCurrent: Boolean,
+    isFirst: Boolean,
+    isLast: Boolean,
+    topLineDone: Boolean,
     onClick: () -> Unit
 ) {
-    val badgeBg = when {
-        isDone -> SuccessGreen
-        isCurrent -> PrimaryBlue
-        else -> UpcomingBadgeBg
-    }
     val statusText = when {
         isDone -> stringResource(R.string.route_step_done)
         isCurrent -> stringResource(R.string.route_step_current)
         else -> stringResource(R.string.route_step_upcoming)
     }
 
-    Surface(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
-        color = if (isCurrent) CurrentRowBg else RowBg,
-        border = BorderStroke(1.dp, if (isCurrent) PrimaryBlue else OutlineColor)
+            .height(44.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .clickable(onClick = onClick)
+            .padding(horizontal = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .width(30.dp)
+                .fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
-                    .size(28.dp)
+                    .width(2.dp)
+                    .weight(1f)
+                    .background(
+                        when {
+                            isFirst -> Color.Transparent
+                            topLineDone -> IzdeGreen
+                            else -> IzdeOutline
+                        }
+                    )
+            )
+            Box(
+                modifier = Modifier
+                    .size(if (isCurrent) 28.dp else 24.dp)
                     .clip(CircleShape)
-                    .background(badgeBg),
+                    .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = if (isDone) "✓" else step.toString(),
-                    color = if (isDone || isCurrent) Color.White else TextSecondary,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
+                Box(
+                    modifier = Modifier
+                        .size(22.dp)
+                        .clip(CircleShape)
+                        .background(
+                            when {
+                                isDone -> IzdeGreen
+                                isCurrent -> IzdeBlue
+                                else -> Color.White
+                            }
+                        )
+                        .then(
+                            if (!isDone && !isCurrent) {
+                                Modifier.border(1.5.dp, IzdeBorderMuted, CircleShape)
+                            } else {
+                                Modifier
+                            }
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = if (isDone) "✓" else step.toString(),
+                        color = if (isDone || isCurrent) Color.White else IzdeTextMuted,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = "$step. ${checkpoint.title}",
-                fontSize = 14.sp,
-                fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.SemiBold,
-                color = TextPrimary,
-                modifier = Modifier.weight(1f),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = statusText,
-                fontSize = 12.sp,
-                color = when {
-                    isDone -> SuccessGreen
-                    isCurrent -> PrimaryBlue
-                    else -> TextMuted
-                },
-                fontWeight = if (isCurrent) FontWeight.SemiBold else FontWeight.Normal
+            Box(
+                modifier = Modifier
+                    .width(2.dp)
+                    .weight(1f)
+                    .background(
+                        when {
+                            isLast -> Color.Transparent
+                            isDone -> IzdeGreen
+                            else -> IzdeOutline
+                        }
+                    )
             )
         }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        Text(
+            text = "$step. ${checkpoint.title}",
+            fontSize = 14.sp,
+            fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Medium,
+            color = if (isDone) IzdeTextSecondary else IzdeTextPrimary,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = statusText,
+            fontSize = 12.sp,
+            color = when {
+                isDone -> IzdeGreen
+                isCurrent -> IzdeBlue
+                else -> IzdeTextMuted
+            },
+            fontWeight = if (isCurrent) FontWeight.Medium else FontWeight.Normal
+        )
     }
 }
