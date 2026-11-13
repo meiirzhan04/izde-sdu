@@ -1,12 +1,19 @@
 package com.sdu.izdesdu.presentation.navigation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.presentation.route.RouteScreen
 
 @Composable
 fun IzdeNavHost(
@@ -20,7 +27,11 @@ fun IzdeNavHost(
         modifier = modifier
     ) {
         composable<MapRoute> {
-
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Button(onClick = { navController.navigate(RouteDetailRoute("gate_to_canteen")) }) {
+                    Text("Открыть путь")
+                }
+            }
         }
         composable<FromToRoute> {
 
@@ -29,7 +40,15 @@ fun IzdeNavHost(
 
         }
         composable<RouteDetailRoute> { backStackEntry ->
-
+            val args = backStackEntry.toRoute<RouteDetailRoute>()
+            RouteScreen(
+                routeId = args.routeId,
+                appContainer = appContainer,
+                onBack = { navController.popBackStack() },
+                onStartStep = { step ->
+                    navController.navigate(QuestionRoute(args.routeId, step))
+                }
+            )
         }
         composable<QuestionRoute> { backStackEntry ->
 
