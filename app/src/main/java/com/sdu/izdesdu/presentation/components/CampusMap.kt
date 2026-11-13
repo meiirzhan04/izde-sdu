@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,6 +77,25 @@ fun CampusMap(
                             y = place.mapY.dp - pinSize
                         )
                         .clickable { onPinClick(place.id) }
+                )
+            }
+
+            val selected = places.find { it.id == selectedId }
+
+            if (selected != null) {
+                val labelX = if (selected.mapX > 250) selected.mapX - 120 else selected.mapX - 40
+
+                Text(
+                    text = selected.title,
+                    color = Color.White,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    modifier = Modifier
+                        .offset(x = labelX.dp, y = selected.mapY.dp - 76.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(IzdeColors.Dark)
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
                 )
             }
         }
