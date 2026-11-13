@@ -1,3 +1,49 @@
 <resources>
     <string name="app_name">izde-sdu</string>
+    <string name="route_gate_to_canteen_title">Главный вход → Столовая</string>
+
+    <string name="cp_entrance_c_title">Вход C</string>
+    <string name="cp_entrance_c_instruction">От ворот иди к зданию, ко входу C</string>
+    <string name="q_founded_year_text">В каком году основан SDU?</string>
+    <string name="q_founded_year_opt1">1991</string>
+    <string name="q_founded_year_opt2">1996</string>
+    <string name="q_founded_year_opt3">2001</string>
+    <string name="q_founded_year_opt4">2010</string>
+    <string name="q_founded_year_hint">Это середина 90-х</string>
+
+    <string name="cp_hall_title">Холл</string>
+    <string name="cp_hall_instruction">Зайди внутрь, в большой холл</string>
+    <string name="q_named_after_text">В честь кого назван университет?</string>
+    <string name="q_named_after_opt1">Абай Кунанбаев</string>
+    <string name="q_named_after_opt2">Аль-Фараби</string>
+    <string name="q_named_after_opt3">Сулейман Демирель</string>
+    <string name="q_named_after_opt4">Шокан Уалиханов</string>
+    <string name="q_named_after_hint">Это был президент Турции</string>
+
+    <string name="cp_block_d_title">Блок D</string>
+    <string name="cp_block_d_instruction">Иди по главному коридору до первого крыла</string>
+    <string name="q_language_text">На каком языке в основном идёт обучение в SDU?</string>
+    <string name="q_language_opt1">Английский</string>
+    <string name="q_language_opt2">Турецкий</string>
+    <string name="q_language_opt3">Немецкий</string>
+    <string name="q_language_opt4">Только казахский</string>
+    <string name="q_language_hint">Это международный язык</string>
+
+    <string name="cp_lecture_halls_title">Лекционные залы</string>
+    <string name="cp_lecture_halls_instruction">Пройди дальше, справа большие круглые залы</string>
+    <string name="q_city_text">В каком городе находится кампус SDU?</string>
+    <string name="q_city_opt1">Астана</string>
+    <string name="q_city_opt2">Каскелен</string>
+    <string name="q_city_opt3">Шымкент</string>
+    <string name="q_city_opt4">Талгар</string>
+    <string name="q_city_hint">Город рядом с Алматы, на запад</string>
+
+    <string name="cp_canteen_title">Столовая</string>
+    <string name="cp_canteen_instruction">Ещё немного вперёд, справа бирюзовая зона</string>
+    <string name="q_last_block_text">Какой блок появился в SDU последним?</string>
+    <string name="q_last_block_opt1">A</string>
+    <string name="q_last_block_opt2">C</string>
+    <string name="q_last_block_opt3">I</string>
+    <string name="q_last_block_opt4">K</string>
+    <string name="q_last_block_hint">Буква сразу после H</string>
 </resources>
