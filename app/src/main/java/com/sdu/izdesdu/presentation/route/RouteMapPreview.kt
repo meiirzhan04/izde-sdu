@@ -38,7 +38,6 @@ import com.sdu.izdesdu.presentation.theme.IzdeStartRed
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import kotlin.math.roundToInt
 
-/** Renders the schematic route path and numbered checkpoint pins on top of the map area. */
 @Composable
 internal fun RouteMapPreview(
     checkpoints: List<CheckPoint>,
@@ -55,111 +54,149 @@ internal fun RouteMapPreview(
         val heightPx = with(density) { maxHeight.toPx() }
         val pinRadiusPx = with(density) { 14.dp.toPx() }
 
-        val minX = checkpoints.minOf { it.mapX }
-        val maxX = checkpoints.maxOf { it.mapX }
-        val minY = checkpoints.minOf { it.mapY }
-        val maxY = checkpoints.maxOf { it.mapY }
-        val spanX = (maxX - minX).takeIf { it > 0f } ?: 1f
-        val spanY = (maxY - minY).takeIf { it > 0f } ?: 1f
-
-        val points = checkpoints.map { cp ->
-            val nx = 0.28f + 0.36f * ((cp.mapX - minX) / spanX)
-            val ny = 0.24f + 0.44f * ((cp.mapY - minY) / spanY)
-            Offset(widthPx * nx, heightPx * ny)
-        }
+        val points = normalizeCheckpointOffsets(checkpoints, widthPx, heightPx)
         val gateStart = Offset(widthPx * 0.28f, heightPx * 0.88f)
 
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawLine(
-                color = IzdeGreen,
-                start = gateStart,
-                end = points.first(),
-                strokeWidth = 8f,
-                cap = StrokeCap.Round
-            )
-            val dash = PathEffect.dashPathEffect(floatArrayOf(12f, 10f), 0f)
-            for (i in 0 until points.lastIndex) {
-                drawLine(
-                    color = IzdeOrange,
-                    start = points[i],
-                    end = points[i + 1],
-                    strokeWidth = 6f,
-                    pathEffect = dash,
-                    cap = StrokeCap.Round
-                )
-            }
-        }
+        RoutePathLines(gateStart = gateStart, points = points)
 
         if (startLabel.isNotBlank()) {
-            Surface(
+            StartPointBadge(
+                label = startLabel,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = 68.dp, bottom = 18.dp),
-                shape = RoundedCornerShape(10.dp),
-                color = IzdeStartRed
-            ) {
-                Text(
-                    text = startLabel,
-                    color = Color.White,
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                )
-            }
+                    .padding(start = 68.dp, bottom = 18.dp)
+            )
         }
 
-        checkpoints.forEachIndexed { index, _ ->
+        points.forEachIndexed { index, center ->
             val step = index + 1
-            val isDone = isCompleted || step < currentStep
-            val isCurrent = !isCompleted && step == currentStep
-            val center = points[index]
-            val pinBg = when {
-                isDone -> IzdeGreen
-                isCurrent -> IzdeBlue
-                else -> Color.White
-            }
+            CheckpointMapPin(
+                step = step,
+                center = center,
+                pinRadiusPx = pinRadiusPx,
+                isDone = isCompleted || step < currentStep,
+                isCurrent = !isCompleted && step == currentStep
+            )
+        }
+    }
+}
 
-            Box(
-                modifier = Modifier
-                    .offset {
-                        IntOffset(
-                            (center.x - pinRadiusPx).roundToInt(),
-                            (center.y - pinRadiusPx).roundToInt()
-                        )
-                    }
-                    .size(28.dp)
-                    .clip(CircleShape)
-                    .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
-                contentAlignment = Alignment.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clip(CircleShape)
-                        .background(pinBg)
-                        .border(
-                            width = 2.dp,
-                            color = if (isDone || isCurrent) Color.White else IzdeOrange,
-                            shape = CircleShape
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (isDone) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    } else {
-                        Text(
-                            text = step.toString(),
-                            color = if (isCurrent) Color.White else IzdeTextPrimary,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
+private fun normalizeCheckpointOffsets(
+    checkpoints: List<CheckPoint>,
+    widthPx: Float,
+    heightPx: Float
+): List<Offset> {
+    val minX = checkpoints.minOf { it.mapX }
+    val maxX = checkpoints.maxOf { it.mapX }
+    val minY = checkpoints.minOf { it.mapY }
+    val maxY = checkpoints.maxOf { it.mapY }
+    val spanX = (maxX - minX).takeIf { it > 0f } ?: 1f
+    val spanY = (maxY - minY).takeIf { it > 0f } ?: 1f
+
+    return checkpoints.map { cp ->
+        val nx = 0.28f + 0.36f * ((cp.mapX - minX) / spanX)
+        val ny = 0.24f + 0.44f * ((cp.mapY - minY) / spanY)
+        Offset(widthPx * nx, heightPx * ny)
+    }
+}
+
+@Composable
+private fun RoutePathLines(
+    gateStart: Offset,
+    points: List<Offset>
+) {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        drawLine(
+            color = IzdeGreen,
+            start = gateStart,
+            end = points.first(),
+            strokeWidth = 8f,
+            cap = StrokeCap.Round
+        )
+        val dash = PathEffect.dashPathEffect(floatArrayOf(12f, 10f), 0f)
+        for (i in 0 until points.lastIndex) {
+            drawLine(
+                color = IzdeOrange,
+                start = points[i],
+                end = points[i + 1],
+                strokeWidth = 6f,
+                pathEffect = dash,
+                cap = StrokeCap.Round
+            )
+        }
+    }
+}
+
+@Composable
+private fun StartPointBadge(
+    label: String,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(10.dp),
+        color = IzdeStartRed
+    ) {
+        Text(
+            text = label,
+            color = Color.White,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.SemiBold,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+        )
+    }
+}
+
+@Composable
+private fun CheckpointMapPin(
+    step: Int,
+    center: Offset,
+    pinRadiusPx: Float,
+    isDone: Boolean,
+    isCurrent: Boolean
+) {
+    val pinBg = when {
+        isDone -> IzdeGreen
+        isCurrent -> IzdeBlue
+        else -> Color.White
+    }
+    val pinBorder = if (isDone || isCurrent) Color.White else IzdeOrange
+
+    Box(
+        modifier = Modifier
+            .offset {
+                IntOffset(
+                    (center.x - pinRadiusPx).roundToInt(),
+                    (center.y - pinRadiusPx).roundToInt()
+                )
+            }
+            .size(28.dp)
+            .clip(CircleShape)
+            .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
+        contentAlignment = Alignment.Center
+    ) {
+        Box(
+            modifier = Modifier
+                .size(24.dp)
+                .clip(CircleShape)
+                .background(pinBg)
+                .border(2.dp, pinBorder, CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            if (isDone) {
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(14.dp)
+                )
+            } else {
+                Text(
+                    text = step.toString(),
+                    color = if (isCurrent) Color.White else IzdeTextPrimary,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }

@@ -44,6 +44,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.domain.model.CheckPoint
+import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.presentation.route.RouteMapPreview
 import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
@@ -80,15 +82,7 @@ fun QuestionScreen(
     val question = uiState.question
 
     if (uiState.isMissing || route == null || checkpoint == null || question == null) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.question_not_found), color = IzdeTextPrimary)
-                Spacer(modifier = Modifier.height(12.dp))
-                OutlinedButton(onClick = onBack) {
-                    Text(text = stringResource(R.string.route_back))
-                }
-            }
-        }
+        QuestionNotFoundView(onBack = onBack, modifier = modifier)
         return
     }
 
@@ -96,7 +90,7 @@ fun QuestionScreen(
         BackHandler(onBack = onFinish)
     }
 
-    val sheetOnBack = if (uiState.isRouteFinished) onFinish else onBack
+    val closeAction = if (uiState.isRouteFinished) onFinish else onBack
 
     Box(
         modifier = modifier
@@ -116,7 +110,7 @@ fun QuestionScreen(
 
         QuestionTopBar(
             totalScore = uiState.totalScore,
-            onBack = sheetOnBack,
+            onBack = closeAction,
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
@@ -141,179 +135,268 @@ fun QuestionScreen(
                     onBackToMap = onFinish
                 )
             } else {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 20.dp)
-                        .padding(top = 10.dp, bottom = 16.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterHorizontally)
-                            .size(width = 36.dp, height = 4.dp)
-                            .clip(CircleShape)
-                            .background(IzdeDragHandle)
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(38.dp)
-                                .clip(CircleShape)
-                                .background(IzdeBlue),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = uiState.checkpointNumber.toString(),
-                                color = Color.White,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        }
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                text = stringResource(
-                                    R.string.question_step_eyebrow,
-                                    uiState.checkpointNumber,
-                                    uiState.totalCheckpoints,
-                                    checkpoint.title
-                                ),
-                                fontSize = 12.sp,
-                                color = IzdeTextSecondary,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                text = stringResource(R.string.question_title),
-                                fontSize = 19.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = IzdeTextPrimary
-                            )
+                QuestionSheetContent(
+                    uiState = uiState,
+                    checkpoint = checkpoint,
+                    question = question,
+                    onSelectAnswer = viewModel::selectAnswer,
+                    onShowHint = viewModel::showHint,
+                    onContinue = {
+                        if (!viewModel.finishCurrentStep()) {
+                            onNextStep(uiState.checkpointNumber + 1)
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    StepProgressSegments(
-                        totalCheckpoints = uiState.totalCheckpoints,
-                        currentStep = uiState.checkpointNumber,
-                        isCurrentCorrect = uiState.isCorrect
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
-                    ) {
-                        if (checkpoint.instruction.isNotBlank()) {
-                            Text(
-                                text = checkpoint.instruction,
-                                fontSize = 12.sp,
-                                color = IzdeTextSecondary
-                            )
-                        }
-
-                        Text(
-                            text = question.text,
-                            fontSize = 17.sp,
-                            lineHeight = 23.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = IzdeTextPrimary
-                        )
-
-                        question.options.forEachIndexed { index, optionText ->
-                            val isSelected = uiState.selectedIndex == index
-                            val isRightSelection = isSelected && uiState.isCorrect == true
-                            val isWrongSelection = isSelected && uiState.isCorrect == false
-
-                            AnswerOptionCard(
-                                letter = optionLetters.getOrElse(index) { ('A' + index).toString() },
-                                text = optionText,
-                                isSelected = isSelected,
-                                isRight = isRightSelection,
-                                isWrong = isWrongSelection,
-                                enabled = uiState.isCorrect != true,
-                                onClick = { viewModel.selectAnswer(index) }
-                            )
-                        }
-
-                        if (uiState.isCorrect != null) {
-                            FeedbackBanner(isCorrect = uiState.isCorrect == true)
-                        }
-
-                        if (uiState.showHint && uiState.isCorrect != true) {
-                            Surface(
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp),
-                                color = IzdeHintBg,
-                                border = BorderStroke(1.dp, IzdeOutline)
-                            ) {
-                                Text(
-                                    text = stringResource(R.string.question_hint_prefix, question.hint),
-                                    fontSize = 13.sp,
-                                    lineHeight = 18.sp,
-                                    color = IzdeTextPrimary,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    if (uiState.isCorrect == true) {
-                        Button(
-                            onClick = {
-                                if (!viewModel.finishCurrentStep()) {
-                                    onNextStep(uiState.checkpointNumber + 1)
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
-                        ) {
-                            Text(
-                                text = if (uiState.isLastStep) {
-                                    stringResource(R.string.question_finish_route)
-                                } else {
-                                    stringResource(R.string.question_next_step, uiState.checkpointNumber + 1)
-                                },
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold
-                            )
-                        }
-                    } else {
-                        OutlinedButton(
-                            onClick = { viewModel.showHint() },
-                            enabled = !uiState.showHint,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(48.dp),
-                            shape = RoundedCornerShape(14.dp),
-                            border = BorderStroke(1.dp, IzdeOutline)
-                        ) {
-                            Text(
-                                text = stringResource(R.string.question_hint_button),
-                                color = if (uiState.showHint) IzdeTextSecondary else IzdeTextPrimary,
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.Medium
-                            )
-                        }
-                    }
-                }
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun QuestionNotFoundView(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = stringResource(R.string.question_not_found), color = IzdeTextPrimary)
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(onClick = onBack) {
+                Text(text = stringResource(R.string.route_back))
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuestionSheetContent(
+    uiState: QuestionUiState,
+    checkpoint: CheckPoint,
+    question: Question,
+    onSelectAnswer: (Int) -> Unit,
+    onShowHint: () -> Unit,
+    onContinue: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp)
+            .padding(top = 10.dp, bottom = 16.dp)
+    ) {
+        SheetDragHandle(modifier = Modifier.align(Alignment.CenterHorizontally))
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        QuestionHeader(
+            stepNumber = uiState.checkpointNumber,
+            totalSteps = uiState.totalCheckpoints,
+            checkpointTitle = checkpoint.title
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        StepProgressSegments(
+            totalCheckpoints = uiState.totalCheckpoints,
+            currentStep = uiState.checkpointNumber,
+            isCurrentCorrect = uiState.isCorrect
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        QuestionBody(
+            uiState = uiState,
+            instruction = checkpoint.instruction,
+            question = question,
+            onSelectAnswer = onSelectAnswer,
+            modifier = Modifier.weight(1f)
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        QuestionActionButton(
+            isCorrect = uiState.isCorrect == true,
+            isLastStep = uiState.isLastStep,
+            nextStepNumber = uiState.checkpointNumber + 1,
+            showHint = uiState.showHint,
+            onShowHint = onShowHint,
+            onContinue = onContinue
+        )
+    }
+}
+
+@Composable
+private fun SheetDragHandle(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .size(width = 36.dp, height = 4.dp)
+            .clip(CircleShape)
+            .background(IzdeDragHandle)
+    )
+}
+
+@Composable
+private fun QuestionHeader(
+    stepNumber: Int,
+    totalSteps: Int,
+    checkpointTitle: String
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(CircleShape)
+                .background(IzdeBlue),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = stepNumber.toString(),
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        Spacer(modifier = Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = stringResource(
+                    R.string.question_step_eyebrow,
+                    stepNumber,
+                    totalSteps,
+                    checkpointTitle
+                ),
+                fontSize = 12.sp,
+                color = IzdeTextSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = stringResource(R.string.question_title),
+                fontSize = 19.sp,
+                fontWeight = FontWeight.Bold,
+                color = IzdeTextPrimary
+            )
+        }
+    }
+}
+
+@Composable
+private fun QuestionBody(
+    uiState: QuestionUiState,
+    instruction: String,
+    question: Question,
+    onSelectAnswer: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        if (instruction.isNotBlank()) {
+            Text(
+                text = instruction,
+                fontSize = 12.sp,
+                color = IzdeTextSecondary
+            )
+        }
+
+        Text(
+            text = question.text,
+            fontSize = 17.sp,
+            lineHeight = 23.sp,
+            fontWeight = FontWeight.Bold,
+            color = IzdeTextPrimary
+        )
+
+        question.options.forEachIndexed { index, optionText ->
+            val isSelected = uiState.selectedIndex == index
+            AnswerOptionCard(
+                letter = optionLetters.getOrElse(index) { ('A' + index).toString() },
+                text = optionText,
+                isSelected = isSelected,
+                isRight = isSelected && uiState.isCorrect == true,
+                isWrong = isSelected && uiState.isCorrect == false,
+                enabled = uiState.isCorrect != true,
+                onClick = { onSelectAnswer(index) }
+            )
+        }
+
+        if (uiState.isCorrect != null) {
+            FeedbackBanner(isCorrect = uiState.isCorrect == true)
+        }
+
+        if (uiState.showHint && uiState.isCorrect != true) {
+            HintBanner(hint = question.hint)
+        }
+    }
+}
+
+@Composable
+private fun HintBanner(hint: String) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = IzdeHintBg,
+        border = BorderStroke(1.dp, IzdeOutline)
+    ) {
+        Text(
+            text = stringResource(R.string.question_hint_prefix, hint),
+            fontSize = 13.sp,
+            lineHeight = 18.sp,
+            color = IzdeTextPrimary,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
+        )
+    }
+}
+
+@Composable
+private fun QuestionActionButton(
+    isCorrect: Boolean,
+    isLastStep: Boolean,
+    nextStepNumber: Int,
+    showHint: Boolean,
+    onShowHint: () -> Unit,
+    onContinue: () -> Unit
+) {
+    if (isCorrect) {
+        Button(
+            onClick = onContinue,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
+        ) {
+            Text(
+                text = if (isLastStep) {
+                    stringResource(R.string.question_finish_route)
+                } else {
+                    stringResource(R.string.question_next_step, nextStepNumber)
+                },
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+        return
+    }
+
+    OutlinedButton(
+        onClick = onShowHint,
+        enabled = !showHint,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(48.dp),
+        shape = RoundedCornerShape(14.dp),
+        border = BorderStroke(1.dp, IzdeOutline)
+    ) {
+        Text(
+            text = stringResource(R.string.question_hint_button),
+            color = if (showHint) IzdeTextSecondary else IzdeTextPrimary,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Medium
+        )
     }
 }
 
@@ -518,12 +601,7 @@ private fun RouteFinishSheet(
             .padding(top = 10.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier
-                .size(width = 36.dp, height = 4.dp)
-                .clip(CircleShape)
-                .background(IzdeDragHandle)
-        )
+        SheetDragHandle()
 
         Column(
             modifier = Modifier

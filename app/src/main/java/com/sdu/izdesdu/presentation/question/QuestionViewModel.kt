@@ -85,7 +85,6 @@ class QuestionViewModel(
         _uiState.update { it.copy(showHint = true) }
     }
 
-    /** Advances to the next checkpoint or marks the route completed on the final step. */
     fun finishCurrentStep(): Boolean {
         val current = _uiState.value
         if (current.isMissing) return false

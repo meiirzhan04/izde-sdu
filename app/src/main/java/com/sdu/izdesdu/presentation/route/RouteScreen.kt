@@ -46,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.CheckPoint
+import com.sdu.izdesdu.domain.model.Route
 import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
 import com.sdu.izdesdu.presentation.theme.IzdeBorderMuted
@@ -75,15 +76,7 @@ fun RouteScreen(
     val route = uiState.route
 
     if (route == null) {
-        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = stringResource(R.string.route_not_found), color = IzdeTextPrimary)
-                Spacer(modifier = Modifier.height(12.dp))
-                OutlinedButton(onClick = onBack) {
-                    Text(text = stringResource(R.string.route_back))
-                }
-            }
-        }
+        RouteNotFoundView(onBack = onBack, modifier = modifier)
         return
     }
 
@@ -122,142 +115,187 @@ fun RouteScreen(
             color = Color.White,
             shadowElevation = 10.dp
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 20.dp)
-                    .padding(top = 10.dp, bottom = 16.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .size(width = 36.dp, height = 4.dp)
-                        .clip(CircleShape)
-                        .background(IzdeDragHandle)
-                )
+            RouteSheetContent(
+                route = route,
+                currentStep = uiState.currentStep,
+                isCompleted = uiState.isCompleted,
+                onBack = onBack,
+                onStartStep = onStartStep
+            )
+        }
+    }
+}
 
-                Spacer(modifier = Modifier.height(14.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = route.title,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = IzdeTextPrimary,
-                        modifier = Modifier.weight(1f),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Surface(
-                        color = IzdeMintBg,
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.route_points_per_step),
-                            color = IzdeGreen,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(6.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = if (uiState.isCompleted) {
-                            stringResource(R.string.route_completed_badge)
-                        } else {
-                            stringResource(R.string.route_subtitle)
-                        },
-                        fontSize = 13.sp,
-                        lineHeight = 18.sp,
-                        color = if (uiState.isCompleted) IzdeGreen else IzdeTextSecondary
-                    )
-                    if (uiState.isCompleted) {
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            tint = IzdeGreen,
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                LazyColumn(
-                    modifier = Modifier.weight(1f)
-                ) {
-                    itemsIndexed(route.checkpoints, key = { _, cp -> cp.id }) { index, checkpoint ->
-                        val step = index + 1
-                        val isDone = uiState.isCompleted || step < uiState.currentStep
-                        val isCurrent = !uiState.isCompleted && step == uiState.currentStep
-                        val isFirst = index == 0
-                        val isLast = index == route.checkpoints.lastIndex
-                        val prevDone = uiState.isCompleted || (step - 1) < uiState.currentStep
-
-                        CheckpointTimelineRow(
-                            step = step,
-                            checkpoint = checkpoint,
-                            isDone = isDone,
-                            isCurrent = isCurrent,
-                            isFirst = isFirst,
-                            isLast = isLast,
-                            topLineDone = prevDone,
-                            onClick = { onStartStep(step) }
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(12.dp))
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    OutlinedButton(
-                        onClick = onBack,
-                        modifier = Modifier
-                            .weight(0.35f)
-                            .height(48.dp),
-                        shape = RoundedCornerShape(14.dp),
-                        border = BorderStroke(1.dp, IzdeOutline)
-                    ) {
-                        Text(
-                            text = stringResource(R.string.route_cancel),
-                            color = IzdeTextPrimary,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-                    }
-                    Button(
-                        onClick = { onStartStep(if (uiState.isCompleted) 1 else uiState.currentStep) },
-                        enabled = route.checkpoints.isNotEmpty(),
-                        modifier = Modifier
-                            .weight(0.65f)
-                            .height(48.dp),
-                        shape = RoundedCornerShape(14.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
-                    ) {
-                        Text(
-                            text = if (uiState.isCompleted) {
-                                stringResource(R.string.route_restart)
-                            } else {
-                                stringResource(R.string.route_start_step, uiState.currentStep)
-                            },
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
-                }
+@Composable
+private fun RouteNotFoundView(
+    onBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(text = stringResource(R.string.route_not_found), color = IzdeTextPrimary)
+            Spacer(modifier = Modifier.height(12.dp))
+            OutlinedButton(onClick = onBack) {
+                Text(text = stringResource(R.string.route_back))
             }
+        }
+    }
+}
+
+@Composable
+private fun RouteSheetContent(
+    route: Route,
+    currentStep: Int,
+    isCompleted: Boolean,
+    onBack: () -> Unit,
+    onStartStep: (Int) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 20.dp)
+            .padding(top = 10.dp, bottom = 16.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .size(width = 36.dp, height = 4.dp)
+                .clip(CircleShape)
+                .background(IzdeDragHandle)
+        )
+
+        Spacer(modifier = Modifier.height(14.dp))
+
+        RouteSheetHeader(routeTitle = route.title, isCompleted = isCompleted)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            itemsIndexed(route.checkpoints, key = { _, cp -> cp.id }) { index, checkpoint ->
+                val step = index + 1
+                CheckpointTimelineRow(
+                    step = step,
+                    checkpoint = checkpoint,
+                    isDone = isCompleted || step < currentStep,
+                    isCurrent = !isCompleted && step == currentStep,
+                    isFirst = index == 0,
+                    isLast = index == route.checkpoints.lastIndex,
+                    topLineDone = isCompleted || (step - 1) < currentStep,
+                    onClick = { onStartStep(step) }
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        RouteBottomButtons(
+            hasCheckpoints = route.checkpoints.isNotEmpty(),
+            currentStep = currentStep,
+            isCompleted = isCompleted,
+            onBack = onBack,
+            onStartStep = onStartStep
+        )
+    }
+}
+
+@Composable
+private fun RouteSheetHeader(
+    routeTitle: String,
+    isCompleted: Boolean
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = routeTitle,
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = IzdeTextPrimary,
+            modifier = Modifier.weight(1f),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Surface(color = IzdeMintBg, shape = RoundedCornerShape(12.dp)) {
+            Text(
+                text = stringResource(R.string.route_points_per_step),
+                color = IzdeGreen,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
+            )
+        }
+    }
+
+    Spacer(modifier = Modifier.height(6.dp))
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        val subtitleRes = if (isCompleted) R.string.route_completed_badge else R.string.route_subtitle
+        Text(
+            text = stringResource(subtitleRes),
+            fontSize = 13.sp,
+            lineHeight = 18.sp,
+            color = if (isCompleted) IzdeGreen else IzdeTextSecondary
+        )
+        if (isCompleted) {
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+                imageVector = Icons.Filled.Check,
+                contentDescription = null,
+                tint = IzdeGreen,
+                modifier = Modifier.size(14.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun RouteBottomButtons(
+    hasCheckpoints: Boolean,
+    currentStep: Int,
+    isCompleted: Boolean,
+    onBack: () -> Unit,
+    onStartStep: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        OutlinedButton(
+            onClick = onBack,
+            modifier = Modifier
+                .weight(0.35f)
+                .height(48.dp),
+            shape = RoundedCornerShape(14.dp),
+            border = BorderStroke(1.dp, IzdeOutline)
+        ) {
+            Text(
+                text = stringResource(R.string.route_cancel),
+                color = IzdeTextPrimary,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Medium
+            )
+        }
+        Button(
+            onClick = { onStartStep(if (isCompleted) 1 else currentStep) },
+            enabled = hasCheckpoints,
+            modifier = Modifier
+                .weight(0.65f)
+                .height(48.dp),
+            shape = RoundedCornerShape(14.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
+        ) {
+            Text(
+                text = if (isCompleted) {
+                    stringResource(R.string.route_restart)
+                } else {
+                    stringResource(R.string.route_start_step, currentStep)
+                },
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
     }
 }
@@ -376,81 +414,14 @@ private fun CheckpointTimelineRow(
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
-            modifier = Modifier
-                .width(30.dp)
-                .fillMaxHeight(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Box(
-                modifier = Modifier
-                    .width(2.dp)
-                    .weight(1f)
-                    .background(
-                        when {
-                            isFirst -> Color.Transparent
-                            topLineDone -> IzdeGreen
-                            else -> IzdeOutline
-                        }
-                    )
-            )
-            Box(
-                modifier = Modifier
-                    .size(if (isCurrent) 28.dp else 24.dp)
-                    .clip(CircleShape)
-                    .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
-                contentAlignment = Alignment.Center
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(22.dp)
-                        .clip(CircleShape)
-                        .background(
-                            when {
-                                isDone -> IzdeGreen
-                                isCurrent -> IzdeBlue
-                                else -> Color.White
-                            }
-                        )
-                        .then(
-                            if (!isDone && !isCurrent) {
-                                Modifier.border(1.5.dp, IzdeBorderMuted, CircleShape)
-                            } else {
-                                Modifier
-                            }
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    if (isDone) {
-                        Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(13.dp)
-                        )
-                    } else {
-                        Text(
-                            text = step.toString(),
-                            color = if (isCurrent) Color.White else IzdeTextMuted,
-                            fontSize = 11.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-            }
-            Box(
-                modifier = Modifier
-                    .width(2.dp)
-                    .weight(1f)
-                    .background(
-                        when {
-                            isLast -> Color.Transparent
-                            isDone -> IzdeGreen
-                            else -> IzdeOutline
-                        }
-                    )
-            )
-        }
+        TimelineNodeIndicator(
+            step = step,
+            isDone = isDone,
+            isCurrent = isCurrent,
+            isFirst = isFirst,
+            isLast = isLast,
+            topLineDone = topLineDone
+        )
 
         Spacer(modifier = Modifier.width(10.dp))
 
@@ -487,5 +458,89 @@ private fun CheckpointTimelineRow(
                 )
             }
         }
+    }
+}
+
+@Composable
+private fun TimelineNodeIndicator(
+    step: Int,
+    isDone: Boolean,
+    isCurrent: Boolean,
+    isFirst: Boolean,
+    isLast: Boolean,
+    topLineDone: Boolean
+) {
+    val topLineColor = when {
+        isFirst -> Color.Transparent
+        topLineDone -> IzdeGreen
+        else -> IzdeOutline
+    }
+    val bottomLineColor = when {
+        isLast -> Color.Transparent
+        isDone -> IzdeGreen
+        else -> IzdeOutline
+    }
+    val circleColor = when {
+        isDone -> IzdeGreen
+        isCurrent -> IzdeBlue
+        else -> Color.White
+    }
+
+    Column(
+        modifier = Modifier
+            .width(30.dp)
+            .fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier
+                .width(2.dp)
+                .weight(1f)
+                .background(topLineColor)
+        )
+        Box(
+            modifier = Modifier
+                .size(if (isCurrent) 28.dp else 24.dp)
+                .clip(CircleShape)
+                .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
+            contentAlignment = Alignment.Center
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(22.dp)
+                    .clip(CircleShape)
+                    .background(circleColor)
+                    .then(
+                        if (!isDone && !isCurrent) {
+                            Modifier.border(1.5.dp, IzdeBorderMuted, CircleShape)
+                        } else {
+                            Modifier
+                        }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isDone) {
+                    Icon(
+                        imageVector = Icons.Filled.Check,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(13.dp)
+                    )
+                } else {
+                    Text(
+                        text = step.toString(),
+                        color = if (isCurrent) Color.White else IzdeTextMuted,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+        Box(
+            modifier = Modifier
+                .width(2.dp)
+                .weight(1f)
+                .background(bottomLineColor)
+        )
     }
 }

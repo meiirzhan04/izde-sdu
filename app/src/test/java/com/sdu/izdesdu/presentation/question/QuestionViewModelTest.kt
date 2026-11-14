@@ -126,7 +126,6 @@ class QuestionViewModelTest {
         assertEquals(10, vm.uiState.value.sessionEarnedScore)
         assertEquals(2, progressRepo.progress.value.routeSteps["gate_to_canteen"])
 
-        // Selecting again after correct answer must not add duplicate points
         vm.selectAnswer(1)
         assertEquals(10, vm.uiState.value.totalScore)
         assertEquals(10, vm.uiState.value.sessionEarnedScore)
