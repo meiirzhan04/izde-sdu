@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">izde-sdu</string>
-    <string name="route_gate_to_canteen_title">Главный вход → Столовая</string>
+    <string name="route_gate_to_canteen_title">Путь до столовой</string>
+    <string name="place_main_gate">Главный вход</string>
+    <string name="place_canteen">Столовая</string>
 
     <string name="cp_entrance_c_title">Вход C</string>
     <string name="cp_entrance_c_instruction">От ворот иди к зданию, ко входу C</string>

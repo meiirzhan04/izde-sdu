@@ -97,20 +97,16 @@ fun RouteScreen(
         return
     }
 
-    val routeParts = route.title.split("→").map { it.trim() }
-    val startLabel = routeParts.firstOrNull().orEmpty()
-
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(IzdeMapBg)
     ) {
-        // Слот под CampusMap с линией от старта и пунктиром по точкам (карту Участника 2 подставим фоном)
         RouteMapPreview(
             checkpoints = route.checkpoints,
             currentStep = uiState.currentStep,
             isCompleted = uiState.isCompleted,
-            startLabel = startLabel,
+            startLabel = route.fromTitle,
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight(0.46f)
@@ -118,7 +114,8 @@ fun RouteScreen(
         )
 
         FloatingRouteTopBar(
-            routeTitle = route.title,
+            fromTitle = route.fromTitle,
+            toTitle = route.toTitle,
             onBack = onBack,
             modifier = Modifier
                 .fillMaxWidth()
@@ -398,12 +395,11 @@ private fun RouteMapPreview(
 
 @Composable
 private fun FloatingRouteTopBar(
-    routeTitle: String,
+    fromTitle: String,
+    toTitle: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val parts = routeTitle.split("→").map { it.trim() }
-
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically
@@ -440,55 +436,44 @@ private fun FloatingRouteTopBar(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                if (parts.size == 2) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(IzdeBlue)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = parts[0],
-                        color = IzdeTextPrimary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Medium,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = null,
-                        tint = IzdeTextMuted,
-                        modifier = Modifier
-                            .padding(horizontal = 6.dp)
-                            .size(14.dp)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .clip(CircleShape)
-                            .background(IzdeOrange)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = parts[1],
-                        color = IzdeTextPrimary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                } else {
-                    Text(
-                        text = routeTitle,
-                        color = IzdeTextPrimary,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(IzdeBlue)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = fromTitle,
+                    color = IzdeTextPrimary,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = null,
+                    tint = IzdeTextMuted,
+                    modifier = Modifier
+                        .padding(horizontal = 6.dp)
+                        .size(14.dp)
+                )
+                Box(
+                    modifier = Modifier
+                        .size(8.dp)
+                        .clip(CircleShape)
+                        .background(IzdeOrange)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = toTitle,
+                    color = IzdeTextPrimary,
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

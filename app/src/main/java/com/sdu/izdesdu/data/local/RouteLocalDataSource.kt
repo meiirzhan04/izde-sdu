@@ -15,6 +15,8 @@ class RouteLocalDataSource(
             title = context.getString(R.string.route_gate_to_canteen_title),
             fromPlaceId = "main_gate",
             toPlaceId = "canteen",
+            fromTitle = context.getString(R.string.place_main_gate),
+            toTitle = context.getString(R.string.place_canteen),
             checkpoints = listOf(
                 CheckPoint(
                     id = 1,

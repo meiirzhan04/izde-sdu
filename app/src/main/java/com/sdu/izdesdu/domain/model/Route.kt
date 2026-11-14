@@ -5,5 +5,7 @@ data class Route(
     val title: String,
     val fromPlaceId: String,
     val toPlaceId: String,
+    val fromTitle: String,
+    val toTitle: String,
     val checkpoints: List<CheckPoint>
 )
