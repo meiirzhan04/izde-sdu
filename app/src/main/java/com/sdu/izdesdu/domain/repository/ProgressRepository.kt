@@ -6,5 +6,6 @@ import kotlinx.coroutines.flow.StateFlow
 interface ProgressRepository {
     val progress: StateFlow<UserProgress>
     fun addAnswerResult(isCorrect: Boolean, earnedPoints: Int)
+    fun setRouteStep(routeId: String, step: Int)
     fun markRouteCompleted(routeId: String)
 }

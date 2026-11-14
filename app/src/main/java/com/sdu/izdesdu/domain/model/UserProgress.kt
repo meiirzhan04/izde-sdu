@@ -4,5 +4,6 @@ data class UserProgress(
     val totalScore: Int = 0,
     val answeredCount: Int = 0,
     val correctCount: Int = 0,
-    val completedRouteIds: Set<String> = emptySet()
+    val completedRouteIds: Set<String> = emptySet(),
+    val routeSteps: Map<String, Int> = emptyMap()
 )

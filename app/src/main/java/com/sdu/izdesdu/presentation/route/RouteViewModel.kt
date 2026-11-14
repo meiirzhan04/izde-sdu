@@ -23,7 +23,18 @@ class RouteViewModel(
     init {
         viewModelScope.launch {
             getUserProgressUseCase().collect { progress ->
-                _uiState.update { it.copy(isCompleted = routeId in progress.completedRouteIds) }
+                val checkpointCount = _uiState.value.route?.checkpoints?.size ?: 0
+                val step = if (checkpointCount > 0) {
+                    (progress.routeSteps[routeId] ?: 1).coerceIn(1, checkpointCount)
+                } else {
+                    1
+                }
+                _uiState.update {
+                    it.copy(
+                        currentStep = step,
+                        isCompleted = routeId in progress.completedRouteIds
+                    )
+                }
             }
         }
     }

@@ -20,6 +20,13 @@ class ProgressLocalDataSource {
         }
     }
 
+    fun setRouteStep(routeId: String, step: Int) {
+        val safeStep = step.coerceAtLeast(1)
+        _progress.update { current ->
+            current.copy(routeSteps = current.routeSteps + (routeId to safeStep))
+        }
+    }
+
     fun markRouteCompleted(routeId: String) {
         _progress.update { current ->
             current.copy(completedRouteIds = current.completedRouteIds + routeId)

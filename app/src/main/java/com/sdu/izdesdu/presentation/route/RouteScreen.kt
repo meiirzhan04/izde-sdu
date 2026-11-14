@@ -248,7 +248,8 @@ fun RouteScreen(
                         )
                     }
                     Button(
-                        onClick = { onStartStep(uiState.currentStep) },
+                        onClick = { onStartStep(if (uiState.isCompleted) 1 else uiState.currentStep) },
+                        enabled = route.checkpoints.isNotEmpty(),
                         modifier = Modifier
                             .weight(0.65f)
                             .height(48.dp),
@@ -256,7 +257,11 @@ fun RouteScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
                     ) {
                         Text(
-                            text = stringResource(R.string.route_start_step, uiState.currentStep),
+                            text = if (uiState.isCompleted) {
+                                stringResource(R.string.route_restart)
+                            } else {
+                                stringResource(R.string.route_start_step, uiState.currentStep)
+                            },
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -449,7 +454,8 @@ private fun FloatingRouteTopBar(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
@@ -472,7 +478,8 @@ private fun FloatingRouteTopBar(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f, fill = false)
                 )
             }
         }

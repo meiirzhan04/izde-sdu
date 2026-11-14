@@ -13,6 +13,7 @@ import com.sdu.izdesdu.domain.usecase.GetRouteByIdUseCase
 import com.sdu.izdesdu.domain.usecase.GetRoutesUseCase
 import com.sdu.izdesdu.domain.usecase.GetUserProgressUseCase
 import com.sdu.izdesdu.domain.usecase.SaveAnswerProgressUseCase
+import com.sdu.izdesdu.domain.usecase.UpdateRouteStepUseCase
 
 class AppContainer(context: Context) {
     private val appContext = context.applicationContext
@@ -28,5 +29,6 @@ class AppContainer(context: Context) {
     val checkAnswerUseCase = CheckAnswerUseCase()
     val getUserProgressUseCase = GetUserProgressUseCase(progressRepository)
     val saveAnswerProgressUseCase = SaveAnswerProgressUseCase(progressRepository)
+    val updateRouteStepUseCase = UpdateRouteStepUseCase(progressRepository)
     val completeRouteUseCase = CompleteRouteUseCase(progressRepository)
 }

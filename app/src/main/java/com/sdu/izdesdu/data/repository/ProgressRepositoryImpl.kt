@@ -12,6 +12,9 @@ class ProgressRepositoryImpl(
     override fun addAnswerResult(isCorrect: Boolean, earnedPoints: Int) {
         localDataSource.addAnswerResult(isCorrect, earnedPoints)
     }
+    override fun setRouteStep(routeId: String, step: Int) {
+        localDataSource.setRouteStep(routeId, step)
+    }
     override fun markRouteCompleted(routeId: String) {
         localDataSource.markRouteCompleted(routeId)
     }
