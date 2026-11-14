@@ -23,8 +23,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -176,16 +181,27 @@ fun RouteScreen(
                 }
 
                 Spacer(modifier = Modifier.height(6.dp))
-                Text(
-                    text = if (uiState.isCompleted) {
-                        stringResource(R.string.route_completed_badge)
-                    } else {
-                        stringResource(R.string.route_subtitle)
-                    },
-                    fontSize = 13.sp,
-                    lineHeight = 18.sp,
-                    color = if (uiState.isCompleted) IzdeGreen else IzdeTextSecondary
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        text = if (uiState.isCompleted) {
+                            stringResource(R.string.route_completed_badge)
+                        } else {
+                            stringResource(R.string.route_subtitle)
+                        },
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                        color = if (uiState.isCompleted) IzdeGreen else IzdeTextSecondary
+                    )
+                    if (uiState.isCompleted) {
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = IzdeGreen,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -359,12 +375,21 @@ private fun RouteMapPreview(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = if (isDone) "✓" else step.toString(),
-                        color = if (isDone || isCurrent) Color.White else IzdeTextPrimary,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (isDone) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    } else {
+                        Text(
+                            text = step.toString(),
+                            color = if (isCurrent) Color.White else IzdeTextPrimary,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }
@@ -393,11 +418,11 @@ private fun FloatingRouteTopBar(
             shadowElevation = 4.dp
         ) {
             Box(contentAlignment = Alignment.Center) {
-                Text(
-                    text = "←",
-                    color = IzdeTextPrimary,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.route_back),
+                    tint = IzdeTextPrimary,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -431,10 +456,13 @@ private fun FloatingRouteTopBar(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
-                    Text(
-                        text = " → ",
-                        color = IzdeTextMuted,
-                        fontSize = 13.sp
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = null,
+                        tint = IzdeTextMuted,
+                        modifier = Modifier
+                            .padding(horizontal = 6.dp)
+                            .size(14.dp)
                     )
                     Box(
                         modifier = Modifier
@@ -537,12 +565,21 @@ private fun CheckpointTimelineRow(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = if (isDone) "✓" else step.toString(),
-                        color = if (isDone || isCurrent) Color.White else IzdeTextMuted,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
-                    )
+                    if (isDone) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(13.dp)
+                        )
+                    } else {
+                        Text(
+                            text = step.toString(),
+                            color = if (isCurrent) Color.White else IzdeTextMuted,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
             Box(
@@ -573,15 +610,26 @@ private fun CheckpointTimelineRow(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = statusText,
-            fontSize = 12.sp,
-            color = when {
-                isDone -> IzdeGreen
-                isCurrent -> IzdeBlue
-                else -> IzdeTextMuted
-            },
-            fontWeight = if (isCurrent) FontWeight.Medium else FontWeight.Normal
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = statusText,
+                fontSize = 12.sp,
+                color = when {
+                    isDone -> IzdeGreen
+                    isCurrent -> IzdeBlue
+                    else -> IzdeTextMuted
+                },
+                fontWeight = if (isCurrent) FontWeight.Medium else FontWeight.Normal
+            )
+            if (isDone) {
+                Spacer(modifier = Modifier.width(3.dp))
+                Icon(
+                    imageVector = Icons.Filled.Check,
+                    contentDescription = null,
+                    tint = IzdeGreen,
+                    modifier = Modifier.size(13.dp)
+                )
+            }
+        }
     }
 }

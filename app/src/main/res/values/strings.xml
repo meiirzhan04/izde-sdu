@@ -49,13 +49,13 @@
 
     <string name="route_not_found">Маршрут не найден</string>
     <string name="route_checkpoints_count">Точек на пути: %1$d</string>
-    <string name="route_completed_badge">Маршрут пройден ✓</string>
+    <string name="route_completed_badge">Маршрут пройден</string>
     <string name="route_start_step">Я на точке %1$d</string>
     <string name="route_back">Назад</string>
     <string name="route_back_to_map">Назад к карте</string>
     <string name="route_points_per_step">+10 очков</string>
     <string name="route_subtitle">На каждой точке вопрос про SDU. Ответил — идёшь дальше</string>
-    <string name="route_step_done">вопрос ✓</string>
+    <string name="route_step_done">вопрос</string>
     <string name="route_step_current">иди сюда</string>
     <string name="route_step_upcoming">вопрос про SDU</string>
     <string name="route_cancel">Отмена</string>
