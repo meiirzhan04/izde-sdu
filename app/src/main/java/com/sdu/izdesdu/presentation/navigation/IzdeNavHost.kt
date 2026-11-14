@@ -64,6 +64,7 @@ fun IzdeNavHost(
                 onFinish = {
                     navController.navigate(MapRoute) {
                         popUpTo<MapRoute> { inclusive = false }
+                        launchSingleTop = true
                     }
                 }
             )

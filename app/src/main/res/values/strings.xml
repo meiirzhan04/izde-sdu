@@ -75,4 +75,10 @@
     <string name="question_next_step">Дальше, к точке %1$d</string>
     <string name="question_finish_route">Завершить путь</string>
     <string name="question_not_found">Вопрос не найден</string>
+
+    <string name="route_finish_title">Маршрут пройден!</string>
+    <string name="route_finish_destination">Ты дошёл до цели: %1$s</string>
+    <string name="route_finish_checkpoints_label">Пройдено точек</string>
+    <string name="route_finish_checkpoints_value">%1$d из %2$d</string>
+    <string name="route_finish_total_score_label">Всего очков</string>
 </resources>
