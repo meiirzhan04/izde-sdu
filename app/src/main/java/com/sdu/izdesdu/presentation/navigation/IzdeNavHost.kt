@@ -13,6 +13,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.presentation.question.QuestionScreen
 import com.sdu.izdesdu.presentation.route.RouteScreen
 
 @Composable
@@ -51,7 +52,21 @@ fun IzdeNavHost(
             )
         }
         composable<QuestionRoute> { backStackEntry ->
-
+            val args = backStackEntry.toRoute<QuestionRoute>()
+            QuestionScreen(
+                routeId = args.routeId,
+                step = args.step,
+                appContainer = appContainer,
+                onBack = { navController.popBackStack() },
+                onNextStep = { nextStep ->
+                    navController.navigate(QuestionRoute(args.routeId, nextStep))
+                },
+                onFinish = {
+                    navController.navigate(MapRoute) {
+                        popUpTo<MapRoute> { inclusive = false }
+                    }
+                }
+            )
         }
         composable<MyRoutesRoute> {
 

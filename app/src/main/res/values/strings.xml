@@ -63,4 +63,16 @@
     <string name="route_step_upcoming">вопрос про SDU</string>
     <string name="route_cancel">Отмена</string>
     <string name="route_map_placeholder">Карта кампуса SDU</string>
+
+    <string name="question_close">Закрыть</string>
+    <string name="question_score_pill">%1$d очков</string>
+    <string name="question_step_eyebrow">Точка %1$d из %2$d · %3$s</string>
+    <string name="question_title">Вопрос про SDU</string>
+    <string name="question_hint_button">Подсказка</string>
+    <string name="question_hint_prefix">Подсказка: %1$s</string>
+    <string name="question_correct_feedback">Верно! +10 очков</string>
+    <string name="question_wrong_feedback">Неверно, попробуй ещё раз</string>
+    <string name="question_next_step">Дальше, к точке %1$d</string>
+    <string name="question_finish_route">Завершить путь</string>
+    <string name="question_not_found">Вопрос не найден</string>
 </resources>
