@@ -13,7 +13,10 @@ class RouteLocalDataSource(
 
     fun loadRoutes(): List<Route> {
         val canteen = loadCanteenRoute()
-        return listOf(canteen, libraryRoute(canteen), medicalRoute(canteen), blockIRoute(canteen))
+        return listOf(
+            canteen, libraryRoute(canteen), medicalRoute(canteen), blockIRoute(canteen),
+            hallsRoute(canteen), dormRoute(canteen), gymRoute(canteen)
+        )
     }
 
     private fun loadCanteenRoute(): Route = Route(
@@ -191,6 +194,63 @@ class RouteLocalDataSource(
                 instruction = getString(R.string.route_block_i_instruction),
                 mapX = 160f,
                 mapY = 60f
+            )
+        )
+    )
+
+    private fun hallsRoute(canteen: Route): Route = canteen.copy(
+        id = "gate_to_halls",
+        title = getString(R.string.route_halls_title),
+        toPlaceId = "halls",
+        toTitle = getString(R.string.cp_lecture_halls_title),
+        checkpoints = canteen.checkpoints.take(4)
+    )
+
+    private fun dormRoute(canteen: Route): Route = canteen.copy(
+        id = "gate_to_dorm",
+        title = getString(R.string.route_dorm_title),
+        toPlaceId = "dorm",
+        toTitle = getString(R.string.route_dorm_place),
+        checkpoints = listOf(
+            canteen.checkpoints[0].copy(
+                title = getString(R.string.place_main_gate),
+                instruction = getString(R.string.route_gate_instruction)
+            ),
+            canteen.checkpoints[1].copy(
+                title = getString(R.string.route_campus_road),
+                instruction = getString(R.string.route_campus_road_instruction),
+                mapX = 280f
+            ),
+            canteen.checkpoints[2].copy(
+                title = getString(R.string.route_dorm_place),
+                instruction = getString(R.string.route_dorm_instruction),
+                mapX = 320f,
+                question = Question(
+                    text = getString(R.string.route_dorm_question),
+                    options = listOf("SDU Life", "Student House", "Library", "Canteen"),
+                    correctIndex = 1,
+                    hint = getString(R.string.route_dorm_hint)
+                )
+            )
+        )
+    )
+
+    private fun gymRoute(canteen: Route): Route = dormRoute(canteen).copy(
+        id = "gate_to_gym",
+        title = getString(R.string.route_gym_title),
+        toPlaceId = "gym",
+        toTitle = getString(R.string.route_gym_place),
+        checkpoints = dormRoute(canteen).checkpoints + CheckPoint(
+            id = 4,
+            title = getString(R.string.route_gym_place),
+            instruction = getString(R.string.route_gym_instruction),
+            mapX = 310f,
+            mapY = 100f,
+            question = Question(
+                text = getString(R.string.route_gym_question),
+                options = listOf("Student House", "Блок B", "SDU Life", "Блок C"),
+                correctIndex = 2,
+                hint = getString(R.string.route_gym_hint)
             )
         )
     )
