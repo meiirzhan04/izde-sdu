@@ -11,4 +11,11 @@
     <string name="route_medical_instruction">Найди медпункт справа от коридора между блоками G и H</string>
     <string name="route_medical_question">Между какими блоками отмечен медпункт на карте SDU?</string>
     <string name="route_medical_hint">Он находится между G и следующим по алфавиту блоком</string>
+    <string name="route_block_i_title">Путь до блока I</string>
+    <string name="route_block_i_place">Блок I</string>
+    <string name="route_block_h">Блок H</string>
+    <string name="route_block_h_instruction">Пройди от блока G дальше по коридору до блока H</string>
+    <string name="route_block_h_question">Какой блок расположен над H на карте кампуса?</string>
+    <string name="route_block_h_hint">Его буква следует за H</string>
+    <string name="route_block_i_instruction">Продолжай по коридору от блока H до нового блока I</string>
 </resources>
