@@ -56,7 +56,7 @@ class QuestionViewModel(
                 isCorrect = answer?.isCorrect,
                 showHint = state.showHint || answer?.isCorrect == false,
                 totalScore = progress.totalScore,
-                sessionEarnedScore = routeProgress?.earnedPoints ?: 0,
+                routeEarnedPoints = routeProgress?.earnedPoints ?: 0,
                 mistakes = routeProgress?.mistakes ?: 0,
                 isLocked = locked,
                 isRouteFinished = routeId in progress.completedRouteIds

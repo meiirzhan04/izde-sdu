@@ -120,12 +120,12 @@ class QuestionViewModelTest {
         assertEquals(1, vm.uiState.value.selectedIndex)
         assertEquals(true, vm.uiState.value.isCorrect)
         assertEquals(10, vm.uiState.value.totalScore)
-        assertEquals(10, vm.uiState.value.sessionEarnedScore)
+        assertEquals(10, vm.uiState.value.routeEarnedPoints)
         assertEquals(2, progressRepo.progress.value.routeSteps["gate_to_canteen"])
 
         vm.selectAnswer(1)
         assertEquals(10, vm.uiState.value.totalScore)
-        assertEquals(10, vm.uiState.value.sessionEarnedScore)
+        assertEquals(10, vm.uiState.value.routeEarnedPoints)
     }
 
     @Test
@@ -200,7 +200,7 @@ class QuestionViewModelTest {
         val reopened = createViewModel(step = 2, progressRepo = repo)
         assertTrue(reopened.uiState.value.isRouteFinished)
         assertEquals(120, reopened.uiState.value.totalScore)
-        assertEquals(20, reopened.uiState.value.sessionEarnedScore)
+        assertEquals(20, reopened.uiState.value.routeEarnedPoints)
         assertEquals(1, reopened.uiState.value.mistakes)
         reopened.selectAnswer(2)
         assertEquals(120, repo.progress.value.totalScore)

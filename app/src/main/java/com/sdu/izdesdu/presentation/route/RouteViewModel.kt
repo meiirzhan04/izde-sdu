@@ -17,7 +17,16 @@ class RouteViewModel(
     private val getRouteByIdUseCase: GetRouteByIdUseCase,
     private val getUserProgressUseCase: GetUserProgressUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(RouteUiState(route = getRouteByIdUseCase(routeId)))
+    private val route = getRouteByIdUseCase(routeId)
+    private val initialProgress = getUserProgressUseCase().value
+    private val _uiState = MutableStateFlow(
+        RouteUiState(
+            route = route,
+            currentStep = (initialProgress.routeSteps[routeId] ?: 1)
+                .coerceIn(1, route?.checkpoints?.size?.coerceAtLeast(1) ?: 1),
+            isCompleted = routeId in initialProgress.completedRouteIds
+        )
+    )
     val uiState: StateFlow<RouteUiState> = _uiState.asStateFlow()
 
     init {

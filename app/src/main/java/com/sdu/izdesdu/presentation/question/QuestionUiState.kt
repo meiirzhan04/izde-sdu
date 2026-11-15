@@ -13,7 +13,7 @@ data class QuestionUiState(
     val isCorrect: Boolean? = null,
     val showHint: Boolean = false,
     val totalScore: Int = 0,
-    val sessionEarnedScore: Int = 0,
+    val routeEarnedPoints: Int = 0,
     val mistakes: Int = 0,
     val isLocked: Boolean = false,
     val isRouteFinished: Boolean = false

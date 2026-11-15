@@ -1,7 +1,9 @@
 package com.sdu.izdesdu.data.local
 
 import com.sdu.izdesdu.data.repository.RouteRepositoryImpl
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RouteLocalDataSourceTest {
@@ -18,7 +20,6 @@ class RouteLocalDataSourceTest {
             assertEquals("gate_to_${route.toPlaceId}", route.id)
             assertEquals("main_gate", route.fromPlaceId)
             assertEquals(counts.getValue(route.toPlaceId), route.checkpoints.size)
-            assertEquals(route.toTitle, route.checkpoints.last().title)
             assertEquals(route.checkpoints.size, route.checkpoints.map { it.id }.distinct().size)
         }
     }

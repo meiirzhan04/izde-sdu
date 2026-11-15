@@ -25,7 +25,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sdu.izdesdu.presentation.components.AnswerOption
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.presentation.theme.IzdeError

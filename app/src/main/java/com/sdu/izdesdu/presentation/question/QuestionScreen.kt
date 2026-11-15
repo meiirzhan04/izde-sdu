@@ -128,7 +128,7 @@ fun QuestionScreen(
                     routeTitle = route.title,
                     destinationTitle = route.toTitle,
                     totalCheckpoints = uiState.totalCheckpoints,
-                    earnedPoints = uiState.sessionEarnedScore,
+                    earnedPoints = uiState.routeEarnedPoints,
                     mistakes = uiState.mistakes,
                     onBackToMap = onFinish
                 )

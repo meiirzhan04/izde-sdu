@@ -6,7 +6,10 @@ import com.sdu.izdesdu.domain.model.CheckPoint
 import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.domain.model.Route
 import com.sdu.izdesdu.domain.repository.RouteRepository
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.util.concurrent.Executors
 
