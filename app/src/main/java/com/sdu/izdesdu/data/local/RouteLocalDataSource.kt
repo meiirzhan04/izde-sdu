@@ -13,7 +13,7 @@ class RouteLocalDataSource(
 
     fun loadRoutes(): List<Route> {
         val canteen = loadCanteenRoute()
-        return listOf(canteen, libraryRoute(canteen))
+        return listOf(canteen, libraryRoute(canteen), medicalRoute(canteen))
     }
 
     private fun loadCanteenRoute(): Route = Route(
@@ -134,6 +134,34 @@ class RouteLocalDataSource(
                 options = listOf("A", "B", "F", "I"),
                 correctIndex = 1,
                 hint = getString(R.string.route_library_hint)
+            )
+        )
+    )
+
+    private fun medicalRoute(canteen: Route): Route = canteen.copy(
+        id = "gate_to_medical",
+        title = getString(R.string.route_medical_title),
+        toPlaceId = "medical",
+        toTitle = getString(R.string.route_medical_place),
+        checkpoints = canteen.checkpoints.take(3) + listOf(
+            canteen.checkpoints[3].copy(
+                title = getString(R.string.route_block_g),
+                instruction = getString(R.string.route_block_g_instruction),
+                mapX = 180f,
+                mapY = 170f
+            ),
+            CheckPoint(
+                id = 5,
+                title = getString(R.string.route_medical_place),
+                instruction = getString(R.string.route_medical_instruction),
+                mapX = 210f,
+                mapY = 140f,
+                question = Question(
+                    text = getString(R.string.route_medical_question),
+                    options = listOf("A и B", "C и D", "H и G", "E и F"),
+                    correctIndex = 2,
+                    hint = getString(R.string.route_medical_hint)
+                )
             )
         )
     )

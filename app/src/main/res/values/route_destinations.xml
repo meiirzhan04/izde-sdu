@@ -4,4 +4,11 @@
     <string name="route_library_instruction">Из холла пройди к библиотеке в блоке B</string>
     <string name="route_library_question">В каком блоке находится библиотека на карте SDU?</string>
     <string name="route_library_hint">Этот блок рядом с нижним холлом, его буква между A и C</string>
+    <string name="route_medical_title">Путь до медпункта</string>
+    <string name="route_medical_place">Медпункт</string>
+    <string name="route_block_g">Блок G</string>
+    <string name="route_block_g_instruction">Продолжай по главному коридору до блока G</string>
+    <string name="route_medical_instruction">Найди медпункт справа от коридора между блоками G и H</string>
+    <string name="route_medical_question">Между какими блоками отмечен медпункт на карте SDU?</string>
+    <string name="route_medical_hint">Он находится между G и следующим по алфавиту блоком</string>
 </resources>
