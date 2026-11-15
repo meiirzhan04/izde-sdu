@@ -1,11 +1,6 @@
 package com.sdu.izdesdu.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -13,6 +8,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.presentation.map.MapScreen
+import com.sdu.izdesdu.presentation.place.PlaceScreen
 import com.sdu.izdesdu.presentation.question.QuestionScreen
 import com.sdu.izdesdu.presentation.route.RouteScreen
 
@@ -28,17 +25,27 @@ fun IzdeNavHost(
         modifier = modifier
     ) {
         composable<MapRoute> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Button(onClick = { navController.navigate(RouteDetailRoute("gate_to_canteen")) }) {
-                    Text("Открыть путь")
+            MapScreen(
+                onStartRoute = { placeId ->
+                    navController.navigate(RouteDetailRoute("gate_to_$placeId"))
+                },
+                onOpenPlace = { placeId ->
+                    navController.navigate(PlaceDetailRoute(placeId))
                 }
-            }
+            )
         }
         composable<FromToRoute> {
 
         }
         composable<PlaceDetailRoute> { backStackEntry ->
-
+            val args = backStackEntry.toRoute<PlaceDetailRoute>()
+            PlaceScreen(
+                placeId = args.placeId,
+                onBack = { navController.popBackStack() },
+                onStartRoute = { placeId ->
+                    navController.navigate(RouteDetailRoute("gate_to_$placeId"))
+                }
+            )
         }
         composable<RouteDetailRoute> { backStackEntry ->
             val args = backStackEntry.toRoute<RouteDetailRoute>()
