@@ -149,4 +149,84 @@ class QuestionViewModelTest {
         assertTrue(vm.uiState.value.isRouteFinished)
         assertTrue("gate_to_canteen" in progressRepo.progress.value.completedRouteIds)
     }
+
+    @Test
+    fun reopeningAnsweredCheckpointRestoresAnswerWithoutReward() {
+        val repo = createProgressRepo()
+        createViewModel(progressRepo = repo).apply {
+            selectAnswer(0)
+            selectAnswer(1)
+        }
+        val reopened = createViewModel(progressRepo = repo)
+        assertEquals(1, reopened.uiState.value.selectedIndex)
+        assertEquals(true, reopened.uiState.value.isCorrect)
+        assertEquals(1, reopened.uiState.value.mistakes)
+        reopened.selectAnswer(1)
+        assertEquals(10, repo.progress.value.totalScore)
+        assertEquals(2, repo.progress.value.answeredCount)
+    }
+
+    @Test
+    fun unansweredOrWrongCheckpointCannotAdvance() {
+        val vm = createViewModel()
+        assertEquals(StepAction.Blocked, vm.finishCurrentStep())
+        vm.selectAnswer(0)
+        assertEquals(StepAction.Blocked, vm.finishCurrentStep())
+        vm.selectAnswer(1)
+        assertEquals(StepAction.Next(2), vm.finishCurrentStep())
+    }
+
+    @Test
+    fun lockedLastCheckpointCannotBeAnsweredOrFinished() {
+        val repo = createProgressRepo()
+        val vm = createViewModel(step = 2, progressRepo = repo)
+        assertTrue(vm.uiState.value.isLocked)
+        vm.selectAnswer(2)
+        assertEquals(StepAction.Blocked, vm.finishCurrentStep())
+        assertEquals(0, repo.progress.value.totalScore)
+        assertTrue(repo.progress.value.completedRouteIds.isEmpty())
+    }
+
+    @Test
+    fun summaryRestoresRouteScoreAndMistakesAfterReopening() {
+        val repo = createProgressRepo()
+        repo.addAnswerResult(true, 100)
+        createViewModel(progressRepo = repo).selectAnswer(1)
+        createViewModel(step = 2, progressRepo = repo).apply {
+            selectAnswer(0)
+            selectAnswer(2)
+            finishCurrentStep()
+        }
+        val reopened = createViewModel(step = 2, progressRepo = repo)
+        assertTrue(reopened.uiState.value.isRouteFinished)
+        assertEquals(120, reopened.uiState.value.totalScore)
+        assertEquals(20, reopened.uiState.value.sessionEarnedScore)
+        assertEquals(1, reopened.uiState.value.mistakes)
+        reopened.selectAnswer(2)
+        assertEquals(120, repo.progress.value.totalScore)
+    }
+
+    @Test
+    fun invalidOptionsAndMissingQuestionsDoNothing() {
+        val repo = createProgressRepo()
+        val vm = createViewModel(progressRepo = repo)
+        vm.selectAnswer(-1)
+        vm.selectAnswer(4)
+        assertNull(vm.uiState.value.selectedIndex)
+        val missing = createViewModel(routeId = "missing", progressRepo = repo)
+        missing.selectAnswer(0)
+        missing.showHint()
+        assertEquals(StepAction.Blocked, missing.finishCurrentStep())
+        assertFalse(missing.uiState.value.showHint)
+        assertEquals(0, repo.progress.value.answeredCount)
+    }
+
+    @Test
+    fun hintCanBeShownAndHidden() {
+        val vm = createViewModel()
+        vm.showHint()
+        assertTrue(vm.uiState.value.showHint)
+        vm.showHint()
+        assertFalse(vm.uiState.value.showHint)
+    }
 }
