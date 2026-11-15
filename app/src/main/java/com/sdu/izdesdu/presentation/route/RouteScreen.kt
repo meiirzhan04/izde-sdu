@@ -46,11 +46,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.presentation.components.CheckpointRow
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
-import com.sdu.izdesdu.domain.model.CheckPoint
 import com.sdu.izdesdu.domain.model.Route
 import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
-import com.sdu.izdesdu.presentation.theme.IzdeBorderMuted
 import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
 import com.sdu.izdesdu.presentation.theme.IzdeGreen
 import com.sdu.izdesdu.presentation.theme.IzdeMapBg
@@ -388,4 +385,3 @@ private fun FloatingRouteTopBar(
         }
     }
 }
-
