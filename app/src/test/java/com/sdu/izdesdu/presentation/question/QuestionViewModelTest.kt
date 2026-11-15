@@ -80,7 +80,7 @@ class QuestionViewModelTest {
             getUserProgressUseCase = GetUserProgressUseCase(progressRepo),
             saveAnswerProgressUseCase = SaveAnswerProgressUseCase(progressRepo),
             updateRouteStepUseCase = UpdateRouteStepUseCase(progressRepo),
-            completeRouteUseCase = CompleteRouteUseCase(progressRepo),
+            completeRouteUseCase = CompleteRouteUseCase(progressRepo, routeRepo),
             dispatcher = Dispatchers.Unconfined
         )
     }
