@@ -58,7 +58,7 @@
     <string name="route_back_to_map">Назад к карте</string>
     <string name="route_points_per_step">+10 очков</string>
     <string name="route_subtitle">На каждой точке вопрос про SDU. Ответил — идёшь дальше</string>
-    <string name="route_step_done">вопрос</string>
+    <string name="route_step_done">пройдено</string>
     <string name="route_step_current">иди сюда</string>
     <string name="route_step_upcoming">вопрос про SDU</string>
     <string name="route_cancel">Отмена</string>
@@ -70,7 +70,7 @@
     <string name="question_title">Вопрос про SDU</string>
     <string name="question_hint_button">Подсказка</string>
     <string name="question_hint_prefix">Подсказка: %1$s</string>
-    <string name="question_correct_feedback">Верно! +10 очков</string>
+    <string name="question_correct_feedback">Точка засчитана · 10 очков</string>
     <string name="question_wrong_feedback">Неверно, попробуй ещё раз</string>
     <string name="question_next_step">Дальше, к точке %1$d</string>
     <string name="question_finish_route">Завершить путь</string>

@@ -277,7 +277,7 @@ private fun RouteBottomButtons(
             )
         }
         Button(
-            onClick = { onStartStep(if (isCompleted) 1 else currentStep) },
+            onClick = { onStartStep(currentStep) },
             enabled = hasCheckpoints,
             modifier = Modifier
                 .weight(0.65f)
@@ -287,7 +287,7 @@ private fun RouteBottomButtons(
         ) {
             Text(
                 text = if (isCompleted) {
-                    stringResource(R.string.route_restart)
+                    stringResource(R.string.route_view_summary)
                 } else {
                     stringResource(R.string.route_start_step, currentStep)
                 },

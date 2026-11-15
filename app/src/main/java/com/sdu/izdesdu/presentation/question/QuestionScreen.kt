@@ -79,7 +79,7 @@ fun QuestionScreen(
     val question = uiState.question
 
     if (uiState.isMissing || uiState.isLocked || route == null || checkpoint == null || question == null) {
-        QuestionNotFoundView(onBack = onBack, modifier = modifier)
+        QuestionNotFoundView(onBack = onBack, isLocked = uiState.isLocked, modifier = modifier)
         return
     }
 
@@ -128,7 +128,8 @@ fun QuestionScreen(
                     routeTitle = route.title,
                     destinationTitle = route.toTitle,
                     totalCheckpoints = uiState.totalCheckpoints,
-                    totalScore = uiState.totalScore,
+                    earnedPoints = uiState.sessionEarnedScore,
+                    mistakes = uiState.mistakes,
                     onBackToMap = onFinish
                 )
             } else {
@@ -153,11 +154,15 @@ fun QuestionScreen(
 @Composable
 private fun QuestionNotFoundView(
     onBack: () -> Unit,
+    isLocked: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(R.string.question_not_found), color = IzdeTextPrimary)
+            Text(
+                text = stringResource(if (isLocked) R.string.question_locked else R.string.question_not_found),
+                color = IzdeTextPrimary
+            )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedButton(onClick = onBack) {
                 Text(text = stringResource(R.string.route_back))
@@ -315,7 +320,6 @@ private fun QuestionActionButton(
 
     OutlinedButton(
         onClick = onShowHint,
-        enabled = !showHint,
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -323,7 +327,7 @@ private fun QuestionActionButton(
         border = BorderStroke(1.dp, IzdeOutline)
     ) {
         Text(
-            text = stringResource(R.string.question_hint_button),
+            text = stringResource(if (showHint) R.string.question_hide_hint else R.string.question_hint_button),
             color = if (showHint) IzdeTextSecondary else IzdeTextPrimary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium
@@ -412,7 +416,8 @@ private fun RouteFinishSheet(
     routeTitle: String,
     destinationTitle: String,
     totalCheckpoints: Int,
-    totalScore: Int,
+    earnedPoints: Int,
+    mistakes: Int,
     onBackToMap: () -> Unit
 ) {
     Column(
@@ -503,8 +508,12 @@ private fun RouteFinishSheet(
                         )
                     )
                     FinishStatItem(
-                        label = stringResource(R.string.route_finish_total_score_label),
-                        value = totalScore.toString()
+                        label = stringResource(R.string.route_finish_earned_score_label),
+                        value = earnedPoints.toString()
+                    )
+                    FinishStatItem(
+                        label = stringResource(R.string.route_finish_mistakes_label),
+                        value = mistakes.toString()
                     )
                 }
             }
