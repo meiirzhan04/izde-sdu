@@ -10,8 +10,7 @@ import com.sdu.izdesdu.domain.usecase.CheckAnswerUseCase
 import com.sdu.izdesdu.domain.usecase.CompleteRouteUseCase
 import com.sdu.izdesdu.domain.usecase.GetRouteByIdUseCase
 import com.sdu.izdesdu.domain.usecase.GetUserProgressUseCase
-import com.sdu.izdesdu.domain.usecase.SaveAnswerProgressUseCase
-import com.sdu.izdesdu.domain.usecase.UpdateRouteStepUseCase
+import com.sdu.izdesdu.domain.usecase.SubmitRouteAnswerUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
@@ -76,10 +75,8 @@ class QuestionViewModelTest {
             routeId = routeId,
             step = step,
             getRouteByIdUseCase = GetRouteByIdUseCase(routeRepo),
-            checkAnswerUseCase = CheckAnswerUseCase(),
             getUserProgressUseCase = GetUserProgressUseCase(progressRepo),
-            saveAnswerProgressUseCase = SaveAnswerProgressUseCase(progressRepo),
-            updateRouteStepUseCase = UpdateRouteStepUseCase(progressRepo),
+            submitRouteAnswerUseCase = SubmitRouteAnswerUseCase(routeRepo, progressRepo, CheckAnswerUseCase()),
             completeRouteUseCase = CompleteRouteUseCase(progressRepo, routeRepo),
             dispatcher = Dispatchers.Unconfined
         )
@@ -141,12 +138,14 @@ class QuestionViewModelTest {
     @Test
     fun finishCurrentStep_onLastStep_marksRouteCompleted() {
         val progressRepo = createProgressRepo()
+        createViewModel(step = 1, progressRepo = progressRepo).selectAnswer(1)
         val vm = createViewModel(step = 2, progressRepo = progressRepo)
+        vm.selectAnswer(2)
 
         assertTrue(vm.uiState.value.isLastStep)
         val finished = vm.finishCurrentStep()
 
-        assertTrue(finished)
+        assertEquals(StepAction.Finished, finished)
         assertTrue(vm.uiState.value.isRouteFinished)
         assertTrue("gate_to_canteen" in progressRepo.progress.value.completedRouteIds)
     }

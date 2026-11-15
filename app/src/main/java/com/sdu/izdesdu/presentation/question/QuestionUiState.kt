@@ -14,6 +14,8 @@ data class QuestionUiState(
     val showHint: Boolean = false,
     val totalScore: Int = 0,
     val sessionEarnedScore: Int = 0,
+    val mistakes: Int = 0,
+    val isLocked: Boolean = false,
     val isRouteFinished: Boolean = false
 ) {
     val question: Question?

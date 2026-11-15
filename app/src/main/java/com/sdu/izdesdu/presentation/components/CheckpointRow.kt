@@ -62,7 +62,7 @@ fun CheckpointRow(
             .fillMaxWidth()
             .height(44.dp)
             .clip(RoundedCornerShape(10.dp))
-            .clickable(onClick = onClick)
+            .clickable(enabled = isCurrent || isDone, onClick = onClick)
             .padding(horizontal = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {

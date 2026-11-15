@@ -78,7 +78,7 @@ fun QuestionScreen(
     val checkpoint = uiState.checkpoint
     val question = uiState.question
 
-    if (uiState.isMissing || route == null || checkpoint == null || question == null) {
+    if (uiState.isMissing || uiState.isLocked || route == null || checkpoint == null || question == null) {
         QuestionNotFoundView(onBack = onBack, modifier = modifier)
         return
     }
@@ -139,8 +139,9 @@ fun QuestionScreen(
                     onSelectAnswer = viewModel::selectAnswer,
                     onShowHint = viewModel::showHint,
                     onContinue = {
-                        if (!viewModel.finishCurrentStep()) {
-                            onNextStep(uiState.checkpointNumber + 1)
+                        when (val action = viewModel.finishCurrentStep()) {
+                            is StepAction.Next -> onNextStep(action.step)
+                            StepAction.Finished, StepAction.Blocked -> Unit
                         }
                     }
                 )
