@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sdu.izdesdu.presentation.components.AnswerOption
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.CheckPoint
@@ -312,7 +313,7 @@ private fun QuestionBody(
 
         question.options.forEachIndexed { index, optionText ->
             val isSelected = uiState.selectedIndex == index
-            AnswerOptionCard(
+            AnswerOption(
                 letter = optionLetters.getOrElse(index) { ('A' + index).toString() },
                 text = optionText,
                 isSelected = isSelected,
@@ -472,83 +473,6 @@ private fun StepProgressSegments(
                     .clip(CircleShape)
                     .background(color)
             )
-        }
-    }
-}
-
-@Composable
-private fun AnswerOptionCard(
-    letter: String,
-    text: String,
-    isSelected: Boolean,
-    isRight: Boolean,
-    isWrong: Boolean,
-    enabled: Boolean,
-    onClick: () -> Unit
-) {
-    val borderColor = when {
-        isRight -> IzdeGreen
-        isWrong -> IzdeError
-        else -> IzdeOutline
-    }
-    val containerColor = when {
-        isRight -> IzdeMintBg
-        isWrong -> IzdeErrorBg
-        else -> Color.White
-    }
-    val badgeBg = when {
-        isRight -> IzdeGreen
-        isWrong -> IzdeError
-        else -> IzdeSurfaceCard
-    }
-    val badgeFg = if (isRight || isWrong) Color.White else IzdeTextSecondary
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(enabled = enabled, onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
-        color = containerColor,
-        border = BorderStroke(1.dp, borderColor)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 11.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(badgeBg),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = letter,
-                    color = badgeFg,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = text,
-                modifier = Modifier.weight(1f),
-                fontSize = 14.sp,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                color = IzdeTextPrimary
-            )
-            if (isRight || isWrong) {
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = if (isRight) Icons.Filled.Check else Icons.Filled.Close,
-                    contentDescription = null,
-                    tint = if (isRight) IzdeGreen else IzdeError,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
         }
     }
 }
