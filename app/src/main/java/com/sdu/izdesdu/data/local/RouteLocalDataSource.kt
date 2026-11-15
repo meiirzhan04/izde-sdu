@@ -7,109 +7,134 @@ import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.domain.model.Route
 
 class RouteLocalDataSource(
-    private val context: Context
+    private val getString: (Int) -> String
 ) {
-    fun loadRoutes(): List<Route> = listOf(
-        Route(
+    constructor(context: Context) : this({ id -> context.getString(id) })
+
+    fun loadRoutes(): List<Route> {
+        val canteen = loadCanteenRoute()
+        return listOf(canteen, libraryRoute(canteen))
+    }
+
+    private fun loadCanteenRoute(): Route = Route(
             id = "gate_to_canteen",
-            title = context.getString(R.string.route_gate_to_canteen_title),
+            title = getString(R.string.route_gate_to_canteen_title),
             fromPlaceId = "main_gate",
             toPlaceId = "canteen",
-            fromTitle = context.getString(R.string.place_main_gate),
-            toTitle = context.getString(R.string.place_canteen),
+            fromTitle = getString(R.string.place_main_gate),
+            toTitle = getString(R.string.place_canteen),
             checkpoints = listOf(
                 CheckPoint(
                     id = 1,
-                    title = context.getString(R.string.cp_entrance_c_title),
-                    instruction = context.getString(R.string.cp_entrance_c_instruction),
+                    title = getString(R.string.cp_entrance_c_title),
+                    instruction = getString(R.string.cp_entrance_c_instruction),
                     mapX = 180f,
                     mapY = 520f,
                     question = Question(
-                        text = context.getString(R.string.q_founded_year_text),
+                        text = getString(R.string.q_founded_year_text),
                         options = listOf(
-                            context.getString(R.string.q_founded_year_opt1),
-                            context.getString(R.string.q_founded_year_opt2),
-                            context.getString(R.string.q_founded_year_opt3),
-                            context.getString(R.string.q_founded_year_opt4)
+                            getString(R.string.q_founded_year_opt1),
+                            getString(R.string.q_founded_year_opt2),
+                            getString(R.string.q_founded_year_opt3),
+                            getString(R.string.q_founded_year_opt4)
                         ),
                         correctIndex = 1,
-                        hint = context.getString(R.string.q_founded_year_hint)
+                        hint = getString(R.string.q_founded_year_hint)
                     )
                 ),
                 CheckPoint(
                     id = 2,
-                    title = context.getString(R.string.cp_hall_title),
-                    instruction = context.getString(R.string.cp_hall_instruction),
+                    title = getString(R.string.cp_hall_title),
+                    instruction = getString(R.string.cp_hall_instruction),
                     mapX = 180f,
                     mapY = 440f,
                     question = Question(
-                        text = context.getString(R.string.q_named_after_text),
+                        text = getString(R.string.q_named_after_text),
                         options = listOf(
-                            context.getString(R.string.q_named_after_opt1),
-                            context.getString(R.string.q_named_after_opt2),
-                            context.getString(R.string.q_named_after_opt3),
-                            context.getString(R.string.q_named_after_opt4)
+                            getString(R.string.q_named_after_opt1),
+                            getString(R.string.q_named_after_opt2),
+                            getString(R.string.q_named_after_opt3),
+                            getString(R.string.q_named_after_opt4)
                         ),
                         correctIndex = 2,
-                        hint = context.getString(R.string.q_named_after_hint)
+                        hint = getString(R.string.q_named_after_hint)
                     )
                 ),
                 CheckPoint(
                     id = 3,
-                    title = context.getString(R.string.cp_block_d_title),
-                    instruction = context.getString(R.string.cp_block_d_instruction),
+                    title = getString(R.string.cp_block_d_title),
+                    instruction = getString(R.string.cp_block_d_instruction),
                     mapX = 160f,
                     mapY = 360f,
                     question = Question(
-                        text = context.getString(R.string.q_language_text),
+                        text = getString(R.string.q_language_text),
                         options = listOf(
-                            context.getString(R.string.q_language_opt1),
-                            context.getString(R.string.q_language_opt2),
-                            context.getString(R.string.q_language_opt3),
-                            context.getString(R.string.q_language_opt4)
+                            getString(R.string.q_language_opt1),
+                            getString(R.string.q_language_opt2),
+                            getString(R.string.q_language_opt3),
+                            getString(R.string.q_language_opt4)
                         ),
                         correctIndex = 0,
-                        hint = context.getString(R.string.q_language_hint)
+                        hint = getString(R.string.q_language_hint)
                     )
                 ),
                 CheckPoint(
                     id = 4,
-                    title = context.getString(R.string.cp_lecture_halls_title),
-                    instruction = context.getString(R.string.cp_lecture_halls_instruction),
+                    title = getString(R.string.cp_lecture_halls_title),
+                    instruction = getString(R.string.cp_lecture_halls_instruction),
                     mapX = 220f,
                     mapY = 290f,
                     question = Question(
-                        text = context.getString(R.string.q_city_text),
+                        text = getString(R.string.q_city_text),
                         options = listOf(
-                            context.getString(R.string.q_city_opt1),
-                            context.getString(R.string.q_city_opt2),
-                            context.getString(R.string.q_city_opt3),
-                            context.getString(R.string.q_city_opt4)
+                            getString(R.string.q_city_opt1),
+                            getString(R.string.q_city_opt2),
+                            getString(R.string.q_city_opt3),
+                            getString(R.string.q_city_opt4)
                         ),
                         correctIndex = 1,
-                        hint = context.getString(R.string.q_city_hint)
+                        hint = getString(R.string.q_city_hint)
                     )
                 ),
                 CheckPoint(
                     id = 5,
-                    title = context.getString(R.string.cp_canteen_title),
-                    instruction = context.getString(R.string.cp_canteen_instruction),
+                    title = getString(R.string.cp_canteen_title),
+                    instruction = getString(R.string.cp_canteen_instruction),
                     mapX = 230f,
                     mapY = 220f,
                     question = Question(
-                        text = context.getString(R.string.q_last_block_text),
+                        text = getString(R.string.q_last_block_text),
                         options = listOf(
-                            context.getString(R.string.q_last_block_opt1),
-                            context.getString(R.string.q_last_block_opt2),
-                            context.getString(R.string.q_last_block_opt3),
-                            context.getString(R.string.q_last_block_opt4)
+                            getString(R.string.q_last_block_opt1),
+                            getString(R.string.q_last_block_opt2),
+                            getString(R.string.q_last_block_opt3),
+                            getString(R.string.q_last_block_opt4)
                         ),
                         correctIndex = 2,
-                        hint = context.getString(R.string.q_last_block_hint)
+                        hint = getString(R.string.q_last_block_hint)
                     )
                 )
             )
         )
+
+
+    private fun libraryRoute(canteen: Route): Route = canteen.copy(
+        id = "gate_to_library",
+        title = getString(R.string.route_library_title),
+        toPlaceId = "library",
+        toTitle = getString(R.string.route_library_place),
+        checkpoints = canteen.checkpoints.take(2) + CheckPoint(
+            id = 3,
+            title = getString(R.string.route_library_place),
+            instruction = getString(R.string.route_library_instruction),
+            mapX = 220f,
+            mapY = 420f,
+            question = Question(
+                text = getString(R.string.route_library_question),
+                options = listOf("A", "B", "F", "I"),
+                correctIndex = 1,
+                hint = getString(R.string.route_library_hint)
+            )
+        )
     )
 }
-

@@ -1,0 +1,7 @@
+<resources>
+    <string name="route_library_title">Путь до библиотеки</string>
+    <string name="route_library_place">Библиотека</string>
+    <string name="route_library_instruction">Из холла пройди к библиотеке в блоке B</string>
+    <string name="route_library_question">В каком блоке находится библиотека на карте SDU?</string>
+    <string name="route_library_hint">Этот блок рядом с нижним холлом, его буква между A и C</string>
+</resources>
