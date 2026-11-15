@@ -66,7 +66,10 @@ fun IzdeNavHost(
                 appContainer = appContainer,
                 onBack = { navController.popBackStack() },
                 onNextStep = { nextStep ->
-                    navController.navigate(QuestionRoute(args.routeId, nextStep))
+                    navController.navigate(QuestionRoute(args.routeId, nextStep)) {
+                        popUpTo<QuestionRoute> { inclusive = true }
+                        launchSingleTop = true
+                    }
                 },
                 onFinish = {
                     navController.navigate(MapRoute) {

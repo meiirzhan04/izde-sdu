@@ -1,0 +1,35 @@
+<resources>
+    <string name="route_library_title">Путь до библиотеки</string>
+    <string name="route_library_place">Библиотека</string>
+    <string name="route_library_instruction">Из холла пройди к библиотеке в блоке B</string>
+    <string name="route_library_question">В каком блоке находится библиотека на карте SDU?</string>
+    <string name="route_library_hint">Этот блок рядом с нижним холлом, его буква между A и C</string>
+    <string name="route_medical_title">Путь до медпункта</string>
+    <string name="route_medical_place">Медпункт</string>
+    <string name="route_block_g">Блок G</string>
+    <string name="route_block_g_instruction">Продолжай по главному коридору до блока G</string>
+    <string name="route_medical_instruction">Найди медпункт справа от коридора между блоками G и H</string>
+    <string name="route_medical_question">Между какими блоками отмечен медпункт на карте SDU?</string>
+    <string name="route_medical_hint">Он находится между G и следующим по алфавиту блоком</string>
+    <string name="route_block_i_title">Путь до блока I</string>
+    <string name="route_block_i_place">Блок I</string>
+    <string name="route_block_h">Блок H</string>
+    <string name="route_block_h_instruction">Пройди от блока G дальше по коридору до блока H</string>
+    <string name="route_block_h_question">Какой блок расположен над H на карте кампуса?</string>
+    <string name="route_block_h_hint">Его буква следует за H</string>
+    <string name="route_block_i_instruction">Продолжай по коридору от блока H до нового блока I</string>
+    <string name="route_halls_title">Путь до лекционных залов</string>
+    <string name="route_dorm_title">Путь до общежития</string>
+    <string name="route_dorm_place">Общежитие</string>
+    <string name="route_gate_instruction">Начни путь у главного входа на территорию кампуса</string>
+    <string name="route_campus_road">Дорога к общежитию</string>
+    <string name="route_campus_road_instruction">Иди по пешеходной дорожке между главным корпусом и общежитием</string>
+    <string name="route_dorm_instruction">Подойди ко входу в Student House справа от главного корпуса</string>
+    <string name="route_dorm_question">Как подписано общежитие на карте SDU?</string>
+    <string name="route_dorm_hint">В названии есть английское слово «дом»</string>
+    <string name="route_gym_title">Путь до спортзала</string>
+    <string name="route_gym_place">Спортзал SDU Life</string>
+    <string name="route_gym_instruction">От общежития иди к спортивным площадкам и зданию SDU Life</string>
+    <string name="route_gym_question">Как называется спортзал на карте кампуса?</string>
+    <string name="route_gym_hint">В названии есть английское слово «жизнь»</string>
+</resources>

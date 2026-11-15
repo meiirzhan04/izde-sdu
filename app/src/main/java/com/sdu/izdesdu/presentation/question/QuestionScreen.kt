@@ -42,6 +42,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sdu.izdesdu.presentation.components.QuestionCard
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.CheckPoint
@@ -50,17 +51,13 @@ import com.sdu.izdesdu.presentation.route.RouteMapPreview
 import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
 import com.sdu.izdesdu.presentation.theme.IzdeError
-import com.sdu.izdesdu.presentation.theme.IzdeErrorBg
 import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeHintBg
 import com.sdu.izdesdu.presentation.theme.IzdeMapBg
 import com.sdu.izdesdu.presentation.theme.IzdeMintBg
 import com.sdu.izdesdu.presentation.theme.IzdeOutline
 import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
-
-private val optionLetters = listOf("А", "Б", "В", "Г")
 
 @Composable
 fun QuestionScreen(
@@ -81,8 +78,8 @@ fun QuestionScreen(
     val checkpoint = uiState.checkpoint
     val question = uiState.question
 
-    if (uiState.isMissing || route == null || checkpoint == null || question == null) {
-        QuestionNotFoundView(onBack = onBack, modifier = modifier)
+    if (uiState.isMissing || uiState.isLocked || route == null || checkpoint == null || question == null) {
+        QuestionNotFoundView(onBack = onBack, isLocked = uiState.isLocked, modifier = modifier)
         return
     }
 
@@ -131,7 +128,8 @@ fun QuestionScreen(
                     routeTitle = route.title,
                     destinationTitle = route.toTitle,
                     totalCheckpoints = uiState.totalCheckpoints,
-                    totalScore = uiState.totalScore,
+                    earnedPoints = uiState.routeEarnedPoints,
+                    mistakes = uiState.mistakes,
                     onBackToMap = onFinish
                 )
             } else {
@@ -142,8 +140,9 @@ fun QuestionScreen(
                     onSelectAnswer = viewModel::selectAnswer,
                     onShowHint = viewModel::showHint,
                     onContinue = {
-                        if (!viewModel.finishCurrentStep()) {
-                            onNextStep(uiState.checkpointNumber + 1)
+                        when (val action = viewModel.finishCurrentStep()) {
+                            is StepAction.Next -> onNextStep(action.step)
+                            StepAction.Finished, StepAction.Blocked -> Unit
                         }
                     }
                 )
@@ -155,11 +154,15 @@ fun QuestionScreen(
 @Composable
 private fun QuestionNotFoundView(
     onBack: () -> Unit,
+    isLocked: Boolean,
     modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = stringResource(R.string.question_not_found), color = IzdeTextPrimary)
+            Text(
+                text = stringResource(if (isLocked) R.string.question_locked else R.string.question_not_found),
+                color = IzdeTextPrimary
+            )
             Spacer(modifier = Modifier.height(12.dp))
             OutlinedButton(onClick = onBack) {
                 Text(text = stringResource(R.string.route_back))
@@ -203,8 +206,10 @@ private fun QuestionSheetContent(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        QuestionBody(
-            uiState = uiState,
+        QuestionCard(
+            selectedIndex = uiState.selectedIndex,
+            isCorrect = uiState.isCorrect,
+            showHint = uiState.showHint,
             instruction = checkpoint.instruction,
             question = question,
             onSelectAnswer = onSelectAnswer,
@@ -283,75 +288,6 @@ private fun QuestionHeader(
 }
 
 @Composable
-private fun QuestionBody(
-    uiState: QuestionUiState,
-    instruction: String,
-    question: Question,
-    onSelectAnswer: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier.verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        if (instruction.isNotBlank()) {
-            Text(
-                text = instruction,
-                fontSize = 12.sp,
-                color = IzdeTextSecondary
-            )
-        }
-
-        Text(
-            text = question.text,
-            fontSize = 17.sp,
-            lineHeight = 23.sp,
-            fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary
-        )
-
-        question.options.forEachIndexed { index, optionText ->
-            val isSelected = uiState.selectedIndex == index
-            AnswerOptionCard(
-                letter = optionLetters.getOrElse(index) { ('A' + index).toString() },
-                text = optionText,
-                isSelected = isSelected,
-                isRight = isSelected && uiState.isCorrect == true,
-                isWrong = isSelected && uiState.isCorrect == false,
-                enabled = uiState.isCorrect != true,
-                onClick = { onSelectAnswer(index) }
-            )
-        }
-
-        if (uiState.isCorrect != null) {
-            FeedbackBanner(isCorrect = uiState.isCorrect == true)
-        }
-
-        if (uiState.showHint && uiState.isCorrect != true) {
-            HintBanner(hint = question.hint)
-        }
-    }
-}
-
-@Composable
-private fun HintBanner(hint: String) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = IzdeHintBg,
-        border = BorderStroke(1.dp, IzdeOutline)
-    ) {
-        Text(
-            text = stringResource(R.string.question_hint_prefix, hint),
-            fontSize = 13.sp,
-            lineHeight = 18.sp,
-            color = IzdeTextPrimary,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
-        )
-    }
-}
-
-@Composable
 private fun QuestionActionButton(
     isCorrect: Boolean,
     isLastStep: Boolean,
@@ -384,7 +320,6 @@ private fun QuestionActionButton(
 
     OutlinedButton(
         onClick = onShowHint,
-        enabled = !showHint,
         modifier = Modifier
             .fillMaxWidth()
             .height(48.dp),
@@ -392,7 +327,7 @@ private fun QuestionActionButton(
         border = BorderStroke(1.dp, IzdeOutline)
     ) {
         Text(
-            text = stringResource(R.string.question_hint_button),
+            text = stringResource(if (showHint) R.string.question_hide_hint else R.string.question_hint_button),
             color = if (showHint) IzdeTextSecondary else IzdeTextPrimary,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium
@@ -477,121 +412,12 @@ private fun StepProgressSegments(
 }
 
 @Composable
-private fun AnswerOptionCard(
-    letter: String,
-    text: String,
-    isSelected: Boolean,
-    isRight: Boolean,
-    isWrong: Boolean,
-    enabled: Boolean,
-    onClick: () -> Unit
-) {
-    val borderColor = when {
-        isRight -> IzdeGreen
-        isWrong -> IzdeError
-        else -> IzdeOutline
-    }
-    val containerColor = when {
-        isRight -> IzdeMintBg
-        isWrong -> IzdeErrorBg
-        else -> Color.White
-    }
-    val badgeBg = when {
-        isRight -> IzdeGreen
-        isWrong -> IzdeError
-        else -> IzdeSurfaceCard
-    }
-    val badgeFg = if (isRight || isWrong) Color.White else IzdeTextSecondary
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(enabled = enabled, onClick = onClick),
-        shape = RoundedCornerShape(14.dp),
-        color = containerColor,
-        border = BorderStroke(1.dp, borderColor)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 11.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(28.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(badgeBg),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = letter,
-                    color = badgeFg,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Text(
-                text = text,
-                modifier = Modifier.weight(1f),
-                fontSize = 14.sp,
-                fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                color = IzdeTextPrimary
-            )
-            if (isRight || isWrong) {
-                Spacer(modifier = Modifier.width(8.dp))
-                Icon(
-                    imageVector = if (isRight) Icons.Filled.Check else Icons.Filled.Close,
-                    contentDescription = null,
-                    tint = if (isRight) IzdeGreen else IzdeError,
-                    modifier = Modifier.size(18.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun FeedbackBanner(isCorrect: Boolean) {
-    val bgColor = if (isCorrect) IzdeMintBg else IzdeErrorBg
-    val fgColor = if (isCorrect) IzdeGreen else IzdeError
-
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = bgColor
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = if (isCorrect) Icons.Filled.Check else Icons.Filled.Close,
-                contentDescription = null,
-                tint = fgColor,
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(
-                    if (isCorrect) R.string.question_correct_feedback else R.string.question_wrong_feedback
-                ),
-                color = fgColor,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
-    }
-}
-
-@Composable
 private fun RouteFinishSheet(
     routeTitle: String,
     destinationTitle: String,
     totalCheckpoints: Int,
-    totalScore: Int,
+    earnedPoints: Int,
+    mistakes: Int,
     onBackToMap: () -> Unit
 ) {
     Column(
@@ -682,8 +508,12 @@ private fun RouteFinishSheet(
                         )
                     )
                     FinishStatItem(
-                        label = stringResource(R.string.route_finish_total_score_label),
-                        value = totalScore.toString()
+                        label = stringResource(R.string.route_finish_earned_score_label),
+                        value = earnedPoints.toString()
+                    )
+                    FinishStatItem(
+                        label = stringResource(R.string.route_finish_mistakes_label),
+                        value = mistakes.toString()
                     )
                 }
             }

@@ -1,0 +1,7 @@
+<resources>
+    <string name="question_locked">Сначала ответь на вопросы предыдущих точек</string>
+    <string name="question_hide_hint">Скрыть подсказку</string>
+    <string name="route_finish_earned_score_label">Очков за путь</string>
+    <string name="route_finish_mistakes_label">Ошибок</string>
+    <string name="route_view_summary">Посмотреть итог</string>
+</resources>

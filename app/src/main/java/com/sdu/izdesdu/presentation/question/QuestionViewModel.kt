@@ -4,12 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sdu.izdesdu.di.AppContainer
-import com.sdu.izdesdu.domain.usecase.CheckAnswerUseCase
+import com.sdu.izdesdu.domain.model.UserProgress
 import com.sdu.izdesdu.domain.usecase.CompleteRouteUseCase
 import com.sdu.izdesdu.domain.usecase.GetRouteByIdUseCase
 import com.sdu.izdesdu.domain.usecase.GetUserProgressUseCase
-import com.sdu.izdesdu.domain.usecase.SaveAnswerProgressUseCase
-import com.sdu.izdesdu.domain.usecase.UpdateRouteStepUseCase
+import com.sdu.izdesdu.domain.usecase.SubmitRouteAnswerUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -21,82 +20,70 @@ import kotlin.coroutines.EmptyCoroutineContext
 class QuestionViewModel(
     private val routeId: String,
     private val step: Int,
-    private val getRouteByIdUseCase: GetRouteByIdUseCase,
-    private val checkAnswerUseCase: CheckAnswerUseCase,
+    getRouteByIdUseCase: GetRouteByIdUseCase,
     private val getUserProgressUseCase: GetUserProgressUseCase,
-    private val saveAnswerProgressUseCase: SaveAnswerProgressUseCase,
-    private val updateRouteStepUseCase: UpdateRouteStepUseCase,
+    private val submitRouteAnswerUseCase: SubmitRouteAnswerUseCase,
     private val completeRouteUseCase: CompleteRouteUseCase,
     dispatcher: CoroutineDispatcher? = null
 ) : ViewModel() {
-
-    private val _uiState: MutableStateFlow<QuestionUiState>
+    private val route = getRouteByIdUseCase(routeId)
+    private val checkpoint = route?.checkpoints?.getOrNull(step - 1)
+    private val _uiState = MutableStateFlow(
+        QuestionUiState(
+            route = route,
+            checkpoint = checkpoint,
+            checkpointNumber = step,
+            totalCheckpoints = route?.checkpoints?.size ?: 0
+        )
+    )
+    val uiState: StateFlow<QuestionUiState> = _uiState.asStateFlow()
 
     init {
-        val route = getRouteByIdUseCase(routeId)
-        val checkpoints = route?.checkpoints.orEmpty()
-        val checkpoint = checkpoints.getOrNull(step - 1)
-        val initialScore = getUserProgressUseCase().value.totalScore
-
-        _uiState = MutableStateFlow(
-            QuestionUiState(
-                route = route,
-                checkpoint = checkpoint,
-                checkpointNumber = step,
-                totalCheckpoints = checkpoints.size,
-                totalScore = initialScore
-            )
-        )
-
+        updateProgress(getUserProgressUseCase().value)
         viewModelScope.launch(dispatcher ?: EmptyCoroutineContext) {
-            getUserProgressUseCase().collect { progress ->
-                _uiState.update { it.copy(totalScore = progress.totalScore) }
-            }
+            getUserProgressUseCase().collect(::updateProgress)
         }
     }
 
-    val uiState: StateFlow<QuestionUiState> = _uiState.asStateFlow()
-
-    fun selectAnswer(index: Int) {
-        val current = _uiState.value
-        val question = current.question ?: return
-        if (current.isCorrect == true || current.isRouteFinished) return
-        if (index !in question.options.indices) return
-
-        val result = checkAnswerUseCase(question, index)
-        saveAnswerProgressUseCase(result.isCorrect, result.earnedPoints)
-
-        if (result.isCorrect && !current.isLastStep) {
-            updateRouteStepUseCase(routeId, step + 1)
-        }
-
+    private fun updateProgress(progress: UserProgress) {
+        val routeProgress = progress.routeProgress[routeId]
+        val answer = routeProgress?.answers?.get(checkpoint?.id)
+        val locked = route?.checkpoints.orEmpty().take((step - 1).coerceAtLeast(0))
+            .any { routeProgress?.answers?.get(it.id)?.isCorrect != true }
         _uiState.update { state ->
             state.copy(
-                selectedIndex = index,
-                isCorrect = result.isCorrect,
-                showHint = state.showHint || !result.isCorrect,
-                sessionEarnedScore = state.sessionEarnedScore + result.earnedPoints
+                selectedIndex = answer?.selectedIndex,
+                isCorrect = answer?.isCorrect,
+                showHint = state.showHint || answer?.isCorrect == false,
+                totalScore = progress.totalScore,
+                routeEarnedPoints = routeProgress?.earnedPoints ?: 0,
+                mistakes = routeProgress?.mistakes ?: 0,
+                isLocked = locked,
+                isRouteFinished = routeId in progress.completedRouteIds
             )
         }
+    }
+
+    fun selectAnswer(index: Int) {
+        if (_uiState.value.isRouteFinished) return
+        submitRouteAnswerUseCase(routeId, step, index) ?: return
+        updateProgress(getUserProgressUseCase().value)
     }
 
     fun showHint() {
-        if (_uiState.value.question == null) return
-        _uiState.update { it.copy(showHint = true) }
+        val state = _uiState.value
+        if (state.isMissing || state.isLocked || state.isCorrect == true) return
+        _uiState.update { it.copy(showHint = !it.showHint) }
     }
 
-    fun finishCurrentStep(): Boolean {
+    fun finishCurrentStep(): StepAction {
+        updateProgress(getUserProgressUseCase().value)
         val current = _uiState.value
-        if (current.isMissing) return false
-
-        return if (current.isLastStep) {
-            completeRouteUseCase(routeId)
-            _uiState.update { it.copy(isRouteFinished = true) }
-            true
-        } else {
-            updateRouteStepUseCase(routeId, step + 1)
-            false
-        }
+        if (current.isMissing || current.isLocked || current.isCorrect != true) return StepAction.Blocked
+        if (!current.isLastStep) return StepAction.Next(step + 1)
+        if (!completeRouteUseCase(routeId)) return StepAction.Blocked
+        updateProgress(getUserProgressUseCase().value)
+        return StepAction.Finished
     }
 
     companion object {
@@ -107,17 +94,22 @@ class QuestionViewModel(
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                require(modelClass.isAssignableFrom(QuestionViewModel::class.java))
                 return QuestionViewModel(
                     routeId = routeId,
                     step = step,
                     getRouteByIdUseCase = container.getRouteByIdUseCase,
-                    checkAnswerUseCase = container.checkAnswerUseCase,
                     getUserProgressUseCase = container.getUserProgressUseCase,
-                    saveAnswerProgressUseCase = container.saveAnswerProgressUseCase,
-                    updateRouteStepUseCase = container.updateRouteStepUseCase,
+                    submitRouteAnswerUseCase = container.submitRouteAnswerUseCase,
                     completeRouteUseCase = container.completeRouteUseCase
                 ) as T
             }
         }
     }
+}
+
+sealed interface StepAction {
+    data class Next(val step: Int) : StepAction
+    data object Finished : StepAction
+    data object Blocked : StepAction
 }
