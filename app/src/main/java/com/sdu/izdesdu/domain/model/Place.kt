@@ -1,7 +1,5 @@
 package com.sdu.izdesdu.domain.model
 
-import androidx.compose.ui.graphics.Color
-
 data class Place(
     val id: String,
     val title: String,
@@ -9,7 +7,7 @@ data class Place(
     val description: String,
     val nearby: List<String>,
     val questionsCount: Int,
-    val color: Color,
+    val colorHex: Long,
     val mapX: Float,
     val mapY: Float
 )

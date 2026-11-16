@@ -186,7 +186,7 @@ fun PlacesSheet(
                     modifier = Modifier
                         .weight(1f)
                         .clip(buttonShape)
-                        .background(selected.color)
+                        .background(Color(selected.colorHex))
                         .clickable { onStartRoute(selected.id) }
                         .padding(vertical = 16.dp)
                 )

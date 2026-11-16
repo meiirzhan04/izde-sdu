@@ -30,7 +30,7 @@ fun PlaceCard(
 ) {
     val shape = RoundedCornerShape(20.dp)
     val backgroundColor = if (selected) IzdeColors.SelectedCard else Color.White
-    val borderColor = if (selected) place.color else IzdeColors.Outline
+    val borderColor = if (selected) Color(place.colorHex) else IzdeColors.Outline
 
     Column(
         modifier = modifier
@@ -42,7 +42,7 @@ fun PlaceCard(
             .padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        PlacePin(color = place.color, size = 24.dp, borderWidth = 0.dp)
+        PlacePin(color = Color(place.colorHex), size = 24.dp, borderWidth = 0.dp)
 
         Text(
             text = place.title,

@@ -105,7 +105,7 @@ fun PlaceContent(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                PlacePin(color = place.color, size = 28.dp, borderWidth = 0.dp)
+                PlacePin(color = Color(place.colorHex), size = 28.dp, borderWidth = 0.dp)
                 Text(
                     text = place.title,
                     style = MaterialTheme.typography.headlineSmall,
@@ -158,7 +158,7 @@ fun PlaceContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(place.color)
+                    .background(Color(place.colorHex))
                     .clickable { onStartRoute(place.id) }
                     .padding(vertical = 16.dp)
             )

@@ -69,7 +69,7 @@ fun CampusMap(
                 val pinSize = if (isSelected) 40.dp else 28.dp
 
                 PlacePin(
-                    color = place.color,
+                    color = Color(place.colorHex),
                     size = pinSize,
                     modifier = Modifier
                         .offset(

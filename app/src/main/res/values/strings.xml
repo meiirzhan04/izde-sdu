@@ -81,4 +81,41 @@
     <string name="route_finish_checkpoints_label">Пройдено точек</string>
     <string name="route_finish_checkpoints_value">%1$d из %2$d</string>
     <string name="route_finish_total_score_label">Всего очков</string>
+
+    <string name="place_block_i_title">Новый блок I</string>
+    <string name="place_block_i_block">Блок I</string>
+    <string name="place_block_i_desc">Новый блок SDU. Находится над блоком H, в конце главного коридора.</string>
+    <string name="place_medical_title">Медпункт</string>
+    <string name="place_medical_block">Между H и G</string>
+    <string name="place_medical_desc">Медпункт университета. Если на паре стало плохо, иди сюда.</string>
+    <string name="place_canteen_block">Блок F</string>
+    <string name="place_canteen_desc">Здесь обедают студенты. Рядом кофейня, а за ней зона со столиками.</string>
+    <string name="place_halls_title">Лекционные залы</string>
+    <string name="place_halls_block">Блоки E и D</string>
+    <string name="place_halls_desc">Большие круглые залы справа от главного коридора.</string>
+    <string name="place_library_title">Библиотека</string>
+    <string name="place_library_block">Блок B</string>
+    <string name="place_library_desc">Библиотека SDU в блоке B, рядом с нижним холлом и входом C.</string>
+    <string name="place_dorm_title">Общежитие</string>
+    <string name="place_dorm_block">Student House</string>
+    <string name="place_dorm_desc">Общежитие для студентов, справа от главного корпуса.</string>
+    <string name="place_gym_title">Спортзал SDU Life</string>
+    <string name="place_gym_block">SDU Life</string>
+    <string name="place_gym_desc">Спортзал рядом со спортивными площадками, за общежитием.</string>
+
+    <string name="nearby_block_h">Блок H</string>
+    <string name="nearby_main_corridor">Главный коридор</string>
+    <string name="nearby_block_g">Блок G</string>
+    <string name="nearby_coffee_shop">Кофейня</string>
+    <string name="nearby_tables_zone">Зона со столиками</string>
+    <string name="nearby_block_f_rooms">Аудитории блока F</string>
+    <string name="nearby_block_e">Блок E</string>
+    <string name="nearby_block_d">Блок D</string>
+    <string name="nearby_canteen">Столовая</string>
+    <string name="nearby_hall">Холл</string>
+    <string name="nearby_block_a">Блок A</string>
+    <string name="nearby_entrance_c">Вход C</string>
+    <string name="nearby_sports_grounds">Спортплощадки</string>
+    <string name="nearby_main_building">Главный корпус</string>
+    <string name="nearby_dorm">Общежитие</string>
 </resources>
