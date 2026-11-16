@@ -8,8 +8,8 @@ Users pick a campus destination on the map (academic blocks `D`–`I`, canteen, 
 
 ## Team & Contributions
 
-- **Meirzhan (`meirzhan`)** — Clean Architecture + MVVM setup, manual DI (`AppContainer`, `IzdeApp`), Type-Safe Navigation (`Routes`, `IzdeNavHost`), route checkpoint and question screens (`RouteScreen`, `QuestionScreen`, `RouteMapPreview`, `RouteViewModel`, `QuestionViewModel`).
-- **Yersultan (`yeeerosh`)** — interactive campus map (`CampusMap`, `MapScreen`, `MapViewModel`), campus location models and data (`Place`, `PlaceRepository`, `PlaceLocalDataSource`), place details screen (`PlaceScreen`, `PlaceViewModel`), `PlaceCard` and `PlacePin` components.
+- **Meiirzhan (`meirzhan`)** — Clean Architecture + MVVM setup, manual DI (`AppContainer`, `IzdeApp`), Type-Safe Navigation (`Routes`, `IzdeNavHost`), route checkpoint and question screens (`RouteScreen`, `QuestionScreen`, `RouteMapPreview`, `RouteViewModel`, `QuestionViewModel`).
+- **Yerasyl (`yeeerosh`)** — interactive campus map (`CampusMap`, `MapScreen`, `MapViewModel`), campus location models and data (`Place`, `PlaceRepository`, `PlaceLocalDataSource`), place details screen (`PlaceScreen`, `PlaceViewModel`), `PlaceCard` and `PlacePin` components.
 - **Zhanel (`zhanel`)** — reusable UI components (`CheckpointRow`, `AnswerOption`, `QuestionCard`), complete quest routes for all 7 destinations (`RouteLocalDataSource`), step progression and validation logic (`SubmitRouteAnswerUseCase`, `CompleteRouteUseCase`, `RouteProgress`, `CheckpointProgress`), unit tests.
 
 ---
