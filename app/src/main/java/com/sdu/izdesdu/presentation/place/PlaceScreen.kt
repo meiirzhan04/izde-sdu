@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sdu.izdesdu.data.repository.PlaceRepositoryImpl
+import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.Place
 import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.IzdeColors
@@ -35,11 +37,16 @@ import com.sdu.izdesdu.presentation.components.questionsLabel
 @Composable
 fun PlaceScreen(
     placeId: String,
+    appContainer: AppContainer,
     onBack: () -> Unit,
     onStartRoute: (String) -> Unit,
-    viewModel: PlaceViewModel = viewModel()
+    viewModel: PlaceViewModel = viewModel(
+        key = "place_$placeId",
+        factory = PlaceViewModel.factory(placeId, appContainer)
+    )
 ) {
-    val place = viewModel.getPlace(placeId)
+    val uiState by viewModel.uiState.collectAsState()
+    val place = uiState.place
 
     if (place != null) {
         PlaceContent(
@@ -170,7 +177,17 @@ fun PlaceContent(
 @Composable
 fun PlaceContentPreview() {
     PlaceContent(
-        place = PlaceRepositoryImpl().getPlaces()[2],
+        place = Place(
+            id = "canteen",
+            title = "Столовая",
+            block = "Блок F",
+            description = "Здесь обедают студенты. Рядом кофейня, а за ней зона со столиками.",
+            nearby = listOf("Кофейня", "Зона со столиками", "Аудитории блока F"),
+            questionsCount = 5,
+            colorHex = 0xFFE0791B,
+            mapX = 163.2f,
+            mapY = 462.8f
+        ),
         onBack = {},
         onStartRoute = {}
     )

@@ -1,15 +1,30 @@
 package com.sdu.izdesdu.presentation.place
 
 import androidx.lifecycle.ViewModel
-import com.sdu.izdesdu.data.repository.PlaceRepositoryImpl
-import com.sdu.izdesdu.domain.model.Place
-import com.sdu.izdesdu.domain.repository.PlaceRepository
+import androidx.lifecycle.ViewModelProvider
+import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.domain.usecase.GetPlaceByIdUseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class PlaceViewModel(
-    val repository: PlaceRepository = PlaceRepositoryImpl()
+    placeId: String,
+    getPlaceByIdUseCase: GetPlaceByIdUseCase
 ) : ViewModel() {
+    private val _uiState = MutableStateFlow(PlaceUiState(place = getPlaceByIdUseCase(placeId)))
+    val uiState: StateFlow<PlaceUiState> = _uiState.asStateFlow()
 
-    fun getPlace(id: String): Place? {
-        return repository.getPlace(id)
+    companion object {
+        fun factory(placeId: String, container: AppContainer): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                    return PlaceViewModel(
+                        placeId = placeId,
+                        getPlaceByIdUseCase = container.getPlaceByIdUseCase
+                    ) as T
+                }
+            }
     }
 }

@@ -28,16 +28,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sdu.izdesdu.data.repository.PlaceRepositoryImpl
+import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.domain.model.Place
 import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.IzdeColors
 import com.sdu.izdesdu.presentation.components.PlaceCard
 
 @Composable
 fun MapScreen(
+    appContainer: AppContainer,
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
-    viewModel: MapViewModel = viewModel()
+    viewModel: MapViewModel = viewModel(
+        factory = MapViewModel.factory(appContainer)
+    )
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
@@ -198,10 +202,24 @@ fun PlacesSheet(
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 fun MapContentPreview() {
+    val previewPlaces = listOf(
+        Place(
+            id = "canteen",
+            title = "Столовая",
+            block = "Блок F",
+            description = "",
+            nearby = emptyList(),
+            questionsCount = 5,
+            colorHex = 0xFFE0791B,
+            mapX = 163.2f,
+            mapY = 462.8f
+        )
+    )
     MapContent(
         uiState = MapUiState(
-            places = PlaceRepositoryImpl().getPlaces(),
-            selectedId = "canteen"
+            places = previewPlaces,
+            selectedId = "canteen",
+            totalScore = 20
         ),
         onSelectPlace = {},
         onStartRoute = {},

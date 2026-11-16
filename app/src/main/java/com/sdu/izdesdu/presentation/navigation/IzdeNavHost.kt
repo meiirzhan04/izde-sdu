@@ -26,6 +26,7 @@ fun IzdeNavHost(
     ) {
         composable<MapRoute> {
             MapScreen(
+                appContainer = appContainer,
                 onStartRoute = { placeId ->
                     navController.navigate(RouteDetailRoute("gate_to_$placeId"))
                 },
@@ -38,6 +39,7 @@ fun IzdeNavHost(
             val args = backStackEntry.toRoute<PlaceDetailRoute>()
             PlaceScreen(
                 placeId = args.placeId,
+                appContainer = appContainer,
                 onBack = { navController.popBackStack() },
                 onStartRoute = { placeId ->
                     navController.navigate(RouteDetailRoute("gate_to_$placeId"))
