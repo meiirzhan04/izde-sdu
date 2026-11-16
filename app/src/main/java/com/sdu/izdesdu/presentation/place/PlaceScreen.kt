@@ -6,13 +6,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,18 +28,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.Place
 import com.sdu.izdesdu.presentation.components.CampusMap
-import com.sdu.izdesdu.presentation.components.IzdeColors
 import com.sdu.izdesdu.presentation.components.PlacePin
 import com.sdu.izdesdu.presentation.components.questionsLabel
+import com.sdu.izdesdu.presentation.theme.IzdeBlue
+import com.sdu.izdesdu.presentation.theme.IzdeMapBg
+import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
+import com.sdu.izdesdu.presentation.theme.IzdeTextBody
+import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
+import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceScreen(
@@ -59,7 +72,16 @@ fun PlaceScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            Text(text = "Место не найдено", color = IzdeColors.TextSecondary)
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = stringResource(R.string.place_not_found),
+                    color = IzdeTextSecondary
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                OutlinedButton(onClick = onBack) {
+                    Text(text = stringResource(R.string.route_back))
+                }
+            }
         }
     }
 }
@@ -73,7 +95,7 @@ fun PlaceContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(IzdeColors.MapBackground)
+            .background(IzdeMapBg)
     ) {
         Box(modifier = Modifier.weight(1f)) {
             CampusMap(
@@ -91,11 +113,11 @@ fun PlaceContent(
                     .clickable { onBack() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "←",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = IzdeColors.Dark
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.route_back),
+                    tint = IzdeTextPrimary,
+                    modifier = Modifier.size(20.dp)
                 )
             }
         }
@@ -117,48 +139,60 @@ fun PlaceContent(
                     text = place.title,
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
-                    color = IzdeColors.Dark
+                    color = IzdeTextPrimary
                 )
             }
 
             Text(
                 text = place.block,
                 style = MaterialTheme.typography.labelLarge,
-                color = IzdeColors.TextBody,
+                color = IzdeTextBody,
                 modifier = Modifier
                     .clip(RoundedCornerShape(50))
-                    .background(IzdeColors.Chip)
+                    .background(IzdeSurfaceCard)
                     .padding(horizontal = 12.dp, vertical = 6.dp)
             )
 
             Text(
                 text = place.description,
                 style = MaterialTheme.typography.bodyMedium,
-                color = IzdeColors.TextBody
+                color = IzdeTextBody
             )
 
             Text(
-                text = "Что рядом",
+                text = stringResource(R.string.place_nearby_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                color = IzdeColors.Dark
+                color = IzdeTextPrimary
             )
             place.nearby.forEach { item ->
-                Text(
-                    text = "• $item",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = IzdeColors.TextBody
-                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(6.dp)
+                            .clip(CircleShape)
+                            .background(IzdeBlue)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = item,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = IzdeTextBody
+                    )
+                }
             }
 
             Text(
-                text = "По пути: ${questionsLabel(place.questionsCount)}",
+                text = stringResource(
+                    R.string.place_on_the_way,
+                    questionsLabel(place.questionsCount)
+                ),
                 style = MaterialTheme.typography.bodySmall,
-                color = IzdeColors.TextSecondary
+                color = IzdeTextSecondary
             )
 
             Text(
-                text = "Начать путь сюда",
+                text = stringResource(R.string.place_start_route_here),
                 color = Color.White,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,

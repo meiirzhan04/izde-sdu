@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,16 +24,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.sdu.izdesdu.R
 import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.Place
 import com.sdu.izdesdu.presentation.components.CampusMap
-import com.sdu.izdesdu.presentation.components.IzdeColors
 import com.sdu.izdesdu.presentation.components.PlaceCard
+import com.sdu.izdesdu.presentation.theme.IzdeBlue
+import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
+import com.sdu.izdesdu.presentation.theme.IzdeMapBg
+import com.sdu.izdesdu.presentation.theme.IzdeOutline
+import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
+import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun MapScreen(
@@ -63,7 +72,7 @@ fun MapContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(IzdeColors.MapBackground)
+            .background(IzdeMapBg)
     ) {
         Box(modifier = Modifier.weight(1f)) {
             CampusMap(
@@ -72,7 +81,12 @@ fun MapContent(
                 onPinClick = onSelectPlace,
                 modifier = Modifier.fillMaxSize()
             )
-            MapHeader(modifier = Modifier.padding(16.dp))
+            MapHeader(
+                totalScore = uiState.totalScore,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            )
         }
 
         PlacesSheet(
@@ -85,32 +99,54 @@ fun MapContent(
 }
 
 @Composable
-fun MapHeader(modifier: Modifier = Modifier) {
+fun MapHeader(
+    totalScore: Int,
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(
-            text = "Ізде",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
-            color = IzdeColors.Dark,
-            modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(Color.White)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
-        Text(
-            text = "SDU",
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            modifier = Modifier
-                .clip(RoundedCornerShape(50))
-                .background(IzdeColors.Primary)
-                .padding(horizontal = 10.dp, vertical = 5.dp)
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = stringResource(R.string.map_brand_izde),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = IzdeTextPrimary,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(Color.White)
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            )
+            Text(
+                text = stringResource(R.string.map_brand_sdu),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50))
+                    .background(IzdeBlue)
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+            )
+        }
+
+        Surface(
+            shape = RoundedCornerShape(16.dp),
+            color = IzdeTextPrimary,
+            shadowElevation = 4.dp
+        ) {
+            Text(
+                text = stringResource(R.string.question_score_pill, totalScore),
+                color = Color.White,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
+            )
+        }
     }
 }
 
@@ -137,20 +173,20 @@ fun PlacesSheet(
                 .align(Alignment.CenterHorizontally)
                 .size(width = 44.dp, height = 5.dp)
                 .clip(RoundedCornerShape(50))
-                .background(IzdeColors.Handle)
+                .background(IzdeDragHandle)
         )
 
         Column(modifier = Modifier.padding(horizontal = 20.dp)) {
             Text(
-                text = "Куда идём?",
+                text = stringResource(R.string.map_where_to_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = IzdeColors.Dark
+                color = IzdeTextPrimary
             )
             Text(
-                text = "Ты у главного входа",
+                text = stringResource(R.string.map_you_are_at_gate),
                 style = MaterialTheme.typography.bodyMedium,
-                color = IzdeColors.TextSecondary
+                color = IzdeTextSecondary
             )
         }
 
@@ -173,17 +209,17 @@ fun PlacesSheet(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "О месте",
-                    color = IzdeColors.Dark,
+                    text = stringResource(R.string.map_about_place),
+                    color = IzdeTextPrimary,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
                         .clip(buttonShape)
-                        .border(2.dp, IzdeColors.Outline, buttonShape)
+                        .border(2.dp, IzdeOutline, buttonShape)
                         .clickable { onOpenPlace(selected.id) }
                         .padding(horizontal = 20.dp, vertical = 16.dp)
                 )
                 Text(
-                    text = "Начать путь",
+                    text = stringResource(R.string.map_start_route),
                     color = Color.White,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,

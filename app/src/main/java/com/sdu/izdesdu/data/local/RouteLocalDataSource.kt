@@ -133,7 +133,12 @@ class RouteLocalDataSource(
             mapY = 420f,
             question = Question(
                 text = getString(R.string.route_library_question),
-                options = listOf("A", "B", "F", "I"),
+                options = listOf(
+                    getString(R.string.q_library_opt1),
+                    getString(R.string.q_library_opt2),
+                    getString(R.string.q_library_opt3),
+                    getString(R.string.q_library_opt4)
+                ),
                 correctIndex = 1,
                 hint = getString(R.string.route_library_hint)
             )
@@ -160,7 +165,12 @@ class RouteLocalDataSource(
                 mapY = 140f,
                 question = Question(
                     text = getString(R.string.route_medical_question),
-                    options = listOf("A и B", "C и D", "H и G", "E и F"),
+                    options = listOf(
+                        getString(R.string.q_medical_opt1),
+                        getString(R.string.q_medical_opt2),
+                        getString(R.string.q_medical_opt3),
+                        getString(R.string.q_medical_opt4)
+                    ),
                     correctIndex = 2,
                     hint = getString(R.string.route_medical_hint)
                 )
@@ -182,7 +192,12 @@ class RouteLocalDataSource(
                 mapY = 110f,
                 question = Question(
                     text = getString(R.string.route_block_h_question),
-                    options = listOf("A", "C", "F", "I"),
+                    options = listOf(
+                        getString(R.string.q_block_h_opt1),
+                        getString(R.string.q_block_h_opt2),
+                        getString(R.string.q_block_h_opt3),
+                        getString(R.string.q_block_h_opt4)
+                    ),
                     correctIndex = 3,
                     hint = getString(R.string.route_block_h_hint)
                 )
@@ -226,7 +241,12 @@ class RouteLocalDataSource(
                 mapX = 320f,
                 question = Question(
                     text = getString(R.string.route_dorm_question),
-                    options = listOf("SDU Life", "Student House", "Library", "Canteen"),
+                    options = listOf(
+                        getString(R.string.q_dorm_opt1),
+                        getString(R.string.q_dorm_opt2),
+                        getString(R.string.q_dorm_opt3),
+                        getString(R.string.q_dorm_opt4)
+                    ),
                     correctIndex = 1,
                     hint = getString(R.string.route_dorm_hint)
                 )
@@ -247,7 +267,12 @@ class RouteLocalDataSource(
             mapY = 100f,
             question = Question(
                 text = getString(R.string.route_gym_question),
-                options = listOf("Student House", "Блок B", "SDU Life", "Блок C"),
+                options = listOf(
+                    getString(R.string.q_gym_opt1),
+                    getString(R.string.q_gym_opt2),
+                    getString(R.string.q_gym_opt3),
+                    getString(R.string.q_gym_opt4)
+                ),
                 correctIndex = 2,
                 hint = getString(R.string.route_gym_hint)
             )

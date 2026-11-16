@@ -15,11 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.sdu.izdesdu.data.repository.PlaceRepositoryImpl
+import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Place
+import com.sdu.izdesdu.presentation.theme.IzdeOutline
+import com.sdu.izdesdu.presentation.theme.IzdeSelectedCard
+import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
+import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceCard(
@@ -29,8 +34,8 @@ fun PlaceCard(
     modifier: Modifier = Modifier
 ) {
     val shape = RoundedCornerShape(20.dp)
-    val backgroundColor = if (selected) IzdeColors.SelectedCard else Color.White
-    val borderColor = if (selected) Color(place.colorHex) else IzdeColors.Outline
+    val backgroundColor = if (selected) IzdeSelectedCard else Color.White
+    val borderColor = if (selected) Color(place.colorHex) else IzdeOutline
 
     Column(
         modifier = modifier
@@ -48,7 +53,7 @@ fun PlaceCard(
             text = place.title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = IzdeColors.Dark,
+            color = IzdeTextPrimary,
             minLines = 2,
             maxLines = 2
         )
@@ -56,29 +61,51 @@ fun PlaceCard(
         Text(
             text = questionsLabel(place.questionsCount),
             style = MaterialTheme.typography.bodySmall,
-            color = IzdeColors.TextSecondary
+            color = IzdeTextSecondary
         )
     }
 }
 
+@Composable
 fun questionsLabel(count: Int): String {
-    val word = when {
-        count % 10 == 1 && count % 100 != 11 -> "вопрос"
-        count % 10 in 2..4 && count % 100 !in 12..14 -> "вопроса"
-        else -> "вопросов"
+    val resId = when {
+        count % 10 == 1 && count % 100 != 11 -> R.string.questions_count_one
+        count % 10 in 2..4 && count % 100 !in 12..14 -> R.string.questions_count_few
+        else -> R.string.questions_count_many
     }
-    return "$count $word про SDU"
+    return stringResource(resId, count)
 }
 
 @Preview
 @Composable
 fun PlaceCardPreview() {
-    val places = PlaceRepositoryImpl().getPlaces()
+    val canteen = Place(
+        id = "canteen",
+        title = "Столовая",
+        block = "Блок F",
+        description = "",
+        nearby = emptyList(),
+        questionsCount = 5,
+        colorHex = 0xFFE0791B,
+        mapX = 163.2f,
+        mapY = 462.8f
+    )
+    val library = Place(
+        id = "library",
+        title = "Библиотека",
+        block = "Блок B",
+        description = "",
+        nearby = emptyList(),
+        questionsCount = 3,
+        colorHex = 0xFF2F66D8,
+        mapX = 105.6f,
+        mapY = 741.2f
+    )
     Row(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         modifier = Modifier.padding(16.dp)
     ) {
-        PlaceCard(place = places[2], selected = true, onClick = {})
-        PlaceCard(place = places[4], selected = false, onClick = {})
+        PlaceCard(place = canteen, selected = true, onClick = {})
+        PlaceCard(place = library, selected = false, onClick = {})
     }
 }

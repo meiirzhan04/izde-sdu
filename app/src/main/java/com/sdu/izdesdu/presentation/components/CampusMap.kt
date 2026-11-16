@@ -21,13 +21,25 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.data.repository.PlaceRepositoryImpl
 import com.sdu.izdesdu.domain.model.Place
+import com.sdu.izdesdu.presentation.theme.IzdeBlockC
+import com.sdu.izdesdu.presentation.theme.IzdeBlockD
+import com.sdu.izdesdu.presentation.theme.IzdeBlockE
+import com.sdu.izdesdu.presentation.theme.IzdeBlockF
+import com.sdu.izdesdu.presentation.theme.IzdeBlockG
+import com.sdu.izdesdu.presentation.theme.IzdeBlockH
+import com.sdu.izdesdu.presentation.theme.IzdeBlockI
+import com.sdu.izdesdu.presentation.theme.IzdeBlue
+import com.sdu.izdesdu.presentation.theme.IzdeDormLabel
+import com.sdu.izdesdu.presentation.theme.IzdeGymLabel
+import com.sdu.izdesdu.presentation.theme.IzdeMapBg
+import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 
 @Composable
 fun CampusMap(
@@ -38,29 +50,29 @@ fun CampusMap(
 ) {
     Box(
         modifier = modifier
-            .background(IzdeColors.MapBackground)
+            .background(IzdeMapBg)
             .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
         Box(modifier = Modifier.requiredSize(width = 390.dp, height = 940.dp)) {
             Image(
                 painter = painterResource(R.drawable.campus_map),
-                contentDescription = "Карта кампуса SDU",
+                contentDescription = stringResource(R.string.route_map_placeholder),
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize()
             )
 
-            MapLabel("I", 40.6f, 236.2f, Color(0xFFA8642A))
-            MapLabel("H", 40.6f, 315.0f, Color(0xFF3E6FA8))
-            MapLabel("G", 40.6f, 389.8f, Color(0xFF62783E))
-            MapLabel("F", 40.6f, 466.0f, Color(0xFF343A70))
-            MapLabel("E", 40.6f, 543.4f, Color(0xFF6E1C20))
-            MapLabel("D", 40.6f, 620.2f, Color(0xFF7C3283))
+            MapLabel("I", 40.6f, 236.2f, IzdeBlockI)
+            MapLabel("H", 40.6f, 315.0f, IzdeBlockH)
+            MapLabel("G", 40.6f, 389.8f, IzdeBlockG)
+            MapLabel("F", 40.6f, 466.0f, IzdeBlockF)
+            MapLabel("E", 40.6f, 543.4f, IzdeBlockE)
+            MapLabel("D", 40.6f, 620.2f, IzdeBlockD)
             MapLabel("A", 31.0f, 715.0f, Color.White)
             MapLabel("B", 105.6f, 740.0f, Color.White)
-            MapLabel("C", 195.2f, 721.0f, Color(0xFF3D6B5A))
-            MapLabel("SDU Life", 309.8f, 157.0f, Color(0xFFA0661A), width = 90f)
-            MapLabel("Общежитие", 317.8f, 686.0f, Color(0xFF3D7A2E), width = 90f)
+            MapLabel("C", 195.2f, 721.0f, IzdeBlockC)
+            MapLabel(stringResource(R.string.map_label_sdu_life), 309.8f, 157.0f, IzdeGymLabel, width = 90f)
+            MapLabel(stringResource(R.string.map_label_dorm), 317.8f, 686.0f, IzdeDormLabel, width = 90f)
 
             YouAreHere(modifier = Modifier.offset(x = 96.dp, y = 845.dp))
 
@@ -94,7 +106,7 @@ fun CampusMap(
                     modifier = Modifier
                         .offset(x = labelX.dp, y = selected.mapY.dp - 76.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(IzdeColors.Dark)
+                        .background(IzdeTextPrimary)
                         .padding(horizontal = 10.dp, vertical = 6.dp)
                 )
             }
@@ -134,15 +146,26 @@ fun YouAreHere(modifier: Modifier = Modifier) {
             .background(Color.White)
             .padding(3.dp)
             .clip(CircleShape)
-            .background(IzdeColors.Primary)
+            .background(IzdeBlue)
     )
 }
 
 @Preview(widthDp = 390, heightDp = 844)
 @Composable
 fun CampusMapPreview() {
+    val previewPlace = Place(
+        id = "canteen",
+        title = "Столовая",
+        block = "Блок F",
+        description = "",
+        nearby = emptyList(),
+        questionsCount = 5,
+        colorHex = 0xFFE0791B,
+        mapX = 163.2f,
+        mapY = 462.8f
+    )
     CampusMap(
-        places = PlaceRepositoryImpl().getPlaces(),
+        places = listOf(previewPlace),
         selectedId = "canteen",
         onPinClick = {},
         modifier = Modifier.fillMaxSize()

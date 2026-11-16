@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.sdu.izdesdu.presentation.theme.IzdeOrange
 
 @Composable
 fun PlacePin(
@@ -21,7 +22,6 @@ fun PlacePin(
     modifier: Modifier = Modifier,
     borderWidth: Dp = 3.dp
 ) {
-
     val shape = RoundedCornerShape(
         topStartPercent = 50,
         topEndPercent = 50,
@@ -42,5 +42,5 @@ fun PlacePin(
 @Preview
 @Composable
 fun PlacePinPreview() {
-    PlacePin(color = Color(0xFFE0791B), size = 40.dp)
+    PlacePin(color = IzdeOrange, size = 40.dp)
 }

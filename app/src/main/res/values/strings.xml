@@ -118,4 +118,47 @@
     <string name="nearby_sports_grounds">Спортплощадки</string>
     <string name="nearby_main_building">Главный корпус</string>
     <string name="nearby_dorm">Общежитие</string>
+
+    <string name="map_brand_izde">Ізде</string>
+    <string name="map_brand_sdu">SDU</string>
+    <string name="map_where_to_title">Куда идём?</string>
+    <string name="map_you_are_at_gate">Ты у главного входа</string>
+    <string name="map_about_place">О месте</string>
+    <string name="map_start_route">Начать путь</string>
+    <string name="map_label_sdu_life">SDU Life</string>
+    <string name="map_label_dorm">Общежитие</string>
+
+    <string name="place_not_found">Место не найдено</string>
+    <string name="place_nearby_title">Что рядом</string>
+    <string name="place_on_the_way">По пути: %1$s</string>
+    <string name="place_start_route_here">Начать путь сюда</string>
+
+    <string name="questions_count_one">%1$d вопрос про SDU</string>
+    <string name="questions_count_few">%1$d вопроса про SDU</string>
+    <string name="questions_count_many">%1$d вопросов про SDU</string>
+
+    <string name="q_library_opt1">A</string>
+    <string name="q_library_opt2">B</string>
+    <string name="q_library_opt3">F</string>
+    <string name="q_library_opt4">I</string>
+
+    <string name="q_medical_opt1">A и B</string>
+    <string name="q_medical_opt2">C и D</string>
+    <string name="q_medical_opt3">H и G</string>
+    <string name="q_medical_opt4">E и F</string>
+
+    <string name="q_block_h_opt1">A</string>
+    <string name="q_block_h_opt2">C</string>
+    <string name="q_block_h_opt3">F</string>
+    <string name="q_block_h_opt4">I</string>
+
+    <string name="q_dorm_opt1">SDU Life</string>
+    <string name="q_dorm_opt2">Student House</string>
+    <string name="q_dorm_opt3">Library</string>
+    <string name="q_dorm_opt4">Canteen</string>
+
+    <string name="q_gym_opt1">Student House</string>
+    <string name="q_gym_opt2">Блок B</string>
+    <string name="q_gym_opt3">SDU Life</string>
+    <string name="q_gym_opt4">Блок C</string>
 </resources>
