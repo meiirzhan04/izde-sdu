@@ -13,16 +13,6 @@ class ProgressLocalDataSource {
     private val _progress = MutableStateFlow(UserProgress())
     val progress: StateFlow<UserProgress> = _progress.asStateFlow()
 
-    fun addAnswerResult(isCorrect: Boolean, earnedPoints: Int) {
-        _progress.update { current ->
-            current.copy(
-                totalScore = current.totalScore + earnedPoints,
-                answeredCount = current.answeredCount + 1,
-                correctCount = current.correctCount + if (isCorrect) 1 else 0
-            )
-        }
-    }
-
     fun recordRouteAnswer(
         routeId: String,
         checkpointId: Int,

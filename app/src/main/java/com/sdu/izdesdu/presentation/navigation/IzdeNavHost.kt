@@ -34,9 +34,6 @@ fun IzdeNavHost(
                 }
             )
         }
-        composable<FromToRoute> {
-
-        }
         composable<PlaceDetailRoute> { backStackEntry ->
             val args = backStackEntry.toRoute<PlaceDetailRoute>()
             PlaceScreen(
@@ -78,12 +75,6 @@ fun IzdeNavHost(
                     }
                 }
             )
-        }
-        composable<MyRoutesRoute> {
-
-        }
-        composable<ProfileRoute> {
-
         }
     }
 }

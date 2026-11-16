@@ -10,9 +10,6 @@ class ProgressRepositoryImpl(
     private val localDataSource: ProgressLocalDataSource
 ): ProgressRepository {
     override val progress: StateFlow<UserProgress> = localDataSource.progress
-    override fun addAnswerResult(isCorrect: Boolean, earnedPoints: Int) {
-        localDataSource.addAnswerResult(isCorrect, earnedPoints)
-    }
     override fun recordRouteAnswer(
         routeId: String,
         checkpointId: Int,

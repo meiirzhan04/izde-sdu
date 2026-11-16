@@ -2,6 +2,7 @@ package com.sdu.izdesdu.presentation.question
 
 import com.sdu.izdesdu.data.local.ProgressLocalDataSource
 import com.sdu.izdesdu.data.repository.ProgressRepositoryImpl
+import com.sdu.izdesdu.domain.model.AnswerResult
 import com.sdu.izdesdu.domain.model.CheckPoint
 import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.domain.model.Route
@@ -190,7 +191,7 @@ class QuestionViewModelTest {
     @Test
     fun summaryRestoresRouteScoreAndMistakesAfterReopening() {
         val repo = createProgressRepo()
-        repo.addAnswerResult(true, 100)
+        repo.recordRouteAnswer("other_route", 1, 0, AnswerResult(true, 100))
         createViewModel(progressRepo = repo).selectAnswer(1)
         createViewModel(step = 2, progressRepo = repo).apply {
             selectAnswer(0)
