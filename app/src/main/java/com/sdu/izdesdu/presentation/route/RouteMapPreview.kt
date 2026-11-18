@@ -39,16 +39,15 @@ import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import kotlin.math.roundToInt
 
 @Composable
-internal fun RouteMapPreview(
+fun RouteMapPreview(
     checkpoints: List<CheckPoint>,
     currentStep: Int,
     isCompleted: Boolean,
     startLabel: String,
     modifier: Modifier = Modifier
 ) {
+    if (checkpoints.isEmpty()) return
     BoxWithConstraints(modifier = modifier) {
-        if (checkpoints.isEmpty()) return@BoxWithConstraints
-
         val density = LocalDensity.current
         val widthPx = with(density) { maxWidth.toPx() }
         val heightPx = with(density) { maxHeight.toPx() }

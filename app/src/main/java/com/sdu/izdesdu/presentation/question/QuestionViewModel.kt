@@ -1,9 +1,7 @@
 package com.sdu.izdesdu.presentation.question
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.UserProgress
 import com.sdu.izdesdu.domain.usecase.CompleteRouteUseCase
 import com.sdu.izdesdu.domain.usecase.GetRouteByIdUseCase
@@ -84,27 +82,6 @@ class QuestionViewModel(
         if (!completeRouteUseCase(routeId)) return StepAction.Blocked
         updateProgress(getUserProgressUseCase().value)
         return StepAction.Finished
-    }
-
-    companion object {
-        fun factory(
-            routeId: String,
-            step: Int,
-            container: AppContainer
-        ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                require(modelClass.isAssignableFrom(QuestionViewModel::class.java))
-                return QuestionViewModel(
-                    routeId = routeId,
-                    step = step,
-                    getRouteByIdUseCase = container.getRouteByIdUseCase,
-                    getUserProgressUseCase = container.getUserProgressUseCase,
-                    submitRouteAnswerUseCase = container.submitRouteAnswerUseCase,
-                    completeRouteUseCase = container.completeRouteUseCase
-                ) as T
-            }
-        }
     }
 }
 

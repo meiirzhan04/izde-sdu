@@ -17,10 +17,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             IzdesduTheme {
-                val container = (application as IzdeApp).container
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     IzdeNavHost(
-                        appContainer = container,
                         modifier = Modifier.padding(innerPadding)
                     )
                 }

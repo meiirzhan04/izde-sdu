@@ -30,9 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.Place
 import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.PlaceCard
@@ -42,16 +40,14 @@ import com.sdu.izdesdu.presentation.theme.IzdeMapBg
 import com.sdu.izdesdu.presentation.theme.IzdeOutline
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun MapScreen(
-    appContainer: AppContainer,
     onStartRoute: (String) -> Unit,
-    onOpenPlace: (String) -> Unit,
-    viewModel: MapViewModel = viewModel(
-        factory = MapViewModel.factory(appContainer)
-    )
+    onOpenPlace: (String) -> Unit
 ) {
+    val viewModel = koinViewModel<MapViewModel>()
     val uiState by viewModel.uiState.collectAsState()
 
     MapContent(

@@ -41,10 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.presentation.components.QuestionCard
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.CheckPoint
 import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.presentation.route.RouteMapPreview
@@ -58,21 +56,21 @@ import com.sdu.izdesdu.presentation.theme.IzdeOutline
 import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun QuestionScreen(
     routeId: String,
     step: Int,
-    appContainer: AppContainer,
     onBack: () -> Unit,
     onNextStep: (Int) -> Unit,
     onFinish: () -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: QuestionViewModel = viewModel(
-        key = "question_${routeId}_$step",
-        factory = QuestionViewModel.factory(routeId, step, appContainer)
-    )
+    modifier: Modifier = Modifier
 ) {
+    val viewModel = koinViewModel<QuestionViewModel>(key = "question_${routeId}_$step") {
+        parametersOf(routeId, step)
+    }
     val uiState by viewModel.uiState.collectAsState()
     val route = uiState.route
     val checkpoint = uiState.checkpoint

@@ -33,9 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.Place
 import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.PlacePin
@@ -46,18 +44,18 @@ import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
 import com.sdu.izdesdu.presentation.theme.IzdeTextBody
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun PlaceScreen(
     placeId: String,
-    appContainer: AppContainer,
     onBack: () -> Unit,
-    onStartRoute: (String) -> Unit,
-    viewModel: PlaceViewModel = viewModel(
-        key = "place_$placeId",
-        factory = PlaceViewModel.factory(placeId, appContainer)
-    )
+    onStartRoute: (String) -> Unit
 ) {
+    val viewModel = koinViewModel<PlaceViewModel>(key = "place_$placeId") {
+        parametersOf(placeId)
+    }
     val uiState by viewModel.uiState.collectAsState()
     val place = uiState.place
 

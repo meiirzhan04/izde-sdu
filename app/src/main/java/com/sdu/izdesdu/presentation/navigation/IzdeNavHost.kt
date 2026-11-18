@@ -2,23 +2,32 @@ package com.sdu.izdesdu.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.sdu.izdesdu.di.AppContainer
+import com.sdu.izdesdu.domain.usecase.GetRoutesUseCase
 import com.sdu.izdesdu.presentation.map.MapScreen
 import com.sdu.izdesdu.presentation.place.PlaceScreen
 import com.sdu.izdesdu.presentation.question.QuestionScreen
 import com.sdu.izdesdu.presentation.route.RouteScreen
+import org.koin.compose.koinInject
 
 @Composable
 fun IzdeNavHost(
-    appContainer: AppContainer,
-    modifier: Modifier = Modifier,
-    navController: NavHostController= rememberNavController()
+    modifier: Modifier = Modifier
 ) {
+    val navController = rememberNavController()
+    val getRoutes = koinInject<GetRoutesUseCase>()
+    val startRoute: (String) -> Unit = { placeId ->
+        val route = getRoutes().firstOrNull {
+            it.fromPlaceId == "main_gate" && it.toPlaceId == placeId
+        }
+        if (route != null) {
+            navController.navigate(RouteDetailRoute(route.id))
+        }
+    }
+
     NavHost(
         navController = navController,
         startDestination = MapRoute,
@@ -26,10 +35,7 @@ fun IzdeNavHost(
     ) {
         composable<MapRoute> {
             MapScreen(
-                appContainer = appContainer,
-                onStartRoute = { placeId ->
-                    navController.navigate(RouteDetailRoute("gate_to_$placeId"))
-                },
+                onStartRoute = startRoute,
                 onOpenPlace = { placeId ->
                     navController.navigate(PlaceDetailRoute(placeId))
                 }
@@ -39,18 +45,14 @@ fun IzdeNavHost(
             val args = backStackEntry.toRoute<PlaceDetailRoute>()
             PlaceScreen(
                 placeId = args.placeId,
-                appContainer = appContainer,
                 onBack = { navController.popBackStack() },
-                onStartRoute = { placeId ->
-                    navController.navigate(RouteDetailRoute("gate_to_$placeId"))
-                }
+                onStartRoute = startRoute
             )
         }
         composable<RouteDetailRoute> { backStackEntry ->
             val args = backStackEntry.toRoute<RouteDetailRoute>()
             RouteScreen(
                 routeId = args.routeId,
-                appContainer = appContainer,
                 onBack = { navController.popBackStack() },
                 onStartStep = { step ->
                     navController.navigate(QuestionRoute(args.routeId, step))
@@ -62,7 +64,6 @@ fun IzdeNavHost(
             QuestionScreen(
                 routeId = args.routeId,
                 step = args.step,
-                appContainer = appContainer,
                 onBack = { navController.popBackStack() },
                 onNextStep = { nextStep ->
                     navController.navigate(QuestionRoute(args.routeId, nextStep)) {

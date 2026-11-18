@@ -2,7 +2,6 @@ package com.sdu.izdesdu.presentation.route
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,11 +41,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.sdu.izdesdu.presentation.components.CheckpointRow
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.di.AppContainer
 import com.sdu.izdesdu.domain.model.Route
+import com.sdu.izdesdu.presentation.components.CheckpointRow
 import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
 import com.sdu.izdesdu.presentation.theme.IzdeGreen
@@ -57,19 +54,17 @@ import com.sdu.izdesdu.presentation.theme.IzdeOutline
 import com.sdu.izdesdu.presentation.theme.IzdeTextMuted
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun RouteScreen(
     routeId: String,
-    appContainer: AppContainer,
     onBack: () -> Unit,
     onStartStep: (Int) -> Unit,
-    modifier: Modifier = Modifier,
-    viewModel: RouteViewModel = viewModel(
-        key = "route_$routeId",
-        factory = RouteViewModel.factory(routeId, appContainer)
-    )
+    modifier: Modifier = Modifier
 ) {
+    val viewModel = koinViewModel<RouteViewModel>(key = "route_$routeId") { parametersOf(routeId) }
     val uiState by viewModel.uiState.collectAsState()
     val route = uiState.route
 
