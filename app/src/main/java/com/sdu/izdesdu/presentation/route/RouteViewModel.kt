@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class RouteViewModel(
     private val routeId: String,
-    private val getRouteByIdUseCase: GetRouteByIdUseCase,
+    getRouteByIdUseCase: GetRouteByIdUseCase,
     private val getUserProgressUseCase: GetUserProgressUseCase
 ) : ViewModel() {
     private val route = getRouteByIdUseCase(routeId)

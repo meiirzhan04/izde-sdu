@@ -6,9 +6,10 @@ import com.sdu.izdesdu.domain.model.Question
 class CheckAnswerUseCase {
     operator fun invoke(question: Question, selectedIndex: Int): AnswerResult {
         val isCorrect = selectedIndex in question.options.indices && selectedIndex == question.correctIndex
-        return AnswerResult(isCorrect, if (isCorrect) POINTS_PER_CORRECT else 0)
+        return AnswerResult(isCorrect, if (isCorrect) POINTS_PER_CORRECT else ZERO)
     }
     private companion object {
         const val POINTS_PER_CORRECT = 10
+        const val ZERO = 0
     }
 }

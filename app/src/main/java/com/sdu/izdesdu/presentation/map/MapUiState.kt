@@ -7,6 +7,5 @@ data class MapUiState(
     val selectedId: String? = null,
     val totalScore: Int = 0
 ) {
-    val selectedPlace: Place?
-        get() = places.find { it.id == selectedId }
+    val selectedPlace: Place? = places.find { it.id == selectedId }
 }

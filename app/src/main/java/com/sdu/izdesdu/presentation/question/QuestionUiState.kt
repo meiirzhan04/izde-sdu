@@ -18,12 +18,7 @@ data class QuestionUiState(
     val isLocked: Boolean = false,
     val isRouteFinished: Boolean = false
 ) {
-    val question: Question?
-        get() = checkpoint?.question
-
-    val isLastStep: Boolean
-        get() = totalCheckpoints > 0 && checkpointNumber >= totalCheckpoints
-
-    val isMissing: Boolean
-        get() = route == null || checkpoint == null
+    val question: Question? = checkpoint?.question
+    val isLastStep: Boolean = totalCheckpoints in 1..checkpointNumber
+    val isMissing: Boolean = route == null || checkpoint == null
 }

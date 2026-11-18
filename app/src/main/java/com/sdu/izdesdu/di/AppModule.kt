@@ -26,7 +26,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-internal val appModule = module {
+val appModule = module {
     single { PlaceLocalDataSource(androidContext()) }
     single { RouteLocalDataSource(androidContext()) }
     single { ProgressLocalDataSource() }

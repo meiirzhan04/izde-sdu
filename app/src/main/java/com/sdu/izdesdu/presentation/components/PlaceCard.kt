@@ -33,16 +33,12 @@ fun PlaceCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val shape = RoundedCornerShape(20.dp)
-    val backgroundColor = if (selected) IzdeSelectedCard else Color.White
-    val borderColor = if (selected) Color(place.colorHex) else IzdeOutline
-
     Column(
         modifier = modifier
             .width(160.dp)
-            .clip(shape)
-            .background(backgroundColor)
-            .border(2.dp, borderColor, shape)
+            .clip(RoundedCornerShape(20.dp))
+            .background(if (selected) IzdeSelectedCard else Color.White)
+            .border(2.dp, if (selected) Color(place.colorHex) else IzdeOutline, RoundedCornerShape(20.dp))
             .clickable { onClick() }
             .padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)

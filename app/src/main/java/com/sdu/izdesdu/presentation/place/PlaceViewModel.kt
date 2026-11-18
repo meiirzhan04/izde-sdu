@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class PlaceViewModel(
-    private val placeId: String,
-    private val getPlaceByIdUseCase: GetPlaceByIdUseCase
+    placeId: String,
+    getPlaceByIdUseCase: GetPlaceByIdUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(PlaceUiState(place = getPlaceByIdUseCase(placeId)))
     val uiState: StateFlow<PlaceUiState> = _uiState.asStateFlow()

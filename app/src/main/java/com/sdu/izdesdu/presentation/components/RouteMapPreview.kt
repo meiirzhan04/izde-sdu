@@ -1,4 +1,4 @@
-package com.sdu.izdesdu.presentation.route
+package com.sdu.izdesdu.presentation.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

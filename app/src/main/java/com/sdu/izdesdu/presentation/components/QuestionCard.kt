@@ -82,7 +82,7 @@ fun QuestionCard(
         }
 
         if (isCorrect != null) {
-            FeedbackBanner(isCorrect = isCorrect == true)
+            FeedbackBanner(isCorrect = isCorrect)
         }
 
         if (showHint && isCorrect != true) {
