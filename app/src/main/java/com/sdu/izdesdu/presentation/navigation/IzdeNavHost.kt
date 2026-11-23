@@ -12,7 +12,9 @@ import com.sdu.izdesdu.presentation.place.PlaceScreen
 import com.sdu.izdesdu.presentation.question.QuestionScreen
 import com.sdu.izdesdu.presentation.route.RouteScreen
 import com.sdu.izdesdu.presentation.weather.WeatherScreen
+import com.sdu.izdesdu.presentation.weather.WeatherViewModel
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun IzdeNavHost(
@@ -20,6 +22,7 @@ fun IzdeNavHost(
 ) {
     val navController = rememberNavController()
     val getRoutes = koinInject<GetRoutesUseCase>()
+    val weatherViewModel = koinViewModel<WeatherViewModel>()
     val startRoute: (String) -> Unit = { placeId ->
         val route = getRoutes().firstOrNull {
             it.fromPlaceId == "main_gate" && it.toPlaceId == placeId
@@ -42,12 +45,14 @@ fun IzdeNavHost(
                 },
                 onOpenWeather = {
                     navController.navigate(WeatherRoute)
-                }
+                },
+                weatherViewModel = weatherViewModel
             )
         }
         composable<WeatherRoute> {
             WeatherScreen(
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                viewModel = weatherViewModel
             )
         }
         composable<PlaceDetailRoute> { backStackEntry ->
