@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.di
 
+import android.content.pm.ApplicationInfo
 import com.sdu.izdesdu.data.remote.api.WeatherApi
 import com.sdu.izdesdu.data.repository.WeatherRepositoryImpl
 import com.sdu.izdesdu.domain.repository.WeatherRepository
@@ -9,6 +10,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -24,13 +26,20 @@ val networkModule = module {
     }
 
     single {
+        val isDebuggable =
+            (androidContext().applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
         val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BASIC
+            level = if (isDebuggable) {
+                HttpLoggingInterceptor.Level.BASIC
+            } else {
+                HttpLoggingInterceptor.Level.NONE
+            }
         }
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
             .build()
     }
 
@@ -39,7 +48,7 @@ val networkModule = module {
         Retrofit.Builder()
             .baseUrl(WeatherApi.BASE_URL)
             .client(get())
-            .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
+            .addConverterFactory(json.asConverterFactory("application/json; charset=UTF-8".toMediaType()))
             .build()
     }
 
