@@ -32,11 +32,11 @@ data class CurrentWeatherDto(
 @Serializable
 data class HourlyWeatherDto(
     @SerialName("time")
-    val time: List<String> = emptyList(),
+    val time: List<String?> = emptyList(),
     @SerialName("temperature_2m")
-    val temperature2m: List<Double> = emptyList(),
+    val temperature2m: List<Double?> = emptyList(),
     @SerialName("weather_code")
-    val weatherCode: List<Int> = emptyList(),
+    val weatherCode: List<Int?> = emptyList(),
     @SerialName("is_day")
-    val isDay: List<Int> = emptyList()
+    val isDay: List<Int?> = emptyList()
 )
