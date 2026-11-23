@@ -187,6 +187,9 @@
     <string name="weather_loading">Загружаем погоду в кампусе…</string>
     <string name="weather_map_loading">Загрузка погоды…</string>
     <string name="weather_error_title">Не удалось загрузить погоду</string>
+    <string name="weather_error_network">Нет подключения к интернету. Проверь сеть и попробуй снова.</string>
+    <string name="weather_error_timeout">Сервер погоды отвечает слишком долго. Попробуй снова.</string>
+    <string name="weather_error_server">Сервер погоды временно недоступен. Попробуй позже.</string>
     <string name="weather_error_default">Проверь подключение к интернету и попробуй снова.</string>
     <string name="weather_map_error">Нет связи</string>
     <string name="weather_empty_title">Нет данных о погоде</string>

@@ -3,6 +3,7 @@ package com.sdu.izdesdu.presentation.weather
 import androidx.annotation.StringRes
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.WeatherCondition
+import com.sdu.izdesdu.domain.model.WeatherErrorType
 
 @StringRes
 fun WeatherCondition.labelRes(): Int = when (this) {
@@ -27,4 +28,12 @@ fun WeatherCondition.campusAdviceRes(temperatureC: Int): Int = when {
     temperatureC <= 5 -> R.string.weather_advice_cold
     this == WeatherCondition.CLEAR -> R.string.weather_advice_clear
     else -> R.string.weather_advice_cloudy
+}
+
+@StringRes
+fun WeatherErrorType.messageRes(): Int = when (this) {
+    WeatherErrorType.NETWORK -> R.string.weather_error_network
+    WeatherErrorType.TIMEOUT -> R.string.weather_error_timeout
+    WeatherErrorType.SERVER -> R.string.weather_error_server
+    WeatherErrorType.UNKNOWN -> R.string.weather_error_default
 }

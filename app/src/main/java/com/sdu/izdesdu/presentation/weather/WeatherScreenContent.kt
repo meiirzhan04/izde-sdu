@@ -52,6 +52,7 @@ import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.domain.model.HourlyWeather
 import com.sdu.izdesdu.domain.model.WeatherCondition
+import com.sdu.izdesdu.domain.model.WeatherErrorType
 import com.sdu.izdesdu.presentation.theme.IzdesduTheme
 
 @Composable
@@ -81,7 +82,7 @@ fun WeatherScreenContent(
                 modifier = Modifier.weight(1f)
             )
             is WeatherUiState.Error -> WeatherErrorState(
-                message = uiState.message,
+                errorType = uiState.errorType,
                 onRetry = onRetry,
                 modifier = Modifier.weight(1f)
             )
@@ -183,7 +184,7 @@ private fun WeatherLoadingState(
 
 @Composable
 private fun WeatherErrorState(
-    message: String,
+    errorType: WeatherErrorType,
     onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -228,7 +229,7 @@ private fun WeatherErrorState(
                 )
 
                 Text(
-                    text = message.ifBlank { stringResource(R.string.weather_error_default) },
+                    text = stringResource(errorType.messageRes()),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -599,7 +600,7 @@ private fun WeatherScreenSuccessPreview() {
 private fun WeatherScreenErrorPreview() {
     IzdesduTheme {
         WeatherScreenContent(
-            uiState = WeatherUiState.Error(""),
+            uiState = WeatherUiState.Error(WeatherErrorType.NETWORK),
             onBack = {},
             onRetry = {}
         )
