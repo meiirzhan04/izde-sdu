@@ -44,18 +44,25 @@ object WeatherMapper {
         )
         if (count == 0) return emptyList()
 
-        val allItems = (0 until count).map { index ->
-            val code = hourly.weatherCode[index]
+        val allItems = (0 until count).mapNotNull { index ->
+            val timeLabel = extractHourMinute(hourly.time[index])
+            val temperature = hourly.temperature2m[index]
+            if (timeLabel.isBlank() || temperature == null) {
+                return@mapNotNull null
+            }
+            val code = hourly.weatherCode[index] ?: 0
             val isDay = hourly.isDay.getOrNull(index) != 0
             HourlyWeather(
-                timeLabel = extractHourMinute(hourly.time[index]),
-                temperatureC = hourly.temperature2m[index].roundToInt(),
+                timeLabel = timeLabel,
+                temperatureC = temperature.roundToInt(),
                 condition = mapCondition(code),
                 iconUrl = buildIconUrl(code, isDay)
             )
         }
+        if (allItems.isEmpty()) return emptyList()
 
         val currentHourPrefix = currentHourMinute.take(2)
+        if (currentHourPrefix.length < 2) return allItems
         val startIndex = allItems.indexOfFirst { it.timeLabel.startsWith(currentHourPrefix) }
         return if (startIndex in allItems.indices) {
             allItems.subList(startIndex, allItems.size)
