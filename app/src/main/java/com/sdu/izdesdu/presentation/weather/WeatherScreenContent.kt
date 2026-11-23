@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -46,13 +48,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.domain.model.HourlyWeather
 import com.sdu.izdesdu.domain.model.WeatherCondition
 import com.sdu.izdesdu.domain.model.WeatherErrorType
+import com.sdu.izdesdu.presentation.theme.IzdeBlue
+import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
+import com.sdu.izdesdu.presentation.theme.IzdeError
+import com.sdu.izdesdu.presentation.theme.IzdeErrorBg
+import com.sdu.izdesdu.presentation.theme.IzdeOutline
+import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
+import com.sdu.izdesdu.presentation.theme.IzdeTextMuted
+import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
+import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 import com.sdu.izdesdu.presentation.theme.IzdesduTheme
 
 @Composable
@@ -65,7 +76,7 @@ fun WeatherScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(IzdeSurfaceCard)
     ) {
         WeatherTopBar(
             onBack = onBack,
@@ -109,18 +120,18 @@ private fun WeatherTopBar(
     ) {
         Surface(
             modifier = Modifier
-                .size(42.dp)
+                .size(44.dp)
                 .clip(CircleShape)
                 .clickable(onClick = onBack),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            color = Color.White,
+            border = BorderStroke(1.dp, IzdeOutline)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.route_back),
-                    tint = MaterialTheme.colorScheme.onSurface,
+                    tint = IzdeTextPrimary,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -130,27 +141,23 @@ private fun WeatherTopBar(
             text = stringResource(R.string.weather_screen_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = IzdeTextPrimary
         )
 
         Surface(
             modifier = Modifier
-                .size(42.dp)
+                .size(44.dp)
                 .clip(CircleShape)
                 .clickable(enabled = refreshEnabled, onClick = onRefresh),
             shape = CircleShape,
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            color = Color.White,
+            border = BorderStroke(1.dp, IzdeOutline)
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.Filled.Refresh,
                     contentDescription = stringResource(R.string.weather_refresh),
-                    tint = if (refreshEnabled) {
-                        MaterialTheme.colorScheme.onSurface
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f)
-                    },
+                    tint = if (refreshEnabled) IzdeTextPrimary else IzdeTextMuted,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -171,11 +178,11 @@ private fun WeatherLoadingState(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier.padding(24.dp)
         ) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = IzdeBlue)
             Text(
                 text = stringResource(R.string.weather_loading),
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                color = IzdeTextSecondary,
                 textAlign = TextAlign.Center
             )
         }
@@ -197,8 +204,8 @@ private fun WeatherErrorState(
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            color = Color.White,
+            border = BorderStroke(1.dp, IzdeOutline)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
@@ -207,14 +214,14 @@ private fun WeatherErrorState(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.errorContainer,
+                    color = IzdeErrorBg,
                     modifier = Modifier.size(56.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Filled.Warning,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onErrorContainer,
+                            tint = IzdeError,
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -224,14 +231,14 @@ private fun WeatherErrorState(
                     text = stringResource(R.string.weather_error_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = IzdeTextPrimary,
                     textAlign = TextAlign.Center
                 )
 
                 Text(
                     text = stringResource(errorType.messageRes()),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = IzdeTextSecondary,
                     textAlign = TextAlign.Center
                 )
 
@@ -240,6 +247,10 @@ private fun WeatherErrorState(
                 Button(
                     onClick = onRetry,
                     shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = IzdeBlue,
+                        contentColor = Color.White
+                    ),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
@@ -267,8 +278,8 @@ private fun WeatherEmptyState(
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             shape = RoundedCornerShape(24.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            color = Color.White,
+            border = BorderStroke(1.dp, IzdeOutline)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
@@ -277,14 +288,14 @@ private fun WeatherEmptyState(
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.secondaryContainer,
+                    color = IzdeBlueHalo,
                     modifier = Modifier.size(56.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Filled.Info,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSecondaryContainer,
+                            tint = IzdeBlue,
                             modifier = Modifier.size(28.dp)
                         )
                     }
@@ -294,14 +305,14 @@ private fun WeatherEmptyState(
                     text = stringResource(R.string.weather_empty_title),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
+                    color = IzdeTextPrimary,
                     textAlign = TextAlign.Center
                 )
 
                 Text(
                     text = stringResource(R.string.weather_empty_desc),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = IzdeTextSecondary,
                     textAlign = TextAlign.Center
                 )
 
@@ -310,6 +321,8 @@ private fun WeatherEmptyState(
                 OutlinedButton(
                     onClick = onRefresh,
                     shape = RoundedCornerShape(14.dp),
+                    border = BorderStroke(1.5.dp, IzdeOutline),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = IzdeTextPrimary),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
@@ -340,7 +353,7 @@ private fun WeatherSuccessState(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(28.dp),
-            color = MaterialTheme.colorScheme.primaryContainer
+            color = IzdeBlue
         ) {
             Column(
                 modifier = Modifier.padding(20.dp),
@@ -358,14 +371,14 @@ private fun WeatherSuccessState(
                         Icon(
                             imageVector = Icons.Filled.LocationOn,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            tint = Color.White,
                             modifier = Modifier.size(16.dp)
                         )
                         Text(
                             text = stringResource(R.string.weather_campus_location),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color.White
                         )
                     }
 
@@ -373,7 +386,7 @@ private fun WeatherSuccessState(
                         Text(
                             text = stringResource(R.string.weather_updated_at, weather.updatedTime),
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
+                            color = Color.White.copy(alpha = 0.8f)
                         )
                     }
                 }
@@ -388,33 +401,25 @@ private fun WeatherSuccessState(
                             text = stringResource(R.string.weather_temp_value, weather.temperatureC),
                             fontSize = 56.sp,
                             fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color.White
                         )
                         Text(
                             text = conditionText,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                        Text(
-                            text = stringResource(R.string.weather_feels_like, weather.feelsLikeC),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                            color = Color.White.copy(alpha = 0.92f)
                         )
                     }
 
                     Surface(
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.65f),
+                        color = Color.White.copy(alpha = 0.2f),
                         modifier = Modifier.size(88.dp)
                     ) {
-                        AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(weather.iconUrl)
-                                .crossfade(true)
-                                .build(),
+                        WeatherRemoteIcon(
+                            iconUrl = weather.iconUrl,
                             contentDescription = conditionText,
-                            contentScale = ContentScale.Fit,
+                            placeholderColor = Color.White.copy(alpha = 0.16f),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(8.dp)
@@ -448,8 +453,8 @@ private fun WeatherSuccessState(
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            color = Color.White,
+            border = BorderStroke(1.dp, IzdeOutline)
         ) {
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -459,12 +464,12 @@ private fun WeatherSuccessState(
                     text = stringResource(R.string.weather_advice_title),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    color = IzdeTextPrimary
                 )
                 Text(
                     text = stringResource(weather.condition.campusAdviceRes(weather.temperatureC)),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    color = IzdeTextSecondary
                 )
             }
         }
@@ -473,17 +478,17 @@ private fun WeatherSuccessState(
             text = stringResource(R.string.weather_hourly_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.onBackground
+            color = IzdeTextPrimary
         )
 
         LazyRow(
             contentPadding = PaddingValues(end = 8.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(
+            itemsIndexed(
                 items = weather.hourly,
-                key = { it.timeLabel }
-            ) { item ->
+                key = { index, item -> "${index}_${item.timeLabel}" }
+            ) { _, item ->
                 HourlyWeatherCard(item = item)
             }
         }
@@ -501,8 +506,8 @@ private fun WeatherMetricCard(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        color = Color.White,
+        border = BorderStroke(1.dp, IzdeOutline)
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp),
@@ -512,13 +517,13 @@ private fun WeatherMetricCard(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = IzdeTextSecondary
             )
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = IzdeTextPrimary
             )
         }
     }
@@ -533,8 +538,8 @@ private fun HourlyWeatherCard(
     Surface(
         modifier = Modifier.width(88.dp),
         shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.surface,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+        color = Color.White,
+        border = BorderStroke(1.dp, IzdeOutline)
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 12.dp),
@@ -544,16 +549,13 @@ private fun HourlyWeatherCard(
             Text(
                 text = item.timeLabel,
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = IzdeTextSecondary
             )
 
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(item.iconUrl)
-                    .crossfade(true)
-                    .build(),
+            WeatherRemoteIcon(
+                iconUrl = item.iconUrl,
                 contentDescription = label,
-                contentScale = ContentScale.Fit,
+                placeholderColor = IzdeSurfaceCard,
                 modifier = Modifier.size(44.dp)
             )
 
@@ -561,10 +563,46 @@ private fun HourlyWeatherCard(
                 text = stringResource(R.string.weather_temp_value, item.temperatureC),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = IzdeTextPrimary
             )
         }
     }
+}
+
+@Composable
+private fun WeatherRemoteIcon(
+    iconUrl: String,
+    contentDescription: String,
+    placeholderColor: Color,
+    modifier: Modifier = Modifier
+) {
+    SubcomposeAsyncImage(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(iconUrl)
+            .crossfade(true)
+            .build(),
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Fit,
+        loading = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(6.dp)
+                    .clip(CircleShape)
+                    .background(placeholderColor)
+            )
+        },
+        error = {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(6.dp)
+                    .clip(CircleShape)
+                    .background(placeholderColor)
+            )
+        },
+        modifier = modifier
+    )
 }
 
 @Preview(widthDp = 390, heightDp = 844)

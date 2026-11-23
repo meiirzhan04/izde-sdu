@@ -176,7 +176,6 @@
     <string name="weather_campus_location">Кампус SDU · Каскелен</string>
     <string name="weather_updated_at">Обновлено в %1$s</string>
     <string name="weather_temp_value">%1$d°</string>
-    <string name="weather_feels_like">Ощущается как %1$d°</string>
     <string name="weather_feels_like_label">Ощущается</string>
     <string name="weather_wind_label">Ветер</string>
     <string name="weather_wind_value">%1$d км/ч</string>
