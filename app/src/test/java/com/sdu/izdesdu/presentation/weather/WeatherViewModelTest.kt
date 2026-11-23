@@ -3,6 +3,7 @@ package com.sdu.izdesdu.presentation.weather
 import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.domain.model.HourlyWeather
 import com.sdu.izdesdu.domain.model.WeatherCondition
+import com.sdu.izdesdu.domain.model.WeatherErrorType
 import com.sdu.izdesdu.domain.repository.WeatherRepository
 import com.sdu.izdesdu.domain.usecase.GetCampusWeatherUseCase
 import kotlinx.coroutines.CompletableDeferred
@@ -98,7 +99,7 @@ class WeatherViewModelTest {
 
         val errorState = viewModel.uiState.value
         assertTrue(errorState is WeatherUiState.Error)
-        assertEquals("No internet connection", (errorState as WeatherUiState.Error).message)
+        assertEquals(WeatherErrorType.NETWORK, (errorState as WeatherUiState.Error).errorType)
 
         shouldFail = false
         viewModel.retry()
