@@ -2,6 +2,7 @@ package com.sdu.izdesdu
 
 import android.app.Application
 import com.sdu.izdesdu.di.appModule
+import com.sdu.izdesdu.di.networkModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -10,7 +11,7 @@ class IzdeApp : Application() {
         super.onCreate()
         startKoin {
             androidContext(this@IzdeApp)
-            modules(appModule)
+            modules(appModule, networkModule)
         }
     }
 }
