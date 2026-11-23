@@ -92,4 +92,31 @@ class WeatherMapperTest {
         assertEquals(WeatherCondition.SHOWERS, WeatherMapper.mapCondition(81))
         assertEquals(WeatherCondition.THUNDERSTORM, WeatherMapper.mapCondition(95))
     }
+
+    @Test
+    fun toDomain_skipsNullableAndBlankHourlyEntries() {
+        val dto = WeatherResponseDto(
+            current = CurrentWeatherDto(
+                time = "2026-11-23T13:10",
+                temperature2m = 10.0,
+                weatherCode = 0,
+                isDay = 1
+            ),
+            hourly = HourlyWeatherDto(
+                time = listOf(null, "2026-11-23T13:00", "", "2026-11-23T14:00"),
+                temperature2m = listOf(9.0, null, 11.0, 12.4),
+                weatherCode = listOf(0, 1, 2, null),
+                isDay = listOf(1, 1, 1, null)
+            )
+        )
+
+        val weather = WeatherMapper.toDomain(dto)
+
+        assertNotNull(weather)
+        assertEquals(1, weather!!.hourly.size)
+        assertEquals("14:00", weather.hourly[0].timeLabel)
+        assertEquals(12, weather.hourly[0].temperatureC)
+        assertEquals(WeatherCondition.CLEAR, weather.hourly[0].condition)
+        assertEquals("https://openweathermap.org/img/wn/01d@2x.png", weather.hourly[0].iconUrl)
+    }
 }

@@ -4,17 +4,17 @@ import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.domain.model.HourlyWeather
 import com.sdu.izdesdu.domain.model.WeatherCondition
 import com.sdu.izdesdu.domain.model.WeatherErrorType
+import com.sdu.izdesdu.domain.model.WeatherException
 import com.sdu.izdesdu.domain.repository.WeatherRepository
 import com.sdu.izdesdu.domain.usecase.GetCampusWeatherUseCase
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.io.IOException
+import java.net.SocketTimeoutException
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class WeatherViewModelTest {
 
     private val sampleWeather = CampusWeather(
@@ -107,5 +107,41 @@ class WeatherViewModelTest {
         val successState = viewModel.uiState.value
         assertTrue(successState is WeatherUiState.Success)
         assertEquals(sampleWeather, (successState as WeatherUiState.Success).weather)
+    }
+
+    @Test
+    fun loadWeather_mapsTimeoutServerAndUnknownErrors() {
+        val timeoutVm = WeatherViewModel(
+            getCampusWeatherUseCase = GetCampusWeatherUseCase(
+                object : WeatherRepository {
+                    override suspend fun getCampusWeather(): Result<CampusWeather?> =
+                        Result.failure(SocketTimeoutException("timeout"))
+                }
+            ),
+            dispatcher = Dispatchers.Unconfined
+        )
+        assertEquals(WeatherUiState.Error(WeatherErrorType.TIMEOUT), timeoutVm.uiState.value)
+
+        val serverVm = WeatherViewModel(
+            getCampusWeatherUseCase = GetCampusWeatherUseCase(
+                object : WeatherRepository {
+                    override suspend fun getCampusWeather(): Result<CampusWeather?> =
+                        Result.failure(WeatherException(WeatherErrorType.SERVER))
+                }
+            ),
+            dispatcher = Dispatchers.Unconfined
+        )
+        assertEquals(WeatherUiState.Error(WeatherErrorType.SERVER), serverVm.uiState.value)
+
+        val unknownVm = WeatherViewModel(
+            getCampusWeatherUseCase = GetCampusWeatherUseCase(
+                object : WeatherRepository {
+                    override suspend fun getCampusWeather(): Result<CampusWeather?> =
+                        Result.failure(IllegalStateException("unexpected"))
+                }
+            ),
+            dispatcher = Dispatchers.Unconfined
+        )
+        assertEquals(WeatherUiState.Error(WeatherErrorType.UNKNOWN), unknownVm.uiState.value)
     }
 }
