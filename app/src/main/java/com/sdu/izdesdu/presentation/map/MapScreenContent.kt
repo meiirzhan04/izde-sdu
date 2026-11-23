@@ -1,6 +1,7 @@
 package com.sdu.izdesdu.presentation.map
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,18 +11,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.domain.model.Place
+import com.sdu.izdesdu.domain.model.WeatherCondition
 import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.MapHeader
 import com.sdu.izdesdu.presentation.components.PlacesSheet
+import com.sdu.izdesdu.presentation.components.WeatherMapWidget
 import com.sdu.izdesdu.presentation.theme.IzdeMapBg
+import com.sdu.izdesdu.presentation.weather.WeatherUiState
 
 @Composable
 fun MapScreenContent(
     uiState: MapUiState,
+    weatherState: WeatherUiState,
     onSelectPlace: (String) -> Unit,
     onStartRoute: (String) -> Unit,
-    onOpenPlace: (String) -> Unit
+    onOpenPlace: (String) -> Unit,
+    onOpenWeather: () -> Unit,
+    onRetryWeather: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -35,12 +43,22 @@ fun MapScreenContent(
                 onPinClick = onSelectPlace,
                 modifier = Modifier.fillMaxSize()
             )
-            MapHeader(
-                totalScore = uiState.totalScore,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-            )
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                MapHeader(
+                    totalScore = uiState.totalScore,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                WeatherMapWidget(
+                    weatherState = weatherState,
+                    onOpenWeather = onOpenWeather,
+                    onRetry = onRetryWeather
+                )
+            }
         }
 
         PlacesSheet(
@@ -75,8 +93,23 @@ private fun MapScreenContentPreview() {
             selectedId = "canteen",
             totalScore = 20
         ),
+        weatherState = WeatherUiState.Success(
+            CampusWeather(
+                temperatureC = 14,
+                feelsLikeC = 12,
+                windSpeedKmh = 8,
+                humidityPercent = 45,
+                condition = WeatherCondition.CLEAR,
+                iconUrl = "https://openweathermap.org/img/wn/01d@2x.png",
+                isDay = true,
+                updatedTime = "13:00",
+                hourly = emptyList()
+            )
+        ),
         onSelectPlace = {},
         onStartRoute = {},
-        onOpenPlace = {}
+        onOpenPlace = {},
+        onOpenWeather = {},
+        onRetryWeather = {}
     )
 }

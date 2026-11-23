@@ -11,6 +11,7 @@ import com.sdu.izdesdu.presentation.map.MapScreen
 import com.sdu.izdesdu.presentation.place.PlaceScreen
 import com.sdu.izdesdu.presentation.question.QuestionScreen
 import com.sdu.izdesdu.presentation.route.RouteScreen
+import com.sdu.izdesdu.presentation.weather.WeatherScreen
 import org.koin.compose.koinInject
 
 @Composable
@@ -38,7 +39,15 @@ fun IzdeNavHost(
                 onStartRoute = startRoute,
                 onOpenPlace = { placeId ->
                     navController.navigate(PlaceDetailRoute(placeId))
+                },
+                onOpenWeather = {
+                    navController.navigate(WeatherRoute)
                 }
+            )
+        }
+        composable<WeatherRoute> {
+            WeatherScreen(
+                onBack = { navController.popBackStack() }
             )
         }
         composable<PlaceDetailRoute> { backStackEntry ->
