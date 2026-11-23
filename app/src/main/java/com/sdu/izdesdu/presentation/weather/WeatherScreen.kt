@@ -7,9 +7,9 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun WeatherScreen(
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    viewModel: WeatherViewModel = koinViewModel()
 ) {
-    val viewModel = koinViewModel<WeatherViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     WeatherScreenContent(

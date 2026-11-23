@@ -10,10 +10,10 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MapScreen(
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
-    onOpenWeather: () -> Unit
+    onOpenWeather: () -> Unit,
+    weatherViewModel: WeatherViewModel = koinViewModel()
 ) {
     val viewModel = koinViewModel<MapViewModel>()
-    val weatherViewModel = koinViewModel<WeatherViewModel>()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val weatherState by weatherViewModel.uiState.collectAsStateWithLifecycle()
 
