@@ -2,7 +2,6 @@ package com.sdu.izdesdu.presentation.weather
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +44,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -119,10 +119,8 @@ private fun WeatherTopBar(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Surface(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .clickable(onClick = onBack),
+            onClick = onBack,
+            modifier = Modifier.size(44.dp),
             shape = CircleShape,
             color = Color.White,
             border = BorderStroke(1.dp, IzdeOutline)
@@ -141,14 +139,15 @@ private fun WeatherTopBar(
             text = stringResource(R.string.weather_screen_title),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary
+            color = IzdeTextPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
 
         Surface(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(CircleShape)
-                .clickable(enabled = refreshEnabled, onClick = onRefresh),
+            onClick = onRefresh,
+            enabled = refreshEnabled,
+            modifier = Modifier.size(44.dp),
             shape = CircleShape,
             color = Color.White,
             border = BorderStroke(1.dp, IzdeOutline)
@@ -196,7 +195,10 @@ private fun WeatherErrorState(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(
@@ -270,7 +272,10 @@ private fun WeatherEmptyState(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(vertical = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Surface(
@@ -362,9 +367,10 @@ private fun WeatherSuccessState(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Row(
+                        modifier = Modifier.weight(1f),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
@@ -378,7 +384,9 @@ private fun WeatherSuccessState(
                             text = stringResource(R.string.weather_campus_location),
                             style = MaterialTheme.typography.labelLarge,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.White
+                            color = Color.White,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
@@ -386,7 +394,8 @@ private fun WeatherSuccessState(
                         Text(
                             text = stringResource(R.string.weather_updated_at, weather.updatedTime),
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color.White.copy(alpha = 0.8f)
+                            color = Color.White.copy(alpha = 0.8f),
+                            maxLines = 1
                         )
                     }
                 }
@@ -394,20 +403,26 @@ private fun WeatherSuccessState(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Text(
                             text = stringResource(R.string.weather_temp_value, weather.temperatureC),
                             fontSize = 56.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = Color.White,
+                            maxLines = 1
                         )
                         Text(
                             text = conditionText,
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.SemiBold,
-                            color = Color.White.copy(alpha = 0.92f)
+                            color = Color.White.copy(alpha = 0.92f),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
 
@@ -510,20 +525,24 @@ private fun WeatherMetricCard(
         border = BorderStroke(1.dp, IzdeOutline)
     ) {
         Column(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp),
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 14.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = IzdeTextSecondary
+                color = IzdeTextSecondary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Text(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = IzdeTextPrimary,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -552,12 +571,20 @@ private fun HourlyWeatherCard(
                 color = IzdeTextSecondary
             )
 
-            WeatherRemoteIcon(
-                iconUrl = item.iconUrl,
-                contentDescription = label,
-                placeholderColor = IzdeSurfaceCard,
-                modifier = Modifier.size(44.dp)
-            )
+            Surface(
+                shape = CircleShape,
+                color = IzdeBlueHalo,
+                modifier = Modifier.size(46.dp)
+            ) {
+                WeatherRemoteIcon(
+                    iconUrl = item.iconUrl,
+                    contentDescription = label,
+                    placeholderColor = IzdeBlue.copy(alpha = 0.14f),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp)
+                )
+            }
 
             Text(
                 text = stringResource(R.string.weather_temp_value, item.temperatureC),

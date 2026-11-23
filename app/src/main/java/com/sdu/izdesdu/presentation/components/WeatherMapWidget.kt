@@ -2,7 +2,6 @@ package com.sdu.izdesdu.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -38,7 +37,6 @@ import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
 import com.sdu.izdesdu.presentation.theme.IzdeError
 import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
 import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 import com.sdu.izdesdu.presentation.weather.WeatherUiState
@@ -52,9 +50,8 @@ fun WeatherMapWidget(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
-            .clickable(onClick = onOpenWeather),
+        onClick = onOpenWeather,
+        modifier = modifier,
         shape = RoundedCornerShape(18.dp),
         color = Color.White,
         border = BorderStroke(1.dp, IzdeOutline),
@@ -91,33 +88,43 @@ fun WeatherMapWidget(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
-                    SubcomposeAsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(weather.iconUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = conditionText,
-                        contentScale = ContentScale.Fit,
-                        loading = {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp)
-                                    .clip(CircleShape)
-                                    .background(IzdeSurfaceCard)
-                            )
-                        },
-                        error = {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(4.dp)
-                                    .clip(CircleShape)
-                                    .background(IzdeSurfaceCard)
-                            )
-                        },
-                        modifier = Modifier.size(28.dp)
-                    )
+                    Box(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clip(CircleShape)
+                            .background(IzdeBlueHalo),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        SubcomposeAsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(weather.iconUrl)
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = conditionText,
+                            contentScale = ContentScale.Fit,
+                            loading = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(6.dp)
+                                        .clip(CircleShape)
+                                        .background(IzdeBlue.copy(alpha = 0.14f))
+                                )
+                            },
+                            error = {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .padding(6.dp)
+                                        .clip(CircleShape)
+                                        .background(IzdeBlue.copy(alpha = 0.14f))
+                                )
+                            },
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(2.dp)
+                        )
+                    }
                     Text(
                         text = stringResource(R.string.weather_temp_value, weather.temperatureC),
                         style = MaterialTheme.typography.titleSmall,
@@ -161,9 +168,7 @@ fun WeatherMapWidget(
                         maxLines = 1
                     )
                     Surface(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable(onClick = onRetry),
+                        onClick = onRetry,
                         shape = RoundedCornerShape(12.dp),
                         color = IzdeBlueHalo
                     ) {
