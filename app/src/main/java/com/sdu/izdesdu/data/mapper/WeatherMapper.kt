@@ -10,6 +10,14 @@ import kotlin.math.roundToInt
 object WeatherMapper {
     private const val ICON_URL_PREFIX = "https://openweathermap.org/img/wn/"
     private const val ICON_URL_SUFFIX = "@2x.png"
+    private const val ISO_TIME_DELIMITER = 'T'
+    private const val TIME_LABEL_LENGTH = 5
+    private const val HOUR_PREFIX_LENGTH = 2
+
+    private data class WmoMapping(
+        val condition: WeatherCondition,
+        val iconPrefix: String
+    )
 
     fun toDomain(dto: WeatherResponseDto): CampusWeather? {
         val current = dto.current ?: return null
@@ -17,18 +25,18 @@ object WeatherMapper {
         val weatherCode = current.weatherCode ?: 0
         val isDay = current.isDay != 0
         val updatedTime = extractHourMinute(current.time)
-        val hourlyItems = mapHourly(dto.hourly, updatedTime)
+        val wmo = resolveWmo(weatherCode)
 
         return CampusWeather(
             temperatureC = temperature.roundToInt(),
             feelsLikeC = (current.apparentTemperature ?: temperature).roundToInt(),
             windSpeedKmh = (current.windSpeed10m ?: 0.0).roundToInt(),
             humidityPercent = current.relativeHumidity2m ?: 0,
-            condition = mapCondition(weatherCode),
-            iconUrl = buildIconUrl(weatherCode, isDay),
+            condition = wmo.condition,
+            iconUrl = formatIconUrl(wmo.iconPrefix, isDay),
             isDay = isDay,
             updatedTime = updatedTime,
-            hourly = hourlyItems
+            hourly = mapHourly(dto.hourly, updatedTime)
         )
     }
 
@@ -52,57 +60,49 @@ object WeatherMapper {
             }
             val code = hourly.weatherCode[index] ?: 0
             val isDay = hourly.isDay.getOrNull(index) != 0
+            val wmo = resolveWmo(code)
             HourlyWeather(
                 timeLabel = timeLabel,
                 temperatureC = temperature.roundToInt(),
-                condition = mapCondition(code),
-                iconUrl = buildIconUrl(code, isDay)
+                condition = wmo.condition,
+                iconUrl = formatIconUrl(wmo.iconPrefix, isDay)
             )
         }
         if (allItems.isEmpty()) return emptyList()
 
-        val currentHourPrefix = currentHourMinute.take(2)
-        if (currentHourPrefix.length < 2) return allItems
-        val startIndex = allItems.indexOfFirst { it.timeLabel.startsWith(currentHourPrefix) }
-        return if (startIndex in allItems.indices) {
-            allItems.subList(startIndex, allItems.size)
-        } else {
-            allItems
+        val currentHourPrefix = currentHourMinute.take(HOUR_PREFIX_LENGTH)
+        if (currentHourPrefix.length < HOUR_PREFIX_LENGTH) return allItems
+        val startIndex = allItems.indexOfFirst {
+            it.timeLabel.take(HOUR_PREFIX_LENGTH) >= currentHourPrefix
         }
+        return if (startIndex >= 0) allItems.drop(startIndex) else allItems
     }
 
     private fun extractHourMinute(rawTime: String?): String {
         if (rawTime.isNullOrBlank()) return ""
-        return rawTime.substringAfter('T', rawTime).take(5)
+        return rawTime.substringAfter(ISO_TIME_DELIMITER, rawTime).take(TIME_LABEL_LENGTH)
     }
 
-    fun mapCondition(weatherCode: Int): WeatherCondition = when (weatherCode) {
-        0 -> WeatherCondition.CLEAR
-        1, 2 -> WeatherCondition.PARTLY_CLOUDY
-        3 -> WeatherCondition.CLOUDY
-        45, 48 -> WeatherCondition.FOG
-        51, 53, 55, 56, 57 -> WeatherCondition.DRIZZLE
-        61, 63, 65, 66, 67 -> WeatherCondition.RAIN
-        71, 73, 75, 77, 85, 86 -> WeatherCondition.SNOW
-        80, 81, 82 -> WeatherCondition.SHOWERS
-        95, 96, 99 -> WeatherCondition.THUNDERSTORM
-        else -> WeatherCondition.CLOUDY
-    }
+    fun mapCondition(weatherCode: Int): WeatherCondition = resolveWmo(weatherCode).condition
 
-    fun buildIconUrl(weatherCode: Int, isDay: Boolean): String {
+    fun buildIconUrl(weatherCode: Int, isDay: Boolean): String =
+        formatIconUrl(resolveWmo(weatherCode).iconPrefix, isDay)
+
+    private fun formatIconUrl(iconPrefix: String, isDay: Boolean): String {
         val period = if (isDay) "d" else "n"
-        val iconCode = when (weatherCode) {
-            0 -> "01$period"
-            1, 2 -> "02$period"
-            3 -> "04$period"
-            45, 48 -> "50$period"
-            51, 53, 55, 56, 57 -> "09$period"
-            61, 63, 65, 66, 67 -> "10$period"
-            71, 73, 75, 77, 85, 86 -> "13$period"
-            80, 81, 82 -> "09$period"
-            95, 96, 99 -> "11$period"
-            else -> "03$period"
-        }
-        return "$ICON_URL_PREFIX$iconCode$ICON_URL_SUFFIX"
+        return "$ICON_URL_PREFIX$iconPrefix$period$ICON_URL_SUFFIX"
+    }
+
+    private fun resolveWmo(weatherCode: Int): WmoMapping = when (weatherCode) {
+        0 -> WmoMapping(WeatherCondition.CLEAR, "01")
+        1, 2 -> WmoMapping(WeatherCondition.PARTLY_CLOUDY, "02")
+        3 -> WmoMapping(WeatherCondition.CLOUDY, "04")
+        45, 48 -> WmoMapping(WeatherCondition.FOG, "50")
+        51, 53, 55, 56, 57 -> WmoMapping(WeatherCondition.DRIZZLE, "09")
+        61, 63, 65, 66, 67 -> WmoMapping(WeatherCondition.RAIN, "10")
+        71, 73, 75, 77, 85, 86 -> WmoMapping(WeatherCondition.SNOW, "13")
+        80, 81, 82 -> WmoMapping(WeatherCondition.SHOWERS, "09")
+        95, 96, 99 -> WmoMapping(WeatherCondition.THUNDERSTORM, "11")
+        else -> WmoMapping(WeatherCondition.CLOUDY, "03")
     }
 }
