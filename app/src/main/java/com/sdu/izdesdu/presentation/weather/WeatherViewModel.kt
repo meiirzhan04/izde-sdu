@@ -2,8 +2,7 @@ package com.sdu.izdesdu.presentation.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.sdu.izdesdu.domain.model.WeatherErrorType
-import com.sdu.izdesdu.domain.model.WeatherException
+import com.sdu.izdesdu.domain.model.toWeatherErrorType
 import com.sdu.izdesdu.domain.usecase.GetCampusWeatherUseCase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
@@ -11,8 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.io.IOException
-import java.net.SocketTimeoutException
 import kotlin.coroutines.EmptyCoroutineContext
 
 class WeatherViewModel(
@@ -32,8 +29,7 @@ class WeatherViewModel(
         loadJob?.cancel()
         _uiState.value = WeatherUiState.Loading
         loadJob = viewModelScope.launch(dispatcher ?: EmptyCoroutineContext) {
-            val result = getCampusWeatherUseCase()
-            result.fold(
+            getCampusWeatherUseCase().fold(
                 onSuccess = { weather ->
                     _uiState.value = if (weather == null || weather.hourly.isEmpty()) {
                         WeatherUiState.Empty
@@ -42,13 +38,7 @@ class WeatherViewModel(
                     }
                 },
                 onFailure = { throwable ->
-                    val errorType = when (throwable) {
-                        is WeatherException -> throwable.errorType
-                        is SocketTimeoutException -> WeatherErrorType.TIMEOUT
-                        is IOException -> WeatherErrorType.NETWORK
-                        else -> WeatherErrorType.UNKNOWN
-                    }
-                    _uiState.value = WeatherUiState.Error(errorType)
+                    _uiState.value = WeatherUiState.Error(throwable.toWeatherErrorType())
                 }
             )
         }
