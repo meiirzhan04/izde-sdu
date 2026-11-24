@@ -44,14 +44,16 @@ fun IzdeNavHost(
                     navController.navigate(PlaceDetailRoute(placeId))
                 },
                 onOpenWeather = {
-                    navController.navigate(WeatherRoute)
+                    navController.navigate(WeatherRoute) {
+                        launchSingleTop = true
+                    }
                 },
                 weatherViewModel = weatherViewModel
             )
         }
         composable<WeatherRoute> {
             WeatherScreen(
-                onBack = { navController.popBackStack() },
+                onBack = { navController.navigateUp() },
                 viewModel = weatherViewModel
             )
         }
