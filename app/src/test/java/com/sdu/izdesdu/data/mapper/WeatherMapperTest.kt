@@ -82,7 +82,7 @@ class WeatherMapperTest {
     }
 
     @Test
-    fun mapCondition_coversMainWmoWeatherCodes() {
+    fun mapCondition_coversMainAndFallbackWmoWeatherCodes() {
         assertEquals(WeatherCondition.CLEAR, WeatherMapper.mapCondition(0))
         assertEquals(WeatherCondition.CLOUDY, WeatherMapper.mapCondition(3))
         assertEquals(WeatherCondition.FOG, WeatherMapper.mapCondition(45))
@@ -91,10 +91,12 @@ class WeatherMapperTest {
         assertEquals(WeatherCondition.SNOW, WeatherMapper.mapCondition(73))
         assertEquals(WeatherCondition.SHOWERS, WeatherMapper.mapCondition(81))
         assertEquals(WeatherCondition.THUNDERSTORM, WeatherMapper.mapCondition(95))
+        assertEquals(WeatherCondition.CLOUDY, WeatherMapper.mapCondition(999))
+        assertEquals("https://openweathermap.org/img/wn/03d@2x.png", WeatherMapper.buildIconUrl(999, true))
     }
 
     @Test
-    fun toDomain_skipsNullableAndBlankHourlyEntries() {
+    fun toDomain_skipsNullableBlankAndPastHourlyEntriesWhenCurrentHourMissing() {
         val dto = WeatherResponseDto(
             current = CurrentWeatherDto(
                 time = "2026-11-23T13:10",
@@ -103,7 +105,7 @@ class WeatherMapperTest {
                 isDay = 1
             ),
             hourly = HourlyWeatherDto(
-                time = listOf(null, "2026-11-23T13:00", "", "2026-11-23T14:00"),
+                time = listOf("2026-11-23T11:00", "2026-11-23T13:00", "", "2026-11-23T14:00"),
                 temperature2m = listOf(9.0, null, 11.0, 12.4),
                 weatherCode = listOf(0, 1, 2, null),
                 isDay = listOf(1, 1, 1, null)
