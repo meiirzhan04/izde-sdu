@@ -2,6 +2,7 @@ package com.sdu.izdesdu.presentation.map
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sdu.izdesdu.presentation.weather.WeatherViewModel
 import org.koin.compose.viewmodel.koinViewModel
@@ -11,19 +12,21 @@ fun MapScreen(
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
     onOpenWeather: () -> Unit,
+    modifier: Modifier = Modifier,
+    mapViewModel: MapViewModel = koinViewModel(),
     weatherViewModel: WeatherViewModel = koinViewModel()
 ) {
-    val viewModel = koinViewModel<MapViewModel>()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by mapViewModel.uiState.collectAsStateWithLifecycle()
     val weatherState by weatherViewModel.uiState.collectAsStateWithLifecycle()
 
     MapScreenContent(
         uiState = uiState,
         weatherState = weatherState,
-        onSelectPlace = viewModel::selectPlace,
+        onSelectPlace = mapViewModel::selectPlace,
         onStartRoute = onStartRoute,
         onOpenPlace = onOpenPlace,
         onOpenWeather = onOpenWeather,
-        onRetryWeather = weatherViewModel::retry
+        onRetryWeather = weatherViewModel::retry,
+        modifier = modifier
     )
 }

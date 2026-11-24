@@ -29,10 +29,11 @@ fun MapScreenContent(
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
     onOpenWeather: () -> Unit,
-    onRetryWeather: () -> Unit
+    onRetryWeather: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(IzdeMapBg)
     ) {
