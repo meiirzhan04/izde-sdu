@@ -24,15 +24,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
-import coil.request.ImageRequest
 import com.sdu.izdesdu.R
+import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
 import com.sdu.izdesdu.presentation.theme.IzdeError
@@ -58,163 +55,150 @@ fun WeatherMapWidget(
         shadowElevation = 4.dp
     ) {
         when (weatherState) {
-            WeatherUiState.Loading -> {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    CircularProgressIndicator(
-                        color = IzdeBlue,
-                        modifier = Modifier.size(16.dp),
-                        strokeWidth = 2.dp
-                    )
-                    Text(
-                        text = stringResource(R.string.weather_map_loading),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = IzdeTextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
+            WeatherUiState.Loading -> WeatherWidgetLoading()
+            is WeatherUiState.Success -> WeatherWidgetSuccess(weather = weatherState.weather)
+            is WeatherUiState.Error -> WeatherWidgetError(onRetry = onRetry)
+            WeatherUiState.Empty -> WeatherWidgetEmpty()
+        }
+    }
+}
 
-            is WeatherUiState.Success -> {
-                val weather = weatherState.weather
-                val conditionText = stringResource(weather.condition.labelRes())
+@Composable
+private fun WeatherWidgetLoading() {
+    Row(
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        CircularProgressIndicator(
+            color = IzdeBlue,
+            modifier = Modifier.size(16.dp),
+            strokeWidth = 2.dp
+        )
+        Text(
+            text = stringResource(R.string.weather_map_loading),
+            style = MaterialTheme.typography.labelLarge,
+            color = IzdeTextSecondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
 
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clip(CircleShape)
-                            .background(IzdeBlueHalo),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        SubcomposeAsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(weather.iconUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = conditionText,
-                            contentScale = ContentScale.Fit,
-                            loading = {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(6.dp)
-                                        .clip(CircleShape)
-                                        .background(IzdeBlue.copy(alpha = 0.14f))
-                                )
-                            },
-                            error = {
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxSize()
-                                        .padding(6.dp)
-                                        .clip(CircleShape)
-                                        .background(IzdeBlue.copy(alpha = 0.14f))
-                                )
-                            },
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(2.dp)
-                        )
-                    }
-                    Text(
-                        text = stringResource(R.string.weather_temp_value, weather.temperatureC),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = IzdeTextPrimary,
-                        maxLines = 1
-                    )
-                    Text(
-                        text = conditionText,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = IzdeTextSecondary,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = stringResource(R.string.weather_open_details),
-                        tint = IzdeTextSecondary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                }
-            }
+@Composable
+private fun WeatherWidgetSuccess(weather: CampusWeather) {
+    val conditionText = stringResource(weather.condition.labelRes())
 
-            is WeatherUiState.Error -> {
-                Row(
-                    modifier = Modifier.padding(start = 12.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Warning,
-                        contentDescription = null,
-                        tint = IzdeError,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Text(
-                        text = stringResource(R.string.weather_map_error),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = IzdeTextPrimary,
-                        maxLines = 1
-                    )
-                    Surface(
-                        onClick = onRetry,
-                        shape = RoundedCornerShape(12.dp),
-                        color = IzdeBlueHalo
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Refresh,
-                                contentDescription = stringResource(R.string.weather_retry),
-                                tint = IzdeBlue,
-                                modifier = Modifier.size(14.dp)
-                            )
-                            Text(
-                                text = stringResource(R.string.weather_retry),
-                                style = MaterialTheme.typography.labelSmall,
-                                fontWeight = FontWeight.SemiBold,
-                                color = IzdeBlue,
-                                maxLines = 1
-                            )
-                        }
-                    }
-                }
-            }
+    Row(
+        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(30.dp)
+                .clip(CircleShape)
+                .background(IzdeBlueHalo),
+            contentAlignment = Alignment.Center
+        ) {
+            WeatherRemoteIcon(
+                iconUrl = weather.iconUrl,
+                contentDescription = conditionText,
+                placeholderColor = IzdeBlue.copy(alpha = 0.14f),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(2.dp)
+            )
+        }
+        Text(
+            text = stringResource(R.string.weather_temp_value, weather.temperatureC),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+            color = IzdeTextPrimary,
+            maxLines = 1
+        )
+        Text(
+            text = conditionText,
+            style = MaterialTheme.typography.labelMedium,
+            color = IzdeTextSecondary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f, fill = false)
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = stringResource(R.string.weather_open_details),
+            tint = IzdeTextSecondary,
+            modifier = Modifier.size(18.dp)
+        )
+    }
+}
 
-            WeatherUiState.Empty -> {
-                Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.weather_map_empty),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = IzdeTextSecondary,
-                        maxLines = 1
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = stringResource(R.string.weather_open_details),
-                        tint = IzdeTextSecondary,
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
+@Composable
+private fun WeatherWidgetError(onRetry: () -> Unit) {
+    Row(
+        modifier = Modifier.padding(start = 12.dp, end = 6.dp, top = 6.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Filled.Warning,
+            contentDescription = null,
+            tint = IzdeError,
+            modifier = Modifier.size(16.dp)
+        )
+        Text(
+            text = stringResource(R.string.weather_map_error),
+            style = MaterialTheme.typography.labelLarge,
+            color = IzdeTextPrimary,
+            maxLines = 1
+        )
+        Surface(
+            onClick = onRetry,
+            shape = RoundedCornerShape(12.dp),
+            color = IzdeBlueHalo
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Refresh,
+                    contentDescription = stringResource(R.string.weather_retry),
+                    tint = IzdeBlue,
+                    modifier = Modifier.size(14.dp)
+                )
+                Text(
+                    text = stringResource(R.string.weather_retry),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = IzdeBlue,
+                    maxLines = 1
+                )
             }
         }
+    }
+}
+
+@Composable
+private fun WeatherWidgetEmpty() {
+    Row(
+        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(
+            text = stringResource(R.string.weather_map_empty),
+            style = MaterialTheme.typography.labelLarge,
+            color = IzdeTextSecondary,
+            maxLines = 1
+        )
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            contentDescription = stringResource(R.string.weather_open_details),
+            tint = IzdeTextSecondary,
+            modifier = Modifier.size(16.dp)
+        )
     }
 }
