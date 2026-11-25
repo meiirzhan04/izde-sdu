@@ -62,7 +62,16 @@ val appModule = module {
     single { DeleteNoteUseCase(get()) }
 
     viewModelOf(::MapViewModel)
-    viewModel { (placeId: String) -> PlaceViewModel(placeId, get()) }
+    viewModel { (placeId: String) ->
+        PlaceViewModel(
+            placeId = placeId,
+            getPlaceByIdUseCase = get(),
+            getPlaceNotesUseCase = get(),
+            addNoteUseCase = get(),
+            updateNoteUseCase = get(),
+            deleteNoteUseCase = get()
+        )
+    }
     viewModel { (routeId: String) -> RouteViewModel(routeId, get(), get()) }
     viewModel { (routeId: String, step: Int) ->
         QuestionViewModel(
