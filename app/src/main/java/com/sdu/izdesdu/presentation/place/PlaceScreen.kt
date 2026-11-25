@@ -20,6 +20,9 @@ fun PlaceScreen(
     PlaceScreenContent(
         uiState = uiState,
         onBack = onBack,
-        onStartRoute = onStartRoute
+        onStartRoute = onStartRoute,
+        onAddNote = viewModel::addNote,
+        onUpdateNote = viewModel::updateNote,
+        onDeleteNote = viewModel::deleteNote
     )
 }
