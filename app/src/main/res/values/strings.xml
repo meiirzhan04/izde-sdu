@@ -132,6 +132,16 @@
     <string name="place_nearby_title">Что рядом</string>
     <string name="place_on_the_way">По пути: %1$s</string>
     <string name="place_start_route_here">Начать путь сюда</string>
+    <string name="place_notes_title">Мои заметки</string>
+    <string name="place_notes_empty">Заметок пока нет. Запиши, что важно знать об этом месте.</string>
+    <string name="place_note_add">Добавить заметку</string>
+    <string name="place_note_new_title">Новая заметка</string>
+    <string name="place_note_edit_title">Изменить заметку</string>
+    <string name="place_note_hint">Например: тихий зал на 2 этаже</string>
+    <string name="place_note_save">Сохранить</string>
+    <string name="place_note_cancel">Отмена</string>
+    <string name="place_note_edit">Изменить</string>
+    <string name="place_note_delete">Удалить</string>
 
     <string name="questions_count_one">%1$d вопрос про SDU</string>
     <string name="questions_count_few">%1$d вопроса про SDU</string>
