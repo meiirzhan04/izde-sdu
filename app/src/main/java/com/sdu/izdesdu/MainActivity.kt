@@ -7,7 +7,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.sdu.izdesdu.domain.model.UserSettings
 import com.sdu.izdesdu.domain.usecase.GetUserSettingsUseCase
 import org.koin.compose.koinInject
 import androidx.activity.ComponentActivity
@@ -26,8 +25,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val getSettings = koinInject<GetUserSettingsUseCase>()
-            val settings by remember(getSettings) { getSettings() }
-                .collectAsStateWithLifecycle(initialValue = UserSettings())
+            val storedSettings by remember(getSettings) { getSettings() }
+                .collectAsStateWithLifecycle(initialValue = null)
+            val settings = storedSettings ?: return@setContent
             LaunchedEffect(settings.isDarkTheme) {
                 val bars = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { settings.isDarkTheme }
                 enableEdgeToEdge(statusBarStyle = bars, navigationBarStyle = bars)
