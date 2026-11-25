@@ -10,6 +10,7 @@ import com.sdu.izdesdu.domain.usecase.GetRoutesUseCase
 import com.sdu.izdesdu.presentation.map.MapScreen
 import com.sdu.izdesdu.presentation.place.PlaceScreen
 import com.sdu.izdesdu.presentation.question.QuestionScreen
+import com.sdu.izdesdu.presentation.settings.SettingsScreen
 import com.sdu.izdesdu.presentation.route.RouteScreen
 import com.sdu.izdesdu.presentation.weather.WeatherScreen
 import com.sdu.izdesdu.presentation.weather.WeatherViewModel
@@ -39,6 +40,7 @@ fun IzdeNavHost(
     ) {
         composable<MapRoute> {
             MapScreen(
+                onOpenSettings = { navController.navigate(SettingsRoute) { launchSingleTop = true } },
                 onStartRoute = startRoute,
                 onOpenPlace = { placeId ->
                     navController.navigate(PlaceDetailRoute(placeId))
@@ -50,6 +52,9 @@ fun IzdeNavHost(
                 },
                 weatherViewModel = weatherViewModel
             )
+        }
+        composable<SettingsRoute> {
+            SettingsScreen(onBack = { navController.navigateUp() })
         }
         composable<WeatherRoute> {
             WeatherScreen(

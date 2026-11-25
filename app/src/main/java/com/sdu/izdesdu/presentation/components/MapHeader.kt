@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,6 +25,7 @@ import com.sdu.izdesdu.R
 @Composable
 fun MapHeader(
     totalScore: Int,
+    onOpenSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -54,18 +59,26 @@ fun MapHeader(
             )
         }
 
-        Surface(
-            shape = RoundedCornerShape(16.dp),
-            color = MaterialTheme.colorScheme.onSurface,
-            shadowElevation = 4.dp
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Text(
-                text = stringResource(R.string.question_score_pill, totalScore),
-                color = MaterialTheme.colorScheme.surface,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
-            )
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.onSurface,
+                shadowElevation = 4.dp
+            ) {
+                Text(
+                    text = stringResource(R.string.question_score_pill, totalScore),
+                    color = MaterialTheme.colorScheme.surface,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp)
+                )
+            }
+            FilledTonalIconButton(onClick = onOpenSettings) {
+                Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings_title))
+            }
         }
     }
 }
