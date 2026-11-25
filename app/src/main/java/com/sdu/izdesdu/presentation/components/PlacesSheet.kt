@@ -23,10 +23,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Place
+import com.sdu.izdesdu.domain.model.PlaceSortOrder
+import com.sdu.izdesdu.presentation.settings.titleRes
 
 @Composable
 fun PlacesSheet(
     places: List<Place>,
+    sortOrder: PlaceSortOrder,
     selected: Place?,
     onSelectPlace: (String) -> Unit,
     onStartRoute: (String) -> Unit,
@@ -55,6 +58,13 @@ fun PlacesSheet(
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
             )
+            if (sortOrder != PlaceSortOrder.DEFAULT) {
+                Text(
+                    text = stringResource(sortOrder.titleRes),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Text(
                 text = stringResource(R.string.map_you_are_at_gate),
                 style = MaterialTheme.typography.bodyMedium,

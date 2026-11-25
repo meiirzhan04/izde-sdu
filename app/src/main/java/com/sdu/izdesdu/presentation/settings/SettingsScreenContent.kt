@@ -57,15 +57,15 @@ fun SettingsScreenContent(
             SectionTitle(R.string.settings_sort)
             Column(Modifier.selectableGroup()) {
                 PlaceSortOrder.entries.forEach { order ->
-                    val (title, description) = when (order) {
-                        PlaceSortOrder.DEFAULT -> R.string.sort_default to R.string.sort_default_description
-                        PlaceSortOrder.TITLE_ASC -> R.string.sort_title to R.string.sort_title_description
-                        PlaceSortOrder.QUESTIONS_ASC -> R.string.sort_short to R.string.sort_short_description
-                        PlaceSortOrder.QUESTIONS_DESC -> R.string.sort_long to R.string.sort_long_description
+                    val description = when (order) {
+                        PlaceSortOrder.DEFAULT -> R.string.sort_default_description
+                        PlaceSortOrder.TITLE_ASC -> R.string.sort_title_description
+                        PlaceSortOrder.QUESTIONS_ASC -> R.string.sort_short_description
+                        PlaceSortOrder.QUESTIONS_DESC -> R.string.sort_long_description
                     }
                     val selected = settings.placeSortOrder == order
                     ListItem(
-                        headlineContent = { Text(stringResource(title)) },
+                        headlineContent = { Text(stringResource(order.titleRes)) },
                         supportingContent = { Text(stringResource(description)) },
                         trailingContent = { RadioButton(selected = selected, onClick = null) },
                         modifier = Modifier.selectable(selected, role = Role.RadioButton) { onSortOrderSelected(order) }

@@ -65,6 +65,7 @@ fun MapScreenContent(
         }
 
         PlacesSheet(
+            sortOrder = uiState.sortOrder,
             places = uiState.places,
             selected = uiState.selectedPlace,
             onSelectPlace = onSelectPlace,

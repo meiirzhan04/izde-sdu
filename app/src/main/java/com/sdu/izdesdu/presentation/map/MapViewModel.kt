@@ -46,7 +46,7 @@ class MapViewModel(
                     PlaceSortOrder.QUESTIONS_ASC -> initialPlaces.sortedBy { it.questionsCount }
                     PlaceSortOrder.QUESTIONS_DESC -> initialPlaces.sortedByDescending { it.questionsCount }
                 }
-                _uiState.update { it.copy(places = sorted) }
+                _uiState.update { it.copy(places = sorted, sortOrder = order) }
             }
         }
         viewModelScope.launch {
