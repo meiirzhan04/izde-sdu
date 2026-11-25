@@ -34,16 +34,22 @@ class MapViewModelSortTest {
                 override fun getPlace(id: String) = original.find { it.id == id }
             }
             val settings = FakeSettingsRepository()
+            settings.setPlaceSortOrder(PlaceSortOrder.QUESTIONS_ASC)
             val model = MapViewModel(
                 GetPlacesUseCase(places),
                 GetUserProgressUseCase(ProgressRepositoryImpl(ProgressLocalDataSource())),
                 GetUserSettingsUseCase(settings)
             )
+            runCurrent()
+            assertEquals(listOf(canteen, gym, library), model.uiState.value.places)
+            assertEquals(PlaceSortOrder.QUESTIONS_ASC, model.uiState.value.sortOrder)
+            assertEquals(gym, model.uiState.value.selectedPlace)
             model.selectPlace(library.id)
 
             suspend fun check(order: PlaceSortOrder, expected: List<Place>) {
                 settings.setPlaceSortOrder(order)
                 runCurrent()
+                assertEquals(order, model.uiState.value.sortOrder)
                 assertEquals(expected, model.uiState.value.places)
                 assertEquals(library, model.uiState.value.selectedPlace)
             }
