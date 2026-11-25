@@ -28,6 +28,7 @@ fun MapScreenContent(
     onSelectPlace: (String) -> Unit,
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenWeather: () -> Unit,
     onRetryWeather: () -> Unit,
     modifier: Modifier = Modifier
@@ -51,6 +52,7 @@ fun MapScreenContent(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 MapHeader(
+                    onOpenSettings = onOpenSettings,
                     totalScore = uiState.totalScore,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -110,6 +112,7 @@ private fun MapScreenContentPreview() {
         onSelectPlace = {},
         onStartRoute = {},
         onOpenPlace = {},
+        onOpenSettings = {},
         onOpenWeather = {},
         onRetryWeather = {}
     )
