@@ -23,6 +23,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.PlaceSortOrder
@@ -86,7 +88,9 @@ fun SettingsScreenContent(
 private fun SectionTitle(title: Int) {
     Text(
         stringResource(title),
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 4.dp),
+        modifier = Modifier
+            .semantics { heading() }
+            .padding(start = 16.dp, top = 16.dp, bottom = 4.dp),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.primary
     )
