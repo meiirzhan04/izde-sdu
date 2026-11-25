@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,18 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.sdu.izdesdu.presentation.theme.IzdeError
-import com.sdu.izdesdu.presentation.theme.IzdeErrorBg
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeMintBg
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun AnswerOption(
@@ -45,21 +37,25 @@ fun AnswerOption(
     onClick: () -> Unit
 ) {
     val borderColor = when {
-        isRight -> IzdeGreen
-        isWrong -> IzdeError
-        else -> IzdeOutline
+        isRight -> MaterialTheme.colorScheme.secondary
+        isWrong -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.outlineVariant
     }
     val containerColor = when {
-        isRight -> IzdeMintBg
-        isWrong -> IzdeErrorBg
-        else -> Color.White
+        isRight -> MaterialTheme.colorScheme.secondaryContainer
+        isWrong -> MaterialTheme.colorScheme.errorContainer
+        else -> MaterialTheme.colorScheme.surface
     }
     val badgeBg = when {
-        isRight -> IzdeGreen
-        isWrong -> IzdeError
-        else -> IzdeSurfaceCard
+        isRight -> MaterialTheme.colorScheme.secondary
+        isWrong -> MaterialTheme.colorScheme.error
+        else -> MaterialTheme.colorScheme.surfaceVariant
     }
-    val badgeFg = if (isRight || isWrong) Color.White else IzdeTextSecondary
+    val badgeFg = when {
+        isRight -> MaterialTheme.colorScheme.onSecondary
+        isWrong -> MaterialTheme.colorScheme.onError
+        else -> MaterialTheme.colorScheme.onSurfaceVariant
+    }
 
     Surface(
         modifier = Modifier
@@ -96,14 +92,14 @@ fun AnswerOption(
                 modifier = Modifier.weight(1f),
                 fontSize = 14.sp,
                 fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
             if (isRight || isWrong) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
                     imageVector = if (isRight) Icons.Filled.Check else Icons.Filled.Close,
                     contentDescription = null,
-                    tint = if (isRight) IzdeGreen else IzdeError,
+                    tint = if (isRight) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(18.dp)
                 )
             }

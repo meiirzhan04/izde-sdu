@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,20 +18,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Place
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
+import com.sdu.izdesdu.domain.model.PlaceSortOrder
+import com.sdu.izdesdu.presentation.settings.titleRes
 
 @Composable
 fun PlacesSheet(
     places: List<Place>,
+    sortOrder: PlaceSortOrder,
     selected: Place?,
     onSelectPlace: (String) -> Unit,
     onStartRoute: (String) -> Unit,
@@ -42,7 +42,7 @@ fun PlacesSheet(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(top = 10.dp, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -57,20 +57,27 @@ fun PlacesSheet(
                 text = stringResource(R.string.map_where_to_title),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
+            if (sortOrder != PlaceSortOrder.DEFAULT) {
+                Text(
+                    text = stringResource(sortOrder.titleRes),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Text(
                 text = stringResource(R.string.map_you_are_at_gate),
                 style = MaterialTheme.typography.bodyMedium,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
         LazyRow(
-            modifier = Modifier.padding(horizontal = 20.dp),
+            modifier = Modifier.padding(horizontal = 20.dp).selectableGroup(),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(places) { place ->
+            items(places, key = { it.id }) { place ->
                 PlaceCard(
                     place = place,
                     selected = place.id == selected?.id,
@@ -86,23 +93,23 @@ fun PlacesSheet(
             ) {
                 Text(
                     text = stringResource(R.string.map_about_place),
-                    color = IzdeTextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier
                         .clip(buttonShape)
-                        .border(2.dp, IzdeOutline, buttonShape)
+                        .border(2.dp, MaterialTheme.colorScheme.outlineVariant, buttonShape)
                         .clickable { onOpenPlace(selected.id) }
                         .padding(horizontal = 20.dp, vertical = 16.dp)
                 )
                 Text(
                     text = stringResource(R.string.map_start_route),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .weight(1f)
                         .clip(buttonShape)
-                        .background(Color(selected.colorHex))
+                        .background(MaterialTheme.colorScheme.primary)
                         .clickable { onStartRoute(selected.id) }
                         .padding(vertical = 16.dp)
                 )

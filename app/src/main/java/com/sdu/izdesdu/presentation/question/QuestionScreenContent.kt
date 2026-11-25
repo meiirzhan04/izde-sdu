@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.question
 
+import androidx.compose.material3.MaterialTheme
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.presentation.components.QuestionSheet
@@ -20,7 +20,6 @@ import com.sdu.izdesdu.presentation.components.QuestionTopBar
 import com.sdu.izdesdu.presentation.components.RouteFinishSheet
 import com.sdu.izdesdu.presentation.components.RouteMapPreview
 import com.sdu.izdesdu.presentation.components.ScreenMessage
-import com.sdu.izdesdu.presentation.theme.IzdeMapBg
 
 @Composable
 fun QuestionScreenContent(
@@ -54,7 +53,7 @@ fun QuestionScreenContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(IzdeMapBg)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         RouteMapPreview(
             checkpoints = route.checkpoints,
@@ -82,7 +81,7 @@ fun QuestionScreenContent(
                 .fillMaxHeight(0.66f)
                 .align(Alignment.BottomCenter),
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 10.dp
         ) {
             if (uiState.isRouteFinished) {

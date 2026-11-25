@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
@@ -11,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.sdu.izdesdu.presentation.theme.IzdeDragHandle
 
 @Composable
 fun SheetDragHandle(
@@ -23,6 +23,6 @@ fun SheetDragHandle(
         modifier = modifier
             .size(width = width, height = height)
             .clip(CircleShape)
-            .background(IzdeDragHandle)
+            .background(MaterialTheme.colorScheme.outlineVariant)
     )
 }

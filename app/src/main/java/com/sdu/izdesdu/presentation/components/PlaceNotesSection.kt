@@ -23,9 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Note
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceNotesSection(
@@ -44,7 +41,7 @@ fun PlaceNotesSection(
                 text = stringResource(R.string.place_notes_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 modifier = Modifier.weight(1f)
             )
             Row(
@@ -57,13 +54,13 @@ fun PlaceNotesSection(
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
-                    tint = IzdeBlue,
+                    tint = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.size(18.dp)
                 )
                 Text(
                     text = stringResource(R.string.place_note_add),
                     style = MaterialTheme.typography.labelLarge,
-                    color = IzdeBlue
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -72,7 +69,7 @@ fun PlaceNotesSection(
             Text(
                 text = stringResource(R.string.place_notes_empty),
                 style = MaterialTheme.typography.bodySmall,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
             notes.forEach { note ->

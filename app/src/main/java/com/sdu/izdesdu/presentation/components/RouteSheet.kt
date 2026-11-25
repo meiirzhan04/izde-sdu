@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -32,12 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Route
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeMintBg
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun RouteSheet(
@@ -103,16 +98,16 @@ private fun RouteSheetHeader(
             text = routeTitle,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
         Spacer(modifier = Modifier.width(8.dp))
-        Surface(color = IzdeMintBg, shape = RoundedCornerShape(12.dp)) {
+        Surface(color = MaterialTheme.colorScheme.secondaryContainer, shape = RoundedCornerShape(12.dp)) {
             Text(
                 text = stringResource(R.string.route_points_per_step),
-                color = IzdeGreen,
+                color = MaterialTheme.colorScheme.secondary,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
@@ -128,14 +123,14 @@ private fun RouteSheetHeader(
             text = stringResource(subtitleRes),
             fontSize = 13.sp,
             lineHeight = 18.sp,
-            color = if (isCompleted) IzdeGreen else IzdeTextSecondary
+            color = if (isCompleted) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant
         )
         if (isCompleted) {
             Spacer(modifier = Modifier.width(4.dp))
             Icon(
                 imageVector = Icons.Filled.Check,
                 contentDescription = null,
-                tint = IzdeGreen,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier.size(14.dp)
             )
         }
@@ -160,11 +155,11 @@ private fun RouteBottomButtons(
                 .weight(0.35f)
                 .height(48.dp),
             shape = RoundedCornerShape(14.dp),
-            border = BorderStroke(1.dp, IzdeOutline)
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
         ) {
             Text(
                 text = stringResource(R.string.route_cancel),
-                color = IzdeTextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium
             )
@@ -176,7 +171,7 @@ private fun RouteBottomButtons(
                 .weight(0.65f)
                 .height(48.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(
                 text = if (isCompleted) {

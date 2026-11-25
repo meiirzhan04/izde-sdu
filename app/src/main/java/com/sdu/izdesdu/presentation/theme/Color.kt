@@ -2,34 +2,61 @@ package com.sdu.izdesdu.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+internal val LightColorScheme = lightColorScheme(
+    primary = Color(0xFF2F66D8),
+    onPrimary = Color(0xFFFFFFFF),
+    primaryContainer = Color(0xFFDCE7FF),
+    onPrimaryContainer = Color(0xFF152E60),
+    secondary = Color(0xFF216B45),
+    onSecondary = Color(0xFFFFFFFF),
+    secondaryContainer = Color(0xFFE7F5EE),
+    onSecondaryContainer = Color(0xFF15472E),
+    tertiaryContainer = Color(0xFFFFF2DA),
+    onTertiaryContainer = Color(0xFF533B15),
+    background = Color(0xFFF5F8F5),
+    onBackground = Color(0xFF1E2A3A),
+    surface = Color(0xFFFFFFFF),
+    onSurface = Color(0xFF1E2A3A),
+    surfaceVariant = Color(0xFFEFF3F7),
+    onSurfaceVariant = Color(0xFF505D69),
+    outline = Color(0xFF707C89),
+    outlineVariant = Color(0xFFCAD4DF),
+    error = Color(0xFFAC2721),
+    onError = Color(0xFFFFFFFF),
+    errorContainer = Color(0xFFFDECEC),
+    onErrorContainer = Color(0xFF701811)
+)
 
-val IzdeBlue = Color(0xFF2F66D8)
-val IzdeBlueHalo = Color(0xFFDCE7FF)
-val IzdeGreen = Color(0xFF2E9E6B)
-val IzdeMintBg = Color(0xFFE7F5EE)
+internal val DarkColorScheme = darkColorScheme(
+    primary = Color(0xFFB2C6FF),
+    onPrimary = Color(0xFF102D68),
+    primaryContainer = Color(0xFF243E70),
+    onPrimaryContainer = Color(0xFFDCE7FF),
+    secondary = Color(0xFF83D9A8),
+    onSecondary = Color(0xFF003920),
+    secondaryContainer = Color(0xFF16482E),
+    onSecondaryContainer = Color(0xFFBBF3D1),
+    tertiaryContainer = Color(0xFF513D20),
+    onTertiaryContainer = Color(0xFFFFDEAB),
+    background = Color(0xFF101820),
+    onBackground = Color(0xFFE2E8F0),
+    surface = Color(0xFF17212B),
+    onSurface = Color(0xFFE2E8F0),
+    surfaceVariant = Color(0xFF273440),
+    onSurfaceVariant = Color(0xFFC3CDD8),
+    outline = Color(0xFF95A3B1),
+    outlineVariant = Color(0xFF435160),
+    error = Color(0xFFFFB4AA),
+    onError = Color(0xFF680007),
+    errorContainer = Color(0xFF572724),
+    onErrorContainer = Color(0xFFFFDAD5)
+)
+
 val IzdeOrange = Color(0xFFE0791B)
-val IzdeStartRed = Color(0xFFC94B2B)
-val IzdeError = Color(0xFFB3261E)
-val IzdeErrorBg = Color(0xFFFDECEC)
-val IzdeHintBg = Color(0xFFFFF6EB)
-val IzdeTextPrimary = Color(0xFF1E2A3A)
-val IzdeTextSecondary = Color(0xFF55606E)
-val IzdeTextBody = Color(0xFF3B4655)
-val IzdeTextMuted = Color(0xFF8A94A0)
-val IzdeMapBg = Color(0xFFE4EDE3)
-val IzdeSurfaceCard = Color(0xFFF4F6F8)
-val IzdeSelectedCard = Color(0xFFF6F8FA)
-val IzdeOutline = Color(0xFFE3E8EE)
-val IzdeBorderMuted = Color(0xFFCBD5E1)
-val IzdeDragHandle = Color(0xFFDDE3EA)
-
+val IzdeStartRed = Color(0xFFB03C20)
 val IzdeBlockI = Color(0xFFA8642A)
 val IzdeBlockH = Color(0xFF3E6FA8)
 val IzdeBlockG = Color(0xFF62783E)

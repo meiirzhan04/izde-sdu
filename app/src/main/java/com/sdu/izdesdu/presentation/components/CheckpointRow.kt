@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -31,14 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.CheckPoint
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
-import com.sdu.izdesdu.presentation.theme.IzdeBorderMuted
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextMuted
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun CheckpointRow(
@@ -81,7 +74,7 @@ fun CheckpointRow(
             text = "$step. ${checkpoint.title}",
             fontSize = 14.sp,
             fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Medium,
-            color = if (isDone) IzdeTextSecondary else IzdeTextPrimary,
+            color = if (isDone) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f),
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
@@ -94,9 +87,9 @@ fun CheckpointRow(
                 text = statusText,
                 fontSize = 12.sp,
                 color = when {
-                    isDone -> IzdeGreen
-                    isCurrent -> IzdeBlue
-                    else -> IzdeTextMuted
+                    isDone -> MaterialTheme.colorScheme.secondary
+                    isCurrent -> MaterialTheme.colorScheme.primary
+                    else -> MaterialTheme.colorScheme.onSurfaceVariant
                 },
                 fontWeight = if (isCurrent) FontWeight.Medium else FontWeight.Normal
             )
@@ -105,7 +98,7 @@ fun CheckpointRow(
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = null,
-                    tint = IzdeGreen,
+                    tint = MaterialTheme.colorScheme.secondary,
                     modifier = Modifier.size(13.dp)
                 )
             }
@@ -124,18 +117,18 @@ private fun TimelineNodeIndicator(
 ) {
     val topLineColor = when {
         isFirst -> Color.Transparent
-        topLineDone -> IzdeGreen
-        else -> IzdeOutline
+        topLineDone -> MaterialTheme.colorScheme.secondary
+        else -> MaterialTheme.colorScheme.outlineVariant
     }
     val bottomLineColor = when {
         isLast -> Color.Transparent
-        isDone -> IzdeGreen
-        else -> IzdeOutline
+        isDone -> MaterialTheme.colorScheme.secondary
+        else -> MaterialTheme.colorScheme.outlineVariant
     }
     val circleColor = when {
-        isDone -> IzdeGreen
-        isCurrent -> IzdeBlue
-        else -> Color.White
+        isDone -> MaterialTheme.colorScheme.secondary
+        isCurrent -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.surface
     }
 
     Column(
@@ -154,7 +147,7 @@ private fun TimelineNodeIndicator(
             modifier = Modifier
                 .size(if (isCurrent) 28.dp else 24.dp)
                 .clip(CircleShape)
-                .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
+                .background(if (isCurrent) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -164,7 +157,7 @@ private fun TimelineNodeIndicator(
                     .background(circleColor)
                     .then(
                         if (!isDone && !isCurrent) {
-                            Modifier.border(1.5.dp, IzdeBorderMuted, CircleShape)
+                            Modifier.border(1.5.dp, MaterialTheme.colorScheme.outline, CircleShape)
                         } else {
                             Modifier
                         }
@@ -175,13 +168,13 @@ private fun TimelineNodeIndicator(
                     Icon(
                         imageVector = Icons.Filled.Check,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onSecondary,
                         modifier = Modifier.size(13.dp)
                     )
                 } else {
                     Text(
                         text = step.toString(),
-                        color = if (isCurrent) Color.White else IzdeTextMuted,
+                        color = if (isCurrent) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold
                     )

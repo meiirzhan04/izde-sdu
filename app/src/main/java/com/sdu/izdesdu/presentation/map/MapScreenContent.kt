@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.map
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,7 +19,6 @@ import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.MapHeader
 import com.sdu.izdesdu.presentation.components.PlacesSheet
 import com.sdu.izdesdu.presentation.components.WeatherMapWidget
-import com.sdu.izdesdu.presentation.theme.IzdeMapBg
 import com.sdu.izdesdu.presentation.weather.WeatherUiState
 
 @Composable
@@ -28,6 +28,7 @@ fun MapScreenContent(
     onSelectPlace: (String) -> Unit,
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenWeather: () -> Unit,
     onRetryWeather: () -> Unit,
     modifier: Modifier = Modifier
@@ -35,7 +36,7 @@ fun MapScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(IzdeMapBg)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(modifier = Modifier.weight(1f)) {
             CampusMap(
@@ -51,6 +52,7 @@ fun MapScreenContent(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 MapHeader(
+                    onOpenSettings = onOpenSettings,
                     totalScore = uiState.totalScore,
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -63,6 +65,7 @@ fun MapScreenContent(
         }
 
         PlacesSheet(
+            sortOrder = uiState.sortOrder,
             places = uiState.places,
             selected = uiState.selectedPlace,
             onSelectPlace = onSelectPlace,
@@ -110,6 +113,7 @@ private fun MapScreenContentPreview() {
         onSelectPlace = {},
         onStartRoute = {},
         onOpenPlace = {},
+        onOpenSettings = {},
         onOpenWeather = {},
         onRetryWeather = {}
     )

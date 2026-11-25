@@ -11,6 +11,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun MapScreen(
     onStartRoute: (String) -> Unit,
     onOpenPlace: (String) -> Unit,
+    onOpenSettings: () -> Unit,
     onOpenWeather: () -> Unit,
     modifier: Modifier = Modifier,
     mapViewModel: MapViewModel = koinViewModel(),
@@ -25,6 +26,7 @@ fun MapScreen(
         onSelectPlace = mapViewModel::selectPlace,
         onStartRoute = onStartRoute,
         onOpenPlace = onOpenPlace,
+        onOpenSettings = onOpenSettings,
         onOpenWeather = onOpenWeather,
         onRetryWeather = weatherViewModel::retry,
         modifier = modifier
