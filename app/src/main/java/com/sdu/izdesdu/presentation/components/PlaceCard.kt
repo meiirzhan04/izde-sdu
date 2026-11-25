@@ -2,7 +2,7 @@ package com.sdu.izdesdu.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,7 +35,7 @@ fun PlaceCard(
             .clip(RoundedCornerShape(20.dp))
             .background(if (selected) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
             .border(2.dp, if (selected) Color(place.colorHex) else MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(20.dp))
-            .clickable { onClick() }
+            .selectable(selected = selected, onClick = onClick)
             .padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
