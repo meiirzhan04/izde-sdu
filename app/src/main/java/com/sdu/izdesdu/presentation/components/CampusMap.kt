@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -35,11 +39,8 @@ import com.sdu.izdesdu.presentation.theme.IzdeBlockF
 import com.sdu.izdesdu.presentation.theme.IzdeBlockG
 import com.sdu.izdesdu.presentation.theme.IzdeBlockH
 import com.sdu.izdesdu.presentation.theme.IzdeBlockI
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeDormLabel
 import com.sdu.izdesdu.presentation.theme.IzdeGymLabel
-import com.sdu.izdesdu.presentation.theme.IzdeMapBg
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 
 @Composable
 fun CampusMap(
@@ -48,9 +49,10 @@ fun CampusMap(
     onPinClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val darkMap = MaterialTheme.colorScheme.surface.luminance() < 0.5f
     Box(
         modifier = modifier
-            .background(IzdeMapBg)
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.TopCenter
     ) {
@@ -58,6 +60,7 @@ fun CampusMap(
             Image(
                 painter = painterResource(R.drawable.campus_map),
                 contentDescription = stringResource(R.string.route_map_placeholder),
+                colorFilter = if (darkMap) ColorFilter.tint(Color(0xFF555F6B), BlendMode.Multiply) else null,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier.fillMaxSize()
             )
@@ -99,14 +102,14 @@ fun CampusMap(
 
                 Text(
                     text = selected.title,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.surface,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,
                     modifier = Modifier
                         .offset(x = labelX.dp, y = selected.mapY.dp - 76.dp)
                         .clip(RoundedCornerShape(10.dp))
-                        .background(IzdeTextPrimary)
+                        .background(MaterialTheme.colorScheme.onSurface)
                         .padding(horizontal = 10.dp, vertical = 6.dp)
                 )
             }
@@ -130,7 +133,7 @@ fun MapLabel(
     ) {
         Text(
             text = text,
-            color = color,
+            color = if (MaterialTheme.colorScheme.surface.luminance() < 0.5f) Color.White else color,
             fontSize = 11.sp,
             fontWeight = FontWeight.Bold
         )
@@ -143,10 +146,10 @@ fun YouAreHere(modifier: Modifier = Modifier) {
         modifier = modifier
             .size(16.dp)
             .clip(CircleShape)
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(3.dp)
             .clip(CircleShape)
-            .background(IzdeBlue)
+            .background(MaterialTheme.colorScheme.primary)
     )
 }
 

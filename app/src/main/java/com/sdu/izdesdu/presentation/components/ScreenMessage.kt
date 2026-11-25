@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,14 +16,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 
 @Composable
 fun ScreenMessage(
     @StringRes message: Int,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
-    messageColor: Color = IzdeTextPrimary
+    messageColor: Color = MaterialTheme.colorScheme.onSurface
 ) {
     Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {

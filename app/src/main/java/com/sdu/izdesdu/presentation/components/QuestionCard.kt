@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,14 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Question
-import com.sdu.izdesdu.presentation.theme.IzdeError
-import com.sdu.izdesdu.presentation.theme.IzdeErrorBg
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeHintBg
-import com.sdu.izdesdu.presentation.theme.IzdeMintBg
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 private val optionLetters = listOf("А", "Б", "В", "Г")
 
@@ -56,7 +49,7 @@ fun QuestionCard(
             Text(
                 text = instruction,
                 fontSize = 12.sp,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -65,7 +58,7 @@ fun QuestionCard(
             fontSize = 17.sp,
             lineHeight = 23.sp,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         question.options.forEachIndexed { index, optionText ->
@@ -96,14 +89,14 @@ private fun HintBanner(hint: String) {
     Surface(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        color = IzdeHintBg,
-        border = BorderStroke(1.dp, IzdeOutline)
+        color = MaterialTheme.colorScheme.tertiaryContainer,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Text(
             text = stringResource(R.string.question_hint_prefix, hint),
             fontSize = 13.sp,
             lineHeight = 18.sp,
-            color = IzdeTextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
         )
     }
@@ -111,8 +104,8 @@ private fun HintBanner(hint: String) {
 
 @Composable
 private fun FeedbackBanner(isCorrect: Boolean) {
-    val bgColor = if (isCorrect) IzdeMintBg else IzdeErrorBg
-    val fgColor = if (isCorrect) IzdeGreen else IzdeError
+    val bgColor = if (isCorrect) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.errorContainer
+    val fgColor = if (isCorrect) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
 
     Surface(
         modifier = Modifier.fillMaxWidth(),

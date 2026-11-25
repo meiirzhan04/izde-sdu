@@ -30,11 +30,6 @@ import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Note
 import com.sdu.izdesdu.domain.model.Place
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
-import com.sdu.izdesdu.presentation.theme.IzdeTextBody
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceDetailsSheet(
@@ -50,7 +45,7 @@ fun PlaceDetailsSheet(
             .fillMaxWidth()
             .heightIn(max = 520.dp)
             .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -64,31 +59,31 @@ fun PlaceDetailsSheet(
                 text = place.title,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
 
         Text(
             text = place.block,
             style = MaterialTheme.typography.labelLarge,
-            color = IzdeTextBody,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
-                .background(IzdeSurfaceCard)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(horizontal = 12.dp, vertical = 6.dp)
         )
 
         Text(
             text = place.description,
             style = MaterialTheme.typography.bodyMedium,
-            color = IzdeTextBody
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Text(
             text = stringResource(R.string.place_nearby_title),
             style = MaterialTheme.typography.titleSmall,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary
+            color = MaterialTheme.colorScheme.onSurface
         )
         place.nearby.forEach { item ->
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -96,13 +91,13 @@ fun PlaceDetailsSheet(
                     modifier = Modifier
                         .size(6.dp)
                         .clip(CircleShape)
-                        .background(IzdeBlue)
+                        .background(MaterialTheme.colorScheme.primary)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = item,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = IzdeTextBody
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -113,7 +108,7 @@ fun PlaceDetailsSheet(
                 questionsLabel(place.questionsCount)
             ),
             style = MaterialTheme.typography.bodySmall,
-            color = IzdeTextSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         PlaceNotesSection(
@@ -125,13 +120,13 @@ fun PlaceDetailsSheet(
 
         Text(
             text = stringResource(R.string.place_start_route_here),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color(place.colorHex))
+                .background(MaterialTheme.colorScheme.primary)
                 .clickable { onStartRoute(place.id) }
                 .padding(vertical = 16.dp)
         )

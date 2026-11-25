@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.weather
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,6 @@ import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.domain.model.HourlyWeather
 import com.sdu.izdesdu.domain.model.WeatherCondition
 import com.sdu.izdesdu.domain.model.WeatherErrorType
-import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
 import com.sdu.izdesdu.presentation.theme.IzdesduTheme
 import com.sdu.izdesdu.presentation.weather.components.WeatherAdviceCard
 import com.sdu.izdesdu.presentation.weather.components.WeatherEmptyState
@@ -38,7 +38,7 @@ fun WeatherScreenContent(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(IzdeSurfaceCard)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
     ) {
         WeatherTopBar(
             onBack = onBack,

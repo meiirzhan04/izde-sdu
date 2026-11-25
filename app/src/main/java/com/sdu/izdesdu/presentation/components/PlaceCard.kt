@@ -21,10 +21,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Place
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeSelectedCard
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceCard(
@@ -37,8 +33,8 @@ fun PlaceCard(
         modifier = modifier
             .width(160.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(if (selected) IzdeSelectedCard else Color.White)
-            .border(2.dp, if (selected) Color(place.colorHex) else IzdeOutline, RoundedCornerShape(20.dp))
+            .background(if (selected) MaterialTheme.colorScheme.surfaceVariant else MaterialTheme.colorScheme.surface)
+            .border(2.dp, if (selected) Color(place.colorHex) else MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(20.dp))
             .clickable { onClick() }
             .padding(14.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -49,7 +45,7 @@ fun PlaceCard(
             text = place.title,
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             minLines = 2,
             maxLines = 2
         )
@@ -57,7 +53,7 @@ fun PlaceCard(
         Text(
             text = questionsLabel(place.questionsCount),
             style = MaterialTheme.typography.bodySmall,
-            color = IzdeTextSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

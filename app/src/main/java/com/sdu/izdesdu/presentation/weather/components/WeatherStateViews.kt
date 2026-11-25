@@ -36,13 +36,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.WeatherErrorType
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
-import com.sdu.izdesdu.presentation.theme.IzdeError
-import com.sdu.izdesdu.presentation.theme.IzdeErrorBg
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 import com.sdu.izdesdu.presentation.weather.messageRes
 
 @Composable
@@ -58,11 +51,11 @@ fun WeatherLoadingState(
             verticalArrangement = Arrangement.spacedBy(14.dp),
             modifier = Modifier.padding(24.dp)
         ) {
-            CircularProgressIndicator(color = IzdeBlue)
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
             Text(
                 text = stringResource(R.string.weather_loading),
                 style = MaterialTheme.typography.bodyMedium,
-                color = IzdeTextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
@@ -77,8 +70,8 @@ fun WeatherErrorState(
 ) {
     WeatherFeedbackCard(
         icon = Icons.Filled.Warning,
-        iconTint = IzdeError,
-        iconBackground = IzdeErrorBg,
+        iconTint = MaterialTheme.colorScheme.error,
+        iconBackground = MaterialTheme.colorScheme.errorContainer,
         title = stringResource(R.string.weather_error_title),
         description = stringResource(errorType.messageRes()),
         modifier = modifier
@@ -87,8 +80,8 @@ fun WeatherErrorState(
             onClick = onRetry,
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = IzdeBlue,
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -108,8 +101,8 @@ fun WeatherEmptyState(
 ) {
     WeatherFeedbackCard(
         icon = Icons.Filled.Info,
-        iconTint = IzdeBlue,
-        iconBackground = IzdeBlueHalo,
+        iconTint = MaterialTheme.colorScheme.primary,
+        iconBackground = MaterialTheme.colorScheme.primaryContainer,
         title = stringResource(R.string.weather_empty_title),
         description = stringResource(R.string.weather_empty_desc),
         modifier = modifier
@@ -117,8 +110,8 @@ fun WeatherEmptyState(
         OutlinedButton(
             onClick = onRefresh,
             shape = RoundedCornerShape(14.dp),
-            border = BorderStroke(1.5.dp, IzdeOutline),
-            colors = ButtonDefaults.outlinedButtonColors(contentColor = IzdeTextPrimary),
+            border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.outlineVariant),
+            colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.onSurface),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
@@ -152,8 +145,8 @@ private fun WeatherFeedbackCard(
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
-            border = BorderStroke(1.dp, IzdeOutline)
+            color = MaterialTheme.colorScheme.surface,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
@@ -179,14 +172,14 @@ private fun WeatherFeedbackCard(
                     text = title,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = IzdeTextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center
                 )
 
                 Text(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = IzdeTextSecondary,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
 

@@ -19,7 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -28,10 +27,6 @@ import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.CampusWeather
 import com.sdu.izdesdu.presentation.components.WeatherRemoteIcon
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 import com.sdu.izdesdu.presentation.weather.campusAdviceRes
 import com.sdu.izdesdu.presentation.weather.labelRes
 
@@ -45,7 +40,7 @@ fun WeatherHeroCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(28.dp),
-        color = IzdeBlue
+        color = MaterialTheme.colorScheme.primary
     ) {
         Column(
             modifier = Modifier.padding(20.dp),
@@ -64,14 +59,14 @@ fun WeatherHeroCard(
                     Icon(
                         imageVector = Icons.Filled.LocationOn,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
                         text = stringResource(R.string.weather_campus_location),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -81,7 +76,7 @@ fun WeatherHeroCard(
                     Text(
                         text = stringResource(R.string.weather_updated_at, weather.updatedTime),
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.8f),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                         maxLines = 1
                     )
                 }
@@ -100,14 +95,14 @@ fun WeatherHeroCard(
                         text = stringResource(R.string.weather_temp_value, weather.temperatureC),
                         fontSize = 56.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         maxLines = 1
                     )
                     Text(
                         text = conditionText,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.White.copy(alpha = 0.92f),
+                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.92f),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -115,13 +110,13 @@ fun WeatherHeroCard(
 
                 Surface(
                     shape = CircleShape,
-                    color = Color.White.copy(alpha = 0.2f),
+                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.2f),
                     modifier = Modifier.size(88.dp)
                 ) {
                     WeatherRemoteIcon(
                         iconUrl = weather.iconUrl,
                         contentDescription = conditionText,
-                        placeholderColor = Color.White.copy(alpha = 0.16f),
+                        placeholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.16f),
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(8.dp)
@@ -167,8 +162,8 @@ fun WeatherAdviceCard(
     Surface(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
-        border = BorderStroke(1.dp, IzdeOutline)
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -178,12 +173,12 @@ fun WeatherAdviceCard(
                 text = stringResource(R.string.weather_advice_title),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
             Text(
                 text = stringResource(weather.condition.campusAdviceRes(weather.temperatureC)),
                 style = MaterialTheme.typography.bodyMedium,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
     }
@@ -198,8 +193,8 @@ private fun WeatherMetricCard(
     Surface(
         modifier = modifier,
         shape = RoundedCornerShape(18.dp),
-        color = Color.White,
-        border = BorderStroke(1.dp, IzdeOutline)
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 14.dp),
@@ -209,7 +204,7 @@ private fun WeatherMetricCard(
             Text(
                 text = label,
                 style = MaterialTheme.typography.labelMedium,
-                color = IzdeTextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -217,7 +212,7 @@ private fun WeatherMetricCard(
                 text = value,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

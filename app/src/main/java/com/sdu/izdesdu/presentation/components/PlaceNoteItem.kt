@@ -23,11 +23,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.Note
-import com.sdu.izdesdu.presentation.theme.IzdeError
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeSelectedCard
-import com.sdu.izdesdu.presentation.theme.IzdeTextBody
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceNoteItem(
@@ -42,22 +37,22 @@ fun PlaceNoteItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(IzdeSelectedCard)
-            .border(1.dp, IzdeOutline, shape)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .border(1.dp, MaterialTheme.colorScheme.outlineVariant, shape)
             .padding(start = 14.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = note.text,
             style = MaterialTheme.typography.bodyMedium,
-            color = IzdeTextBody,
+            color = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.weight(1f)
         )
         IconButton(onClick = onEdit) {
             Icon(
                 imageVector = Icons.Default.Edit,
                 contentDescription = stringResource(R.string.place_note_edit),
-                tint = IzdeTextSecondary,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(20.dp)
             )
         }
@@ -65,7 +60,7 @@ fun PlaceNoteItem(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = stringResource(R.string.place_note_delete),
-                tint = IzdeError,
+                tint = MaterialTheme.colorScheme.error,
                 modifier = Modifier.size(20.dp)
             )
         }
