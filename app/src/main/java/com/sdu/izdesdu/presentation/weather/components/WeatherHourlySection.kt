@@ -18,18 +18,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.HourlyWeather
 import com.sdu.izdesdu.presentation.components.WeatherRemoteIcon
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 import com.sdu.izdesdu.presentation.weather.labelRes
 
 @Composable
@@ -45,7 +39,7 @@ fun WeatherHourlySection(
             text = stringResource(R.string.weather_hourly_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         LazyRow(
@@ -71,8 +65,8 @@ private fun HourlyWeatherCard(
     Surface(
         modifier = Modifier.width(88.dp),
         shape = RoundedCornerShape(20.dp),
-        color = Color.White,
-        border = BorderStroke(1.dp, IzdeOutline)
+        color = MaterialTheme.colorScheme.surface,
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 12.dp),
@@ -82,18 +76,18 @@ private fun HourlyWeatherCard(
             Text(
                 text = item.timeLabel,
                 style = MaterialTheme.typography.labelMedium,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Surface(
                 shape = CircleShape,
-                color = IzdeBlueHalo,
+                color = MaterialTheme.colorScheme.primaryContainer,
                 modifier = Modifier.size(46.dp)
             ) {
                 WeatherRemoteIcon(
                     iconUrl = item.iconUrl,
                     contentDescription = label,
-                    placeholderColor = IzdeBlue.copy(alpha = 0.14f),
+                    placeholderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.14f),
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(4.dp)
@@ -104,7 +98,7 @@ private fun HourlyWeatherCard(
                 text = stringResource(R.string.weather_temp_value, item.temperatureC),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }

@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,12 +31,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.domain.model.CheckPoint
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeBlueHalo
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
 import com.sdu.izdesdu.presentation.theme.IzdeOrange
 import com.sdu.izdesdu.presentation.theme.IzdeStartRed
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 import kotlin.math.roundToInt
 
 @Composable
@@ -104,9 +101,10 @@ private fun RoutePathLines(
     gateStart: Offset,
     points: List<Offset>
 ) {
+    val completedColor = MaterialTheme.colorScheme.secondary
     Canvas(modifier = Modifier.fillMaxSize()) {
         drawLine(
-            color = IzdeGreen,
+            color = completedColor,
             start = gateStart,
             end = points.first(),
             strokeWidth = 8f,
@@ -155,11 +153,11 @@ private fun CheckpointMapPin(
     isCurrent: Boolean
 ) {
     val pinBg = when {
-        isDone -> IzdeGreen
-        isCurrent -> IzdeBlue
-        else -> Color.White
+        isDone -> MaterialTheme.colorScheme.secondary
+        isCurrent -> MaterialTheme.colorScheme.primary
+        else -> MaterialTheme.colorScheme.surface
     }
-    val pinBorder = if (isDone || isCurrent) Color.White else IzdeOrange
+    val pinBorder = if (isDone || isCurrent) MaterialTheme.colorScheme.surface else IzdeOrange
 
     Box(
         modifier = Modifier
@@ -171,7 +169,7 @@ private fun CheckpointMapPin(
             }
             .size(28.dp)
             .clip(CircleShape)
-            .background(if (isCurrent) IzdeBlueHalo else Color.Transparent),
+            .background(if (isCurrent) MaterialTheme.colorScheme.primaryContainer else Color.Transparent),
         contentAlignment = Alignment.Center
     ) {
         Box(
@@ -186,13 +184,13 @@ private fun CheckpointMapPin(
                 Icon(
                     imageVector = Icons.Filled.Check,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onSecondary,
                     modifier = Modifier.size(14.dp)
                 )
             } else {
                 Text(
                     text = step.toString(),
-                    color = if (isCurrent) Color.White else IzdeTextPrimary,
+                    color = if (isCurrent) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
                 )

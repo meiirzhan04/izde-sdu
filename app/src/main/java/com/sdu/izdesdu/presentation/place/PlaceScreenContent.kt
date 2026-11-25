@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.place
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -19,7 +20,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,9 +30,6 @@ import com.sdu.izdesdu.presentation.components.CampusMap
 import com.sdu.izdesdu.presentation.components.NoteEditorDialog
 import com.sdu.izdesdu.presentation.components.PlaceDetailsSheet
 import com.sdu.izdesdu.presentation.components.ScreenMessage
-import com.sdu.izdesdu.presentation.theme.IzdeMapBg
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun PlaceScreenContent(
@@ -48,7 +45,7 @@ fun PlaceScreenContent(
         ScreenMessage(
             message = R.string.place_not_found,
             onBack = onBack,
-            messageColor = IzdeTextSecondary
+            messageColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
         return
     }
@@ -59,7 +56,7 @@ fun PlaceScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(IzdeMapBg)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Box(modifier = Modifier.weight(1f)) {
             CampusMap(
@@ -73,14 +70,14 @@ fun PlaceScreenContent(
                     .padding(16.dp)
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(Color.White)
+                    .background(MaterialTheme.colorScheme.surface)
                     .clickable { onBack() },
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.route_back),
-                    tint = IzdeTextPrimary,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(20.dp)
                 )
             }

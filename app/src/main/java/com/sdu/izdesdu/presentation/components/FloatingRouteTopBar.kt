@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,17 +22,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
 import com.sdu.izdesdu.presentation.theme.IzdeOrange
-import com.sdu.izdesdu.presentation.theme.IzdeTextMuted
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
 
 @Composable
 fun FloatingRouteTopBar(
@@ -50,14 +47,14 @@ fun FloatingRouteTopBar(
                 .clip(CircleShape)
                 .clickable(onClick = onBack),
             shape = CircleShape,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 4.dp
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = stringResource(R.string.route_back),
-                    tint = IzdeTextPrimary,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(20.dp)
                 )
             }
@@ -68,7 +65,7 @@ fun FloatingRouteTopBar(
         Surface(
             modifier = Modifier.weight(1f),
             shape = RoundedCornerShape(20.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 4.dp
         ) {
             Row(
@@ -80,12 +77,12 @@ fun FloatingRouteTopBar(
                     modifier = Modifier
                         .size(8.dp)
                         .clip(CircleShape)
-                        .background(IzdeBlue)
+                        .background(MaterialTheme.colorScheme.primary)
                 )
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = fromTitle,
-                    color = IzdeTextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
@@ -95,7 +92,7 @@ fun FloatingRouteTopBar(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null,
-                    tint = IzdeTextMuted,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
                         .padding(horizontal = 6.dp)
                         .size(14.dp)
@@ -109,7 +106,7 @@ fun FloatingRouteTopBar(
                 Spacer(modifier = Modifier.width(6.dp))
                 Text(
                     text = toTitle,
-                    color = IzdeTextPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 13.sp,
                     fontWeight = FontWeight.SemiBold,
                     maxLines = 1,

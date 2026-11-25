@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.route
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,14 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.sdu.izdesdu.R
 import com.sdu.izdesdu.presentation.components.FloatingRouteTopBar
 import com.sdu.izdesdu.presentation.components.RouteMapPreview
 import com.sdu.izdesdu.presentation.components.RouteSheet
 import com.sdu.izdesdu.presentation.components.ScreenMessage
-import com.sdu.izdesdu.presentation.theme.IzdeMapBg
 
 @Composable
 fun RouteScreenContent(
@@ -37,7 +36,7 @@ fun RouteScreenContent(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(IzdeMapBg)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         RouteMapPreview(
             checkpoints = route.checkpoints,
@@ -66,7 +65,7 @@ fun RouteScreenContent(
                 .fillMaxHeight(0.56f)
                 .align(Alignment.BottomCenter),
             shape = RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             shadowElevation = 10.dp
         ) {
             RouteSheet(

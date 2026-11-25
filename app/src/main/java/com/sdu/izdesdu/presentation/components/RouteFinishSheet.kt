@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,19 +28,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sdu.izdesdu.R
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeMintBg
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeSurfaceCard
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun RouteFinishSheet(
@@ -71,20 +64,20 @@ fun RouteFinishSheet(
                 modifier = Modifier
                     .size(64.dp)
                     .clip(CircleShape)
-                    .background(IzdeMintBg),
+                    .background(MaterialTheme.colorScheme.secondaryContainer),
                 contentAlignment = Alignment.Center
             ) {
                 Box(
                     modifier = Modifier
                         .size(46.dp)
                         .clip(CircleShape)
-                        .background(IzdeGreen),
+                        .background(MaterialTheme.colorScheme.secondary),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Filled.Check,
                         contentDescription = null,
-                        tint = Color.White,
+                        tint = MaterialTheme.colorScheme.onSecondary,
                         modifier = Modifier.size(26.dp)
                     )
                 }
@@ -96,7 +89,7 @@ fun RouteFinishSheet(
                 text = stringResource(R.string.route_finish_title),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.height(6.dp))
@@ -104,7 +97,7 @@ fun RouteFinishSheet(
             Text(
                 text = stringResource(R.string.route_finish_destination, destinationTitle),
                 fontSize = 14.sp,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -112,7 +105,7 @@ fun RouteFinishSheet(
             Text(
                 text = routeTitle,
                 fontSize = 13.sp,
-                color = IzdeTextSecondary
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -120,8 +113,8 @@ fun RouteFinishSheet(
             Surface(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                color = IzdeSurfaceCard,
-                border = BorderStroke(1.dp, IzdeOutline)
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
                 Row(
                     modifier = Modifier
@@ -157,7 +150,7 @@ fun RouteFinishSheet(
                 .fillMaxWidth()
                 .height(48.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(
                 text = stringResource(R.string.route_back_to_map),
@@ -178,13 +171,13 @@ private fun FinishStatItem(
             text = value,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = IzdeTextPrimary
+            color = MaterialTheme.colorScheme.onSurface
         )
         Spacer(modifier = Modifier.height(2.dp))
         Text(
             text = label,
             fontSize = 12.sp,
-            color = IzdeTextSecondary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
     }
 }

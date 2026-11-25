@@ -1,5 +1,6 @@
 package com.sdu.izdesdu.presentation.components
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +24,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -33,12 +33,6 @@ import com.sdu.izdesdu.R
 import com.sdu.izdesdu.domain.model.CheckPoint
 import com.sdu.izdesdu.domain.model.Question
 import com.sdu.izdesdu.presentation.question.QuestionUiState
-import com.sdu.izdesdu.presentation.theme.IzdeBlue
-import com.sdu.izdesdu.presentation.theme.IzdeError
-import com.sdu.izdesdu.presentation.theme.IzdeGreen
-import com.sdu.izdesdu.presentation.theme.IzdeOutline
-import com.sdu.izdesdu.presentation.theme.IzdeTextPrimary
-import com.sdu.izdesdu.presentation.theme.IzdeTextSecondary
 
 @Composable
 fun QuestionSheet(
@@ -112,12 +106,12 @@ private fun QuestionHeader(
             modifier = Modifier
                 .size(38.dp)
                 .clip(CircleShape)
-                .background(IzdeBlue),
+                .background(MaterialTheme.colorScheme.primary),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = stepNumber.toString(),
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -132,7 +126,7 @@ private fun QuestionHeader(
                     checkpointTitle
                 ),
                 fontSize = 12.sp,
-                color = IzdeTextSecondary,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -140,7 +134,7 @@ private fun QuestionHeader(
                 text = stringResource(R.string.question_title),
                 fontSize = 19.sp,
                 fontWeight = FontWeight.Bold,
-                color = IzdeTextPrimary
+                color = MaterialTheme.colorScheme.onSurface
             )
         }
     }
@@ -162,7 +156,7 @@ private fun QuestionActionButton(
                 .fillMaxWidth()
                 .height(48.dp),
             shape = RoundedCornerShape(14.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = IzdeBlue)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text(
                 text = if (isLastStep) {
@@ -183,11 +177,11 @@ private fun QuestionActionButton(
             .fillMaxWidth()
             .height(48.dp),
         shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, IzdeOutline)
+        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Text(
             text = stringResource(if (showHint) R.string.question_hide_hint else R.string.question_hint_button),
-            color = if (showHint) IzdeTextSecondary else IzdeTextPrimary,
+            color = if (showHint) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
             fontSize = 14.sp,
             fontWeight = FontWeight.Medium
         )
@@ -207,11 +201,11 @@ private fun StepProgressSegments(
         for (index in 0 until totalCheckpoints) {
             val barStep = index + 1
             val color = when {
-                barStep < currentStep -> IzdeGreen
-                barStep == currentStep && isCurrentCorrect == true -> IzdeGreen
-                barStep == currentStep && isCurrentCorrect == false -> IzdeError
-                barStep == currentStep -> IzdeBlue
-                else -> IzdeOutline
+                barStep < currentStep -> MaterialTheme.colorScheme.secondary
+                barStep == currentStep && isCurrentCorrect == true -> MaterialTheme.colorScheme.secondary
+                barStep == currentStep && isCurrentCorrect == false -> MaterialTheme.colorScheme.error
+                barStep == currentStep -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.outlineVariant
             }
             Box(
                 modifier = Modifier
