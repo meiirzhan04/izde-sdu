@@ -3,6 +3,8 @@ package com.sdu.izdesdu.data.local
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.sdu.izdesdu.domain.model.PlaceSortOrder
 import com.sdu.izdesdu.domain.model.UserSettings
@@ -35,6 +37,23 @@ class SettingsDataStoreTest {
         withStore { store ->
             assertEquals(
                 UserSettings(isDarkTheme = true, placeSortOrder = PlaceSortOrder.QUESTIONS_DESC),
+                SettingsDataStore(store).settings.first()
+            )
+        }
+    }
+
+    @Test
+    fun unknownStoredOrderFallsBackAndCanBeReplaced() = runBlocking {
+        withStore { store ->
+            val settings = SettingsDataStore(store)
+            settings.setDarkTheme(true)
+            store.edit { it[stringPreferencesKey("place_sort_order")] = "retired_order" }
+            assertEquals(UserSettings(isDarkTheme = true), settings.settings.first())
+            settings.setPlaceSortOrder(PlaceSortOrder.TITLE_ASC)
+        }
+        withStore { store ->
+            assertEquals(
+                UserSettings(isDarkTheme = true, placeSortOrder = PlaceSortOrder.TITLE_ASC),
                 SettingsDataStore(store).settings.first()
             )
         }
